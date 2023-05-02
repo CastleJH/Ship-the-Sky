@@ -38,15 +38,7 @@ void ACommander::FillIslandWithUnit(int32 IslandID, ABaseUnit* Unit)
 
 	if (EmptyIslandTile && Unit)
 	{
-		ABaseTile* MainTile = GetGameInstance()->GetSubsystem<UMapManager>()->GetSameIslandTiles(IslandID)[0];
-		FVector Direction = MainTile->GetActorLocation() - EmptyIslandTile->GetActorLocation();
-
-		Unit->SetActorLocation(EmptyIslandTile->GetActorLocation());
-		Unit->SetActorRotation(Direction.Rotation());
-		Unit->SetActorHiddenInGame(false);
-		
-		EmptyIslandTile->SetUnit(Unit);
-		Unit->SetCurTile(EmptyIslandTile);
+		Unit->LocateToIslandTile(EmptyIslandTile);
 	}
 }
 

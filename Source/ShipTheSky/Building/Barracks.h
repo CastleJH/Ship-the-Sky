@@ -14,4 +14,7 @@ class SHIPTHESKY_API ABarracks : public ABaseBuilding
 {
 	GENERATED_BODY()
 	
+public:
+	ABarracks();
+
 };

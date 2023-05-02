@@ -3,3 +3,8 @@
 
 #include "Building/Barracks.h"
 
+
+ABarracks::ABarracks()
+{
+	BuildingType = EBuildingType::Barracks;
+}

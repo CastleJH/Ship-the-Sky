@@ -4,6 +4,11 @@
 #include "Tile/IslandTile.h"
 #include "Controller/STSPlayerController.h"
 
+AIslandTile::AIslandTile()
+{
+	TileType = ETileType::Island;
+}
+
 void AIslandTile::BeginPlay()
 {
 	Super::BeginPlay();

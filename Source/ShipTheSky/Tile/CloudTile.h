@@ -14,4 +14,6 @@ class SHIPTHESKY_API ACloudTile : public ABaseTile
 {
 	GENERATED_BODY()
 	
+public:
+	ACloudTile();
 };

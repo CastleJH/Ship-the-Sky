@@ -13,5 +13,7 @@ UCLASS()
 class SHIPTHESKY_API AMeteorTile : public ABaseTile
 {
 	GENERATED_BODY()
-	
+
+public:
+	AMeteorTile();
 };

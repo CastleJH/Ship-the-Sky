@@ -13,5 +13,7 @@ UCLASS()
 class SHIPTHESKY_API ASunTile : public ABaseTile
 {
 	GENERATED_BODY()
-	
+
+public:
+	ASunTile();
 };

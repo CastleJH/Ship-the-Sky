@@ -3,3 +3,7 @@
 
 #include "Tile/LightningTile.h"
 
+ALightningTile::ALightningTile()
+{
+	TileType = ETileType::Lightning;
+}

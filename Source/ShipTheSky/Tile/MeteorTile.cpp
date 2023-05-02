@@ -3,3 +3,7 @@
 
 #include "Tile/MeteorTile.h"
 
+AMeteorTile::AMeteorTile()
+{
+	TileType = ETileType::Meteor;
+}

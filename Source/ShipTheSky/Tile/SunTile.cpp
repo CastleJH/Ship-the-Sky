@@ -3,3 +3,7 @@
 
 #include "Tile/SunTile.h"
 
+ASunTile::ASunTile()
+{
+	TileType = ETileType::Sun;
+}

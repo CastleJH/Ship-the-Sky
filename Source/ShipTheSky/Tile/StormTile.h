@@ -14,4 +14,7 @@ class SHIPTHESKY_API AStormTile : public ABaseTile
 {
 	GENERATED_BODY()
 	
+public:
+	AStormTile();
+	
 };

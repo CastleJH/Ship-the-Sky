@@ -3,3 +3,7 @@
 
 #include "Tile/StormTile.h"
 
+AStormTile::AStormTile()
+{
+	TileType = ETileType::Storm;
+}

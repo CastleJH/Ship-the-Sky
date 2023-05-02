@@ -2,6 +2,7 @@
 
 
 #include "Pawn/Commander.h"
+#include "MapManager.h"
 
 // Sets default values
 ACommander::ACommander()
@@ -16,6 +17,7 @@ void ACommander::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	GetGameInstance()->GetSubsystem<UMapManager>()->GenerateMap(75);
 }
 
 // Called every frame

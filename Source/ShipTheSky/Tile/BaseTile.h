@@ -33,13 +33,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Tile")
 	ETileType TileType;
 
+public:
+	ETileType GetTileType() const { return TileType; }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintCallable)
 	virtual void OnTileReleased(AActor* Target, FKey ButtonPressed);
-
-public:
-	ETileType GetTileType() const { return TileType; }
 
 };

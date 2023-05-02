@@ -17,11 +17,28 @@ class SHIPTHESKY_API ASTSPlayerController : public APlayerController
 public:
 	ASTSPlayerController();
 
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Widget")
+	TSubclassOf<class UUserWidget> STSIslandTileUIClass;
+
 private:
+	class ACommander* Commander = nullptr;
+	class UTileUI* IslandTileUI;
 	float CameraMovementSpeed;
+
+public:
+	void SetIslandTileUIVisibility(bool bIsVisible);
+	class ACommander* GetCommander() { return Commander; }
+	UFUNCTION(BlueprintCallable)
+	void OnButtonCreateUnitPressed(enum EUnitType Type);
+	UFUNCTION(BlueprintCallable)
+	void OnButtonConstructBuildingPressed(enum EBuildingType Type);
+	UFUNCTION(BlueprintCallable)
+	void OnButtonGenerateMap();
 
 protected:
 	virtual void SetupInputComponent() override;
+	virtual void OnPossess(APawn* InPawn) override;
 
 private:
 	void MoveCameraHorizontal(float Value);

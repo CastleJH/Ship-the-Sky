@@ -2,12 +2,61 @@
 
 
 #include "Controller/STSPlayerController.h"
+#include "STSGameState.h"
+#include "Pawn/Commander.h"
+#include "Tile/IslandTile.h"
+#include "Building/BaseBuilding.h"
+#include "Widget/TileUI.h"
+#include "MapManager.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 ASTSPlayerController::ASTSPlayerController()
 {
 	CameraMovementSpeed = 4000.0f;
+}
+
+void ASTSPlayerController::SetIslandTileUIVisibility(bool bIsVisible)
+{
+	if (bIsVisible)
+	{
+		SetIslandTileUIVisibility(false);
+		if (Cast<ASTSGameState>(GetWorld()->GetGameState())->GetIslandOwner(Commander->GetTargetIslandTile()->GetIslandID()) == this)
+		{
+			IslandTileUI->SetPanelVisibility(IslandTileUI->ConstructionPanel, ESlateVisibility::Visible);
+			if (Commander->GetTargetIslandTile()->GetBuilding() != nullptr)
+			{
+				switch (Commander->GetTargetIslandTile()->GetBuilding()->GetBuildingType())
+				{
+				case EBuildingType::Barracks:
+					IslandTileUI->SetPanelVisibility(IslandTileUI->BarracksPanel, ESlateVisibility::Visible);
+					break;
+				}
+			}
+		}
+	}
+	else
+	{
+		IslandTileUI->SetPanelVisibility(IslandTileUI->ConstructionPanel, ESlateVisibility::Hidden);
+		IslandTileUI->SetPanelVisibility(IslandTileUI->BarracksPanel, ESlateVisibility::Hidden);
+	}
+}
+
+void ASTSPlayerController::OnButtonCreateUnitPressed(EUnitType Type)
+{
+	Commander->CreateUnit(Commander->GetTargetIslandTile()->GetIslandID(), Type);
+}
+
+void ASTSPlayerController::OnButtonConstructBuildingPressed(EBuildingType Type)
+{
+	Commander->ConstructBuilding(Commander->GetTargetIslandTile(), Type);
+	IslandTileUI->SetPanelVisibility(IslandTileUI->BarracksPanel, ESlateVisibility::Visible);
+}
+
+void ASTSPlayerController::OnButtonGenerateMap()
+{
+	GetGameInstance()->GetSubsystem<UMapManager>()->ClearMap();
+	GetGameInstance()->GetSubsystem<UMapManager>()->GenerateMap(75);
 }
 
 void ASTSPlayerController::SetupInputComponent()
@@ -17,6 +66,24 @@ void ASTSPlayerController::SetupInputComponent()
 	InputComponent->BindAxis(TEXT("MoveRight"), this, &ASTSPlayerController::MoveCameraHorizontal);
 	InputComponent->BindAxis(TEXT("MoveForward"), this, &ASTSPlayerController::MoveCameraVertical);
 	InputComponent->BindAxis(TEXT("Zoom"), this, &ASTSPlayerController::ZoomCamera);
+}
+
+void ASTSPlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	GetGameInstance()->GetSubsystem<UMapManager>()->GenerateMap(75);
+	Commander = Cast<ACommander>(GetPawn());
+	IslandTileUI = Cast<UTileUI>(CreateWidget<UUserWidget>(GetWorld(), STSIslandTileUIClass));
+	if (IslandTileUI != nullptr)
+	{
+		IslandTileUI->AddToViewport();
+		SetIslandTileUIVisibility(false);
+	}
+	else 
+	{
+		UE_LOG(LogTemp, Error, TEXT("No UI"));
+	}
 }
 
 void ASTSPlayerController::MoveCameraHorizontal(float Value)

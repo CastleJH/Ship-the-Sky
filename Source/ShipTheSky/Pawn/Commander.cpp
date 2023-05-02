@@ -19,8 +19,6 @@ ACommander::ACommander()
 void ACommander::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	GetGameInstance()->GetSubsystem<UMapManager>()->GenerateMap(75);
 }
 
 void ACommander::FillIslandWithUnit(int32 IslandID, ABaseUnit* Unit)

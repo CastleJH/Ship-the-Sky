@@ -2,4 +2,9 @@
 
 
 #include "Widget/TileUI.h"
+#include "Components/CanvasPanel.h"
 
+void UTileUI::SetPanelVisibility(UCanvasPanel* Panel, ESlateVisibility NewVisibility)
+{
+	Panel->SetVisibility(NewVisibility);
+}

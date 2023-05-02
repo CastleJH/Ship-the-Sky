@@ -3,6 +3,7 @@
 
 #include "Tile/IslandTile.h"
 #include "Controller/STSPlayerController.h"
+#include "Pawn/Commander.h"
 
 AIslandTile::AIslandTile()
 {
@@ -18,6 +19,6 @@ void AIslandTile::BeginPlay()
 void AIslandTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 {
 	ASTSPlayerController* PlayerController = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
-	//!!PlayerController->GetCommander()->SetLastIslandTile(this);
-	//!!PlayerController->SetIslandTileWidgetVisibility(true);
+	PlayerController->GetCommander()->SetTargetIslandTile(this);
+	PlayerController->SetIslandTileUIVisibility(true);
 }

@@ -10,7 +10,7 @@ public class ShipTheSky : ModuleRules
 
         PublicIncludePaths.AddRange(new string[] { "ShipTheSky" });
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

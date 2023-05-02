@@ -9,10 +9,10 @@ APlayerCommander::APlayerCommander()
 {
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	RootComponent = CameraComp;
-	CameraComp->SetRelativeRotation(FRotator(290.0f, 0.0f, 0.0f));
 }
 
 void APlayerCommander::BeginPlay()
 {
 	Super::BeginPlay();
+	CameraComp->SetRelativeRotation(FRotator(290.0f, 0.0f, 0.0f));
 }

@@ -25,6 +25,3 @@ void ABaseTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 {
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *GetName());
 }
-
-
-

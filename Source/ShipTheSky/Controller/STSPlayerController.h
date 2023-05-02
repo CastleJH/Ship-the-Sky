@@ -13,5 +13,18 @@ UCLASS()
 class SHIPTHESKY_API ASTSPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
+public:
+	ASTSPlayerController();
+
+private:
+	float CameraMovementSpeed;
+
+protected:
+	virtual void SetupInputComponent() override;
+
+private:
+	void MoveCameraHorizontal(float Value);
+	void MoveCameraVertical(float Value);
+	void ZoomCamera(float Value);
 };

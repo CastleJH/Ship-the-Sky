@@ -2,6 +2,9 @@
 
 
 #include "Unit/BaseUnit.h"
+#include "Tile/BaseTile.h"
+#include "Tile/IslandTile.h"
+#include "MapManager.h"
 
 // Sets default values
 ABaseUnit::ABaseUnit()
@@ -28,7 +31,17 @@ void ABaseUnit::Tick(float DeltaTime)
 
 }
 
-void ABaseUnit::LocateToIslandTile(AIslandTile* Island)
+void ABaseUnit::LocateToIslandTile(AIslandTile* IslandTile)
 {
+	if (IslandTile == nullptr) return;
+	ABaseTile* MainTile = GetGameInstance()->GetSubsystem<UMapManager>()->GetSameIslandTiles(IslandTile->GetIslandID())[0];
+	FVector Direction = MainTile->GetActorLocation() - IslandTile->GetActorLocation();
+
+	SetActorLocation(IslandTile->GetActorLocation());
+	SetActorRotation(Direction.Rotation());
+	SetActorHiddenInGame(false);
+
+	IslandTile->SetUnit(this);
+	SetCurTile(IslandTile);
 }
 

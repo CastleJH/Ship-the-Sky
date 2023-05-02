@@ -39,6 +39,8 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	void LocateToIslandTile(AIslandTile* IslandTile);
+
 	EUnitType GetUnitType() const { return UnitType; }
 	class AIslandTile* GetCurTile() const { return CurTile; }
 	void SetCurTile(class AIslandTile* NewTile) { CurTile = NewTile; }

@@ -4,6 +4,7 @@
 #include "MapManager.h"
 #include "Tile/BaseTile.h"
 #include "Tile/IslandTile.h"
+#include "STSGameState.h"
 
 UMapManager::UMapManager()
 {
@@ -228,6 +229,7 @@ void UMapManager::GenerateMap(int32 NumCol)
 		}
 	}
 
+	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, false);
 	TempSetStartLocation();
 }
 
@@ -258,11 +260,11 @@ TArray<class AIslandTile*> UMapManager::GetSameIslandTiles(int32 IslandID) const
 
 void UMapManager::TempSetStartLocation()
 {
-	/*int32 RandStartIsland = 50;
+	int32 RandStartIsland = 50;
 	APawn* Pawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 	GetWorld()->GetGameState<ASTSGameState>()->SetIslandOwner(50, GetWorld()->GetFirstPlayerController());
 	FVector StartPosition = IslandTiles[RandStartIsland][0]->GetActorLocation();
 	StartPosition.Z = 5000;
 	StartPosition.X -= 1820;
-	Pawn->SetActorLocation(StartPosition);*/
+	Pawn->SetActorLocation(StartPosition);
 }

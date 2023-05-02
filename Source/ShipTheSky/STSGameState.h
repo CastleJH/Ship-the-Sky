@@ -13,5 +13,15 @@ UCLASS()
 class SHIPTHESKY_API ASTSGameState : public AGameStateBase
 {
 	GENERATED_BODY()
-	
+
+private:
+	UPROPERTY(VisibleAnywhere)
+	TArray<class AController*> IslandOwner;
+
+public:
+	void ResetIslandOwner(int32 NewIslandNum, bool bPlayerOwnAllIsland);
+	AController* GetIslandOwner(int32 IslandID) const;
+	void SetIslandOwner(int32 IslandID, class AController* NewOwner);
+
+	TArray<AActor*> Actors;
 };

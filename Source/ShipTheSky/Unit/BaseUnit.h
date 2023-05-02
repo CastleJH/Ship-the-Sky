@@ -6,6 +6,15 @@
 #include "GameFramework/Actor.h"
 #include "BaseUnit.generated.h"
 
+UENUM(BlueprintType)
+enum class EUnitType : uint8
+{
+	Miner = 0,
+	Woodcutter,
+	Farmer,
+	Warrior
+};
+
 UCLASS()
 class SHIPTHESKY_API ABaseUnit : public AActor
 {
@@ -16,11 +25,21 @@ public:
 	ABaseUnit();
 
 protected:
+	UPROPERTY(VisibleAnywhere, Category = "Unit Mesh", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	USkeletalMeshComponent* SkeletalMeshComp;
+	UPROPERTY(VisibleAnywhere, Category = "Unit")
+	EUnitType UnitType;
+	UPROPERTY(VisibleAnywhere, Category = "Unit")
+	class AIslandTile* CurTile;
+
+protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	EUnitType GetUnitType() const { return UnitType; }
+	class AIslandTile* GetCurTile() const { return CurTile; }
+	void SetCurTile(class AIslandTile* NewTile) { CurTile = NewTile; }
 };

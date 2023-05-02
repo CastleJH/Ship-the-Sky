@@ -2,4 +2,17 @@
 
 
 #include "Pawn/PlayerCommander.h"
+#include "Camera/CameraComponent.h"
+#include "Kismet/GameplayStatics.h"
 
+APlayerCommander::APlayerCommander()
+{
+	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	RootComponent = CameraComp;
+	CameraComp->SetRelativeRotation(FRotator(290.0f, 0.0f, 0.0f));
+}
+
+void APlayerCommander::BeginPlay()
+{
+	Super::BeginPlay();
+}

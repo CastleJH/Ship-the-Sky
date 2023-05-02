@@ -13,5 +13,15 @@ UCLASS()
 class SHIPTHESKY_API APlayerCommander : public ACommander
 {
 	GENERATED_BODY()
-	
+
+public:
+	APlayerCommander();
+
+private:
+	UPROPERTY(VisibleAnywhere, Category = "Tile Mesh", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	class UCameraComponent* CameraComp;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 };

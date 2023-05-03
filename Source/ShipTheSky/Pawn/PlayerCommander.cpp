@@ -11,6 +11,13 @@ APlayerCommander::APlayerCommander()
 	RootComponent = CameraComp;
 }
 
+void APlayerCommander::SetResource(int32 Amount, EResourceType Type)
+{
+	Resources[(int32)Type] = Amount;
+
+	OnResourceChanged.Execute(Type);
+}
+
 void APlayerCommander::BeginPlay()
 {
 	Super::BeginPlay();

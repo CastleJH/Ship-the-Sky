@@ -3,47 +3,53 @@
 
 #include "Widget/ResourceUI.h"
 #include "Components/TextBlock.h"
-#include "Pawn/Commander.h"
+#include "Pawn/PlayerCommander.h"
 
 
-void UResourceUI::SetResourceText(int32 Amount, EResourceType Resource)
+void UResourceUI::SetResourceText(EResourceType Resource)
 {
+	if (PlayerCommander == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Commander"));
+		return;
+	}
 	switch (Resource)
 	{
 	case EResourceType::StoneCloud:
-		StoneCloudText->SetText(FText::FromString(FString::Printf(TEXT("%d"), Amount)));
+		StoneCloudText->SetText(FText::FromString(FString::Printf(TEXT("%d"), PlayerCommander->GetResource(Resource))));
 		break;
 	case EResourceType::StoneStorm:
-		StoneStormText->SetText(FText::FromString(FString::Printf(TEXT("%d"), Amount)));
+		StoneStormText->SetText(FText::FromString(FString::Printf(TEXT("%d"), PlayerCommander->GetResource(Resource))));
 		break;
 	case EResourceType::StoneSun:
-		StoneSunText->SetText(FText::FromString(FString::Printf(TEXT("%d"), Amount)));
+		StoneSunText->SetText(FText::FromString(FString::Printf(TEXT("%d"), PlayerCommander->GetResource(Resource))));
 		break;
 	case EResourceType::StoneLightning:
-		StoneLightningText->SetText(FText::FromString(FString::Printf(TEXT("%d"), Amount)));
+		StoneLightningText->SetText(FText::FromString(FString::Printf(TEXT("%d"), PlayerCommander->GetResource(Resource))));
 		break;
 	case EResourceType::StoneMeteor:
-		StoneMeteorText->SetText(FText::FromString(FString::Printf(TEXT("%d"), Amount)));
+		StoneMeteorText->SetText(FText::FromString(FString::Printf(TEXT("%d"), PlayerCommander->GetResource(Resource))));
 		break;
 	case EResourceType::WoodCloud:
-		WoodCloudText->SetText(FText::FromString(FString::Printf(TEXT("%d"), Amount)));
+		WoodCloudText->SetText(FText::FromString(FString::Printf(TEXT("%d"), PlayerCommander->GetResource(Resource))));
 		break;
 	case EResourceType::WoodStorm:
-		WoodStormText->SetText(FText::FromString(FString::Printf(TEXT("%d"), Amount)));
+		WoodStormText->SetText(FText::FromString(FString::Printf(TEXT("%d"), PlayerCommander->GetResource(Resource))));
 		break;
 	case EResourceType::WoodSun:
-		WoodSunText->SetText(FText::FromString(FString::Printf(TEXT("%d"), Amount)));
+		WoodSunText->SetText(FText::FromString(FString::Printf(TEXT("%d"), PlayerCommander->GetResource(Resource))));
 		break;
 	case EResourceType::WoodLightning:
-		WoodLightningText->SetText(FText::FromString(FString::Printf(TEXT("%d"), Amount)));
+		WoodLightningText->SetText(FText::FromString(FString::Printf(TEXT("%d"), PlayerCommander->GetResource(Resource))));
 		break;
 	case EResourceType::WoodMeteor:
-		WoodMeteorText->SetText(FText::FromString(FString::Printf(TEXT("%d"), Amount)));
+		WoodMeteorText->SetText(FText::FromString(FString::Printf(TEXT("%d"), PlayerCommander->GetResource(Resource))));
 		break;
 	case EResourceType::Food:
-		FoodText->SetText(FText::FromString(FString::Printf(TEXT("%d"), Amount)));
+		FoodText->SetText(FText::FromString(FString::Printf(TEXT("%d"), PlayerCommander->GetResource(Resource))));
 		break;
 	default:
 		break;
 	}
 }
+

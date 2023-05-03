@@ -53,6 +53,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Commander")
 	class AIslandTile* TargetIslandTile;
 
+	TArray<int32> Resources;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -71,4 +73,7 @@ public:
 	
 	void SetTargetIslandTile(class AIslandTile* NewTile) { TargetIslandTile = NewTile; }
 	class AIslandTile* GetTargetIslandTile() const { return TargetIslandTile; }
+
+	virtual void SetResource(int32 Amount, EResourceType Type) { Resources[(int32)Type] = Amount; }
+	int32 GetResource(EResourceType Type) const { return Resources[(int32)Type]; }
 };

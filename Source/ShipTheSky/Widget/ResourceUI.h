@@ -11,7 +11,7 @@ class SHIPTHESKY_API UResourceUI : public UUserWidget
 {
 	GENERATED_BODY()
 	
-	public:
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* StoneCloudText;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
@@ -36,5 +36,8 @@ class SHIPTHESKY_API UResourceUI : public UUserWidget
 	class UTextBlock* FoodText;
 
 	UFUNCTION()
-	void SetResourceText(int32 Amount, enum EResourceType Resource);
+	void SetResourceText(enum EResourceType Resource);
+
+	UPROPERTY()
+	class APlayerCommander* PlayerCommander;
 };

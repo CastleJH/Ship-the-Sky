@@ -4,6 +4,7 @@
 #include "Controller/STSPlayerController.h"
 #include "STSGameState.h"
 #include "Pawn/Commander.h"
+#include "Pawn/PlayerCommander.h"
 #include "Tile/IslandTile.h"
 #include "Building/BaseBuilding.h"
 #include "Widget/IslandTileUI.h"
@@ -89,9 +90,11 @@ void ASTSPlayerController::OnPossess(APawn* InPawn)
 	if (ResourceUI != nullptr)
 	{
 		ResourceUI->AddToViewport();
+		ResourceUI->PlayerCommander = Cast<APlayerCommander>(Commander);
+		Cast<APlayerCommander>(Commander)->OnResourceChanged.BindUObject(ResourceUI, &UResourceUI::SetResourceText);
 		for (int32 Resource = 0; Resource < (int32)EResourceType::End; Resource++)
 		{
-			ResourceUI->SetResourceText(0, StaticCast<EResourceType>(Resource));
+			ResourceUI->SetResourceText(StaticCast<EResourceType>(Resource));
 		}
 	}
 	else

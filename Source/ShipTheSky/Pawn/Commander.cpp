@@ -13,6 +13,7 @@ ACommander::ACommander()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	Resources.Init(0, (int32)EResourceType::End);
 }
 
 // Called when the game starts or when spawned
@@ -65,6 +66,7 @@ void ACommander::CreateUnit(int32 IslandID, EUnitType Type)
 		Unit = GetWorld()->SpawnActor<ABaseUnit>(WarriorClass);
 		break;
 	}
+	Unit->SetOwner(this);
 	Unit->SetActorHiddenInGame(true);
 	FillIslandWithUnit(IslandID, Unit);
 }

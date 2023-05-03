@@ -5,12 +5,13 @@
 #include "Tile/BaseTile.h"
 #include "Tile/IslandTile.h"
 #include "MapManager.h"
+#include "Pawn/Commander.h"
 
 // Sets default values
 ABaseUnit::ABaseUnit()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	SkeletalMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Unit Mesh"));
 	RootComponent = SkeletalMeshComp;
@@ -28,7 +29,14 @@ void ABaseUnit::BeginPlay()
 void ABaseUnit::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if (GetOwner())
+	{
+		Cast<ACommander>(GetOwner())->SetResource(Cast<ACommander>(GetOwner())->GetResource(EResourceType::StoneCloud) + 1, EResourceType::StoneCloud);
+	}
+	else 
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Owner of Panw"));
+	}
 }
 
 void ABaseUnit::LocateToIslandTile(AIslandTile* IslandTile)

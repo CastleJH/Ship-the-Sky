@@ -9,6 +9,8 @@
 /**
  * 
  */
+DECLARE_DELEGATE_OneParam(FResourceOnChangedSignature, enum EResourceType);
+
 UCLASS()
 class SHIPTHESKY_API APlayerCommander : public ACommander
 {
@@ -16,6 +18,10 @@ class SHIPTHESKY_API APlayerCommander : public ACommander
 
 public:
 	APlayerCommander();
+
+	FResourceOnChangedSignature OnResourceChanged;
+
+	virtual void SetResource(int32 Amount, EResourceType Type) override;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Tile Mesh", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))

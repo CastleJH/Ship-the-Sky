@@ -23,7 +23,7 @@ protected:
 
 private:
 	class ACommander* Commander = nullptr;
-	class UTileUI* IslandTileUI;
+	class UIslandTileUI* IslandTileUI;
 	float CameraMovementSpeed;
 
 public:

@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "TileUI.generated.h"
+#include "IslandTileUI.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SHIPTHESKY_API UTileUI : public UUserWidget
+class SHIPTHESKY_API UIslandTileUI : public UUserWidget
 {
 	GENERATED_BODY()
-
+	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	class UCanvasPanel* ConstructionPanel;
@@ -21,4 +21,5 @@ public:
 	class UCanvasPanel* BarracksPanel;
 
 	void SetPanelVisibility(UCanvasPanel* Panel, enum ESlateVisibility NewVisibility);
+	
 };

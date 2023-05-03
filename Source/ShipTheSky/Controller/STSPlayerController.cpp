@@ -6,7 +6,7 @@
 #include "Pawn/Commander.h"
 #include "Tile/IslandTile.h"
 #include "Building/BaseBuilding.h"
-#include "Widget/TileUI.h"
+#include "Widget/IslandTileUI.h"
 #include "MapManager.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -74,7 +74,7 @@ void ASTSPlayerController::OnPossess(APawn* InPawn)
 
 	GetGameInstance()->GetSubsystem<UMapManager>()->GenerateMap(75);
 	Commander = Cast<ACommander>(GetPawn());
-	IslandTileUI = Cast<UTileUI>(CreateWidget<UUserWidget>(GetWorld(), STSIslandTileUIClass));
+	IslandTileUI = Cast<UIslandTileUI>(CreateWidget<UUserWidget>(GetWorld(), STSIslandTileUIClass));
 	if (IslandTileUI != nullptr)
 	{
 		IslandTileUI->AddToViewport();

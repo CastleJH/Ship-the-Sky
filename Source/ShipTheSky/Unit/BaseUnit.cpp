@@ -11,7 +11,7 @@
 ABaseUnit::ABaseUnit()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	SkeletalMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Unit Mesh"));
 	RootComponent = SkeletalMeshComp;
@@ -29,14 +29,6 @@ void ABaseUnit::BeginPlay()
 void ABaseUnit::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (GetOwner())
-	{
-		Cast<ACommander>(GetOwner())->SetResource(Cast<ACommander>(GetOwner())->GetResource(EResourceType::StoneCloud) + 1, EResourceType::StoneCloud);
-	}
-	else 
-	{
-		UE_LOG(LogTemp, Error, TEXT("No Owner of Panw"));
-	}
 }
 
 void ABaseUnit::LocateToIslandTile(AIslandTile* IslandTile)

@@ -29,6 +29,9 @@ public:
 private:
 	void TempSetStartLocation();
 
+	UFUNCTION()
+	void GiveTileEffectsToAll();
+
 private:
 	TSubclassOf<class AIslandTile> MineTileClass;
 	TSubclassOf<class AIslandTile> ForestTileClass;
@@ -42,6 +45,8 @@ private:
 
 	TArray<TArray<class ABaseTile*>> Map;
 	TArray<TArray<class AIslandTile*>> IslandTiles;
+
+	FTimerHandle TileEffectTimer;
 
 	int32 RowOffset[18] = { -1, -1, 0, 0, 1, 1, -2, -2, -2, -1, -1, 0, 0, 1, 1, 2, 2, 2 };
 	int32 ColOffset[2][18] = { {0, 1, -1, 1, 0, 1, -1, 0, 1, -1, 2, -2, 2, -1, 2, -1, 0, 1},

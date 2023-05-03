@@ -231,6 +231,16 @@ void UMapManager::GenerateMap(int32 NumCol)
 
 	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, true);
 	TempSetStartLocation();
+
+	//타일효과 타이머(자원주기/비행선영향)
+	if (GetWorld())
+	{
+		GetWorld()->GetTimerManager().SetTimer(TileEffectTimer, this, &UMapManager::GiveTileEffectsToAll, 3.0f, true, 1.0f);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("World Not Prepared"));
+	}
 }
 
 void UMapManager::ClearMap()
@@ -267,4 +277,15 @@ void UMapManager::TempSetStartLocation()
 	StartPosition.Z = 5000;
 	StartPosition.X -= 1820;
 	Pawn->SetActorLocation(StartPosition);
+}
+
+void UMapManager::GiveTileEffectsToAll()
+{
+	for (auto Island : IslandTiles)
+	{
+		for (auto Tile : Island)
+		{
+			Tile->GiveTileEffect();
+		}
+	}
 }

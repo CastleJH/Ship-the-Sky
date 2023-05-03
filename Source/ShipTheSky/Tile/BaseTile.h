@@ -35,6 +35,7 @@ protected:
 
 public:
 	ETileType GetTileType() const { return TileType; }
+	virtual void GiveTileEffect();
 
 protected:
 	// Called when the game starts or when spawned

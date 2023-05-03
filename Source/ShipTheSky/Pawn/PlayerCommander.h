@@ -9,7 +9,7 @@
 /**
  * 
  */
-DECLARE_DELEGATE_OneParam(FResourceOnChangedSignature, enum EResourceType);
+DECLARE_DELEGATE_OneParam(FResourceOnChangedSignature, EResourceType);
 
 UCLASS()
 class SHIPTHESKY_API APlayerCommander : public ACommander

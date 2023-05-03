@@ -28,6 +28,10 @@ public:
 	// Sets default values for this actor's properties
 	AIslandTile();
 
+	//고쳐요 나중에
+	int32 Resource;
+	int32 Amount;
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	int32 IslandID = -1;
@@ -50,7 +54,7 @@ public:
 	class ABaseUnit* GetUnit() const { return UnitOnThisTile; }
 
 	EIslandTileType GetIslandType() const { return IslandType; };
-
+	virtual void GiveTileEffect() override;
 protected:
 	virtual void BeginPlay() override;
 	virtual void OnTileReleased(AActor* Target, FKey ButtonPressed) override;

@@ -14,6 +14,10 @@ ABaseTile::ABaseTile()
 	OnReleased.AddDynamic(this, &ABaseTile::OnTileReleased);
 }
 
+void ABaseTile::GiveTileEffect()
+{
+}
+
 // Called when the game starts or when spawned
 void ABaseTile::BeginPlay()
 {

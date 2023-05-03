@@ -74,7 +74,6 @@ void ASTSPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	GetGameInstance()->GetSubsystem<UMapManager>()->GenerateMap(75);
 	Commander = Cast<ACommander>(GetPawn());
 	IslandTileUI = Cast<UIslandTileUI>(CreateWidget<UUserWidget>(GetWorld(), IslandTileUIClass));
 	if (IslandTileUI != nullptr)
@@ -101,6 +100,7 @@ void ASTSPlayerController::OnPossess(APawn* InPawn)
 	{
 		UE_LOG(LogTemp, Error, TEXT("No UI"));
 	}
+	GetGameInstance()->GetSubsystem<UMapManager>()->GenerateMap(75);
 }
 
 void ASTSPlayerController::MoveCameraHorizontal(float Value)

@@ -19,11 +19,14 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
-	TSubclassOf<class UUserWidget> STSIslandTileUIClass;
+	TSubclassOf<class UUserWidget> IslandTileUIClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Widget")
+	TSubclassOf<class UUserWidget> ResourceUIClass;
 
 private:
 	class ACommander* Commander = nullptr;
 	class UIslandTileUI* IslandTileUI;
+	class UResourceUI* ResourceUI;
 	float CameraMovementSpeed;
 
 public:

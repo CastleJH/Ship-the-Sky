@@ -7,6 +7,7 @@
 #include "Tile/IslandTile.h"
 #include "Building/BaseBuilding.h"
 #include "Widget/IslandTileUI.h"
+#include "Widget/ResourceUI.h"
 #include "MapManager.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -74,13 +75,26 @@ void ASTSPlayerController::OnPossess(APawn* InPawn)
 
 	GetGameInstance()->GetSubsystem<UMapManager>()->GenerateMap(75);
 	Commander = Cast<ACommander>(GetPawn());
-	IslandTileUI = Cast<UIslandTileUI>(CreateWidget<UUserWidget>(GetWorld(), STSIslandTileUIClass));
+	IslandTileUI = Cast<UIslandTileUI>(CreateWidget<UUserWidget>(GetWorld(), IslandTileUIClass));
 	if (IslandTileUI != nullptr)
 	{
 		IslandTileUI->AddToViewport();
 		SetIslandTileUIVisibility(false);
 	}
-	else 
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("No UI"));
+	}
+	ResourceUI = Cast<UResourceUI>(CreateWidget<UUserWidget>(GetWorld(), ResourceUIClass));
+	if (ResourceUI != nullptr)
+	{
+		ResourceUI->AddToViewport();
+		for (int32 Resource = 0; Resource < (int32)EResourceType::End; Resource++)
+		{
+			ResourceUI->SetResourceText(0, StaticCast<EResourceType>(Resource));
+		}
+	}
+	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("No UI"));
 	}

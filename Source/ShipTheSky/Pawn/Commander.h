@@ -6,6 +6,23 @@
 #include "GameFramework/Pawn.h"
 #include "Commander.generated.h"
 
+UENUM(BlueprintType)
+enum class EResourceType : uint8
+{
+	StoneCloud = 0,
+	StoneStorm,
+	StoneSun,
+	StoneLightning,
+	StoneMeteor,
+	WoodCloud,
+	WoodStorm,
+	WoodSun,
+	WoodLightning,
+	WoodMeteor,
+	Food,
+	End
+};
+
 UCLASS()
 class SHIPTHESKY_API ACommander : public APawn
 {

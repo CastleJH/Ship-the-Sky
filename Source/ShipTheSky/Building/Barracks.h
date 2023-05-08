@@ -30,6 +30,12 @@ public:
 	UFUNCTION(BlueprintPure)
 	float GetProgressRate() const;
 
+	UFUNCTION(BlueprintPure)
+	int32 GetLeftDate() const { return TimeNeed - Progress; }
+
+	UFUNCTION(BlueprintPure)
+	FString GetCreatingUnitName() const;
+
 	virtual void IncreaseProgress() override;
 
 private:

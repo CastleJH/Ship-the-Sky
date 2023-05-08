@@ -56,9 +56,11 @@ public:
 	void SetIslandID(int32 NewIslandID) { IslandID = NewIslandID; }
 
 	void SetBuilding(class ABaseBuilding* NewBuilding) { BuildingOnThisTile = NewBuilding; }
+	UFUNCTION(BlueprintPure)
 	class ABaseBuilding* GetBuilding() const { return BuildingOnThisTile; }
 
 	void SetUnit(class ABaseUnit* NewUnit) { UnitOnThisTile = NewUnit; }
+	UFUNCTION(BlueprintPure)
 	class ABaseUnit* GetUnit() const { return UnitOnThisTile; }
 
 	EIslandTileType GetIslandType() const { return IslandType; };

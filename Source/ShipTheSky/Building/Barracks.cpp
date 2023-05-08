@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Building/Barracks.h"
@@ -25,13 +25,38 @@ float ABarracks::GetProgressRate() const
 	return (float)Progress / (float)TimeNeed;
 }
 
+FString ABarracks::GetCreatingUnitName() const
+{
+	FString ReturnString = TEXT("기본");
+	if (WaitingUnitCreation.IsEmpty()) return ReturnString;
+
+	switch (*WaitingUnitCreation.Peek())
+	{
+	case EUnitType::Miner:
+		ReturnString = TEXT("광부");
+		break;
+	case EUnitType::Woodcutter:
+		ReturnString = TEXT("나무꾼");
+		break;
+	case EUnitType::Farmer:
+		ReturnString = TEXT("농부");
+		break;
+	case EUnitType::Warrior:
+		ReturnString = TEXT("전사");
+		break;
+	default:
+		break;
+	}
+	return ReturnString;
+}
+
 void ABarracks::IncreaseProgress()
 {
 	if (!bIsCreatingUnit) return;
 
 	Super::IncreaseProgress();
 
-	if (Progress == TimeNeed)
+	if (Progress == TimeNeed + 1)
 	{
 		FinishUnitCreation();
 		StartUnitCreation();
@@ -57,5 +82,6 @@ void ABarracks::FinishUnitCreation()
 		WaitingUnitCreation.Dequeue(NewUnitType);
 		OwnerCommander->CreateUnit(CurTile->GetIslandID(), NewUnitType);
 		bIsCreatingUnit = false;
+		ResetProgress();
 	}
 }

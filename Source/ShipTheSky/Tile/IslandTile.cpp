@@ -5,6 +5,7 @@
 #include "Controller/STSPlayerController.h"
 #include "Pawn/Commander.h"
 #include "Unit/BaseUnit.h"
+#include "Building/BaseBuilding.h"
 #include "Components/WidgetComponent.h"
 #include "Widget/IslandResourceUI.h"
 
@@ -13,25 +14,11 @@ AIslandTile::AIslandTile()
 	TileType = ETileType::Island;
 }
 
-void AIslandTile::GiveTileEffect()
+void AIslandTile::TimePass(int32 GameDate)
 {
-	if (UnitOnThisTile != nullptr)
-	{
-		ACommander* OwnerCommander = Cast<ACommander>(UnitOnThisTile->GetOwner());
-		if (OwnerCommander != nullptr)
-		{
-			for (auto Resource : Resources)
-			{
-				OwnerCommander->SetResource(
-					OwnerCommander->GetResource(StaticCast<EResourceType>(Resource.Key)) + Resource.Value, 
-					StaticCast<EResourceType>(Resource.Key));
-			}
-		}
-		else 
-		{
-			UE_LOG(LogTemp, Error, TEXT("Wrong Owner"));
-		}
-	}
+	//나중에 1은 더 크게!! GameDAte % 30 == 29로.
+	if (GameDate % 1 == 0) GiveResourceToUnit();
+	GiveProgressToBuilding();
 }
 
 void AIslandTile::SetResources(float Power)
@@ -83,4 +70,33 @@ void AIslandTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 	ASTSPlayerController* PlayerController = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
 	PlayerController->GetCommander()->SetTargetIslandTile(this);
 	PlayerController->SetIslandTileUIVisibility(true);
+}
+
+void AIslandTile::GiveResourceToUnit()
+{
+	if (UnitOnThisTile != nullptr)
+	{
+		ACommander* OwnerCommander = Cast<ACommander>(UnitOnThisTile->GetOwner());
+		if (OwnerCommander != nullptr)
+		{
+			for (auto Resource : Resources)
+			{
+				OwnerCommander->SetResource(
+					OwnerCommander->GetResource(StaticCast<EResourceType>(Resource.Key)) + Resource.Value,
+					StaticCast<EResourceType>(Resource.Key));
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Wrong Owner"));
+		}
+	}
+}
+
+void AIslandTile::GiveProgressToBuilding()
+{
+	if (BuildingOnThisTile != nullptr)
+	{
+		BuildingOnThisTile->IncreaseProgress();
+	}
 }

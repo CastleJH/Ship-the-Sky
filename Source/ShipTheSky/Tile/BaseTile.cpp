@@ -14,7 +14,7 @@ ABaseTile::ABaseTile()
 	OnReleased.AddDynamic(this, &ABaseTile::OnTileReleased);
 }
 
-void ABaseTile::GiveTileEffect()
+void ABaseTile::TimePass(int32 GameDate)
 {
 }
 

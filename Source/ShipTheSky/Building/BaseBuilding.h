@@ -31,6 +31,7 @@ protected:
 	EBuildingType BuildingType;
 	UPROPERTY(VisibleAnywhere, Category = "Building")
 	class AIslandTile* CurTile;
+	int32 Progress;
 
 protected:
 	// Called when the game starts or when spawned
@@ -43,4 +44,8 @@ public:
 	EBuildingType GetBuildingType() const { return BuildingType; }
 	class AIslandTile* GetCurTile() const { return CurTile; }
 	void SetCurTile(class AIslandTile* NewTile) { CurTile = NewTile; };
+
+	virtual void IncreaseProgress() { Progress++; }
+	void ResetProgress() { Progress = 0; }
+	int32 GetProgress() const { return Progress; }
 };

@@ -25,7 +25,7 @@ public:
 	void ClearMap();
 
 	UFUNCTION()
-	void GiveTileEffectsToAll();
+	void TimePassesToAllTile(int32 GameDate);
 
 	TArray<class AIslandTile*> GetSameIslandTiles(int32 IslandID) const;
 

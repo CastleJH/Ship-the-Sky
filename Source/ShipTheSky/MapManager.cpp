@@ -270,13 +270,13 @@ void UMapManager::TempSetStartLocation()
 	Pawn->SetActorLocation(StartPosition);
 }
 
-void UMapManager::GiveTileEffectsToAll()
+void UMapManager::TimePassesToAllTile(int32 GameDate)
 {
 	for (auto Island : IslandTiles)
 	{
 		for (auto Tile : Island)
 		{
-			if (Tile) Tile->GiveTileEffect();
+			if (Tile) Tile->TimePass(GameDate);
 		}
 	}
 }

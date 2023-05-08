@@ -7,6 +7,7 @@
 #include "Pawn/PlayerCommander.h"
 #include "Tile/IslandTile.h"
 #include "Building/BaseBuilding.h"
+#include "Building/Barracks.h"
 #include "Widget/IslandTileUI.h"
 #include "Widget/ResourceUI.h"
 #include "MapManager.h"
@@ -46,7 +47,7 @@ void ASTSPlayerController::SetIslandTileUIVisibility(bool bIsVisible)
 
 void ASTSPlayerController::OnButtonCreateUnitPressed(EUnitType Type)
 {
-	Commander->CreateUnit(Commander->GetTargetIslandTile()->GetIslandID(), Type);
+	Cast<ABarracks>(Commander->GetTargetIslandTile()->GetBuilding())->AddUnitCreationToQueue(Type);
 }
 
 void ASTSPlayerController::OnButtonConstructBuildingPressed(EBuildingType Type)

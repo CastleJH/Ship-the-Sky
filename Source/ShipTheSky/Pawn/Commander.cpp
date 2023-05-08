@@ -93,6 +93,7 @@ void ACommander::ConstructBuilding(AIslandTile* Tile, EBuildingType Type)
 		}
 		if (Building)
 		{
+			Building->SetOwner(this);
 			Tile->SetBuilding(Building);
 			Building->SetCurTile(Tile);
 		}

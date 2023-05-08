@@ -58,6 +58,5 @@ void ASTSGameState::SetGameDate()
 
 	GameDateString = FString::Printf(TEXT("%d.%02d.%02d"), Year, Month, Day);
 
-	//여기는 나중에 더 크게 바꾸도록!
-	if (GameDateInt32 % 1 == 0) GetGameInstance()->GetSubsystem<UMapManager>()->GiveTileEffectsToAll();
+	GetGameInstance()->GetSubsystem<UMapManager>()->TimePassesToAllTile(GameDateInt32);
 }

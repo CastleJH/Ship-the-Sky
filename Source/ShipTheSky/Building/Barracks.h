@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Building/BaseBuilding.h"
+#include "Containers/Queue.h"
 #include "Barracks.generated.h"
 
 /**
@@ -17,4 +18,21 @@ class SHIPTHESKY_API ABarracks : public ABaseBuilding
 public:
 	ABarracks();
 
+private:
+	TQueue<enum EUnitType> WaitingUnitCreation;
+	int32 TimeNeed;
+	bool bIsCreatingUnit;
+
+public:
+	UFUNCTION()
+	void AddUnitCreationToQueue(enum EUnitType UnitType);
+
+	UFUNCTION(BlueprintPure)
+	float GetProgressRate() const;
+
+	virtual void IncreaseProgress() override;
+
+private:
+	void StartUnitCreation();
+	void FinishUnitCreation();
 };

@@ -62,11 +62,14 @@ public:
 	class ABaseUnit* GetUnit() const { return UnitOnThisTile; }
 
 	EIslandTileType GetIslandType() const { return IslandType; };
-	virtual void GiveTileEffect() override;
+	virtual void TimePass(int32 GameDate) override;
 
 	void SetResources(float Power);
 
 protected:
 	virtual void BeginPlay() override;
 	virtual void OnTileReleased(AActor* Target, FKey ButtonPressed) override;
+
+	void GiveResourceToUnit();
+	void GiveProgressToBuilding();
 };

@@ -30,6 +30,13 @@ void ACommander::FillIslandWithUnit(int32 IslandID, ABaseUnit* Unit)
 	{
 		if (Tile->GetUnit() == nullptr)
 		{
+			if (Unit->GetUnitType() != EUnitType::Warrior) 
+			{
+				if (Tile->GetIslandType() == EIslandTileType::Guardian) continue;
+				if (Tile->GetIslandType() == EIslandTileType::Mine && Unit->GetUnitType() != EUnitType::Miner) continue;
+				if (Tile->GetIslandType() == EIslandTileType::Forest && Unit->GetUnitType() != EUnitType::Woodcutter) continue;
+				if (Tile->GetIslandType() == EIslandTileType::Farm && Unit->GetUnitType() != EUnitType::Farmer) continue;
+			}
 			EmptyIslandTile = Tile;
 			break;
 		}

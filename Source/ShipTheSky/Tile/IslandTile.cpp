@@ -5,6 +5,8 @@
 #include "Controller/STSPlayerController.h"
 #include "Pawn/Commander.h"
 #include "Unit/BaseUnit.h"
+#include "Components/WidgetComponent.h"
+#include "Widget/IslandResourceUI.h"
 
 AIslandTile::AIslandTile()
 {

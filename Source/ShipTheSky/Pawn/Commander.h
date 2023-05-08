@@ -74,6 +74,8 @@ public:
 	void SetTargetIslandTile(class AIslandTile* NewTile) { TargetIslandTile = NewTile; }
 	class AIslandTile* GetTargetIslandTile() const { return TargetIslandTile; }
 
-	virtual void SetResource(int32 Amount, EResourceType Type) { Resources[(int32)Type] = Amount; }
+	void SetResource(int32 Amount, EResourceType Type) { Resources[(int32)Type] = Amount; }
+
+	UFUNCTION(BlueprintPure)
 	int32 GetResource(EResourceType Type) const { return Resources[(int32)Type]; }
 };

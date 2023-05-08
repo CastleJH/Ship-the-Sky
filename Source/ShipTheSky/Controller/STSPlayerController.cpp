@@ -89,18 +89,11 @@ void ASTSPlayerController::OnPossess(APawn* InPawn)
 	if (ResourceUI != nullptr)
 	{
 		ResourceUI->AddToViewport();
-		ResourceUI->PlayerCommander = Cast<APlayerCommander>(Commander);
-		Cast<APlayerCommander>(Commander)->OnResourceChanged.BindUObject(ResourceUI, &UResourceUI::SetResourceText);
-		for (int32 Resource = 0; Resource < (int32)EResourceType::End; Resource++)
-		{
-			ResourceUI->SetResourceText(StaticCast<EResourceType>(Resource));
-		}
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("No UI"));
 	}
-	GetGameInstance()->GetSubsystem<UMapManager>()->GenerateMap(75);
 }
 
 void ASTSPlayerController::MoveCameraHorizontal(float Value)

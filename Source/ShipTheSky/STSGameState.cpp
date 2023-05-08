@@ -2,6 +2,7 @@
 
 
 #include "STSGameState.h"
+#include "MapManager.h"
 
 void ASTSGameState::ResetIslandOwner(int32 NewIslandNum, bool bPlayerOwnAllIsland)
 {
@@ -34,4 +35,29 @@ void ASTSGameState::SetIslandOwner(int32 IslandID, AController* NewOwner)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Invalid Island Idx"));
 	}
+}
+
+void ASTSGameState::ResetGameDate()
+{
+	GameDateInt32 = 2199 * 360;
+
+	int32 Year = GameDateInt32 / 360 + 1;
+	int32 Month = (GameDateInt32 / 30) % 12 + 1;
+	int32 Day = GameDateInt32 % 30 + 1;
+
+	GameDateString = FString::Printf(TEXT("%d.%02d.%02d"), Year, Month, Day);
+}
+
+void ASTSGameState::SetGameDate()
+{
+	GameDateInt32++;
+
+	int32 Year = GameDateInt32 / 360 + 1;
+	int32 Month = (GameDateInt32 / 30) % 12 + 1;
+	int32 Day = GameDateInt32 % 30 + 1;
+
+	GameDateString = FString::Printf(TEXT("%d.%02d.%02d"), Year, Month, Day);
+
+	//여기는 나중에 더 크게 바꾸도록!
+	if (GameDateInt32 % 1 == 0) GetGameInstance()->GetSubsystem<UMapManager>()->GiveTileEffectsToAll();
 }

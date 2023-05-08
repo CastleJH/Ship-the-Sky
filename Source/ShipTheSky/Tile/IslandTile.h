@@ -32,7 +32,15 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	TMap<uint8, int32> Resources;
 
+protected:
+	//UPROPERTY(VisibleAnywhere, Category = UI)
+	//class UWidgetComponent* WidgetComponent;
+	//UPROPERTY(EditDefaultsOnly, Category = "Widget")
+	//TSubclassOf<class UUserWidget> IslandResourceUIClass;
+
 private:
+	//class UIslandResourceUI* IslandResourceUI;
+
 	UPROPERTY(VisibleAnywhere)
 	int32 IslandID = -1;
 

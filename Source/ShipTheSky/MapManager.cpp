@@ -192,6 +192,7 @@ void UMapManager::GenerateMap(int32 NumCol)
 					IslandTiles[IslandID[CurR][CurC]].Add(IslandTile);
 				}
 				IslandTile->SetIslandID(IslandID[CurR][CurC]);
+				IslandTile->SetResources(1.0f);
 				Tile = IslandTile;
 				break;
 			case ETileType::Cloud:

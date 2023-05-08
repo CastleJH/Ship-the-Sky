@@ -9,12 +9,6 @@
 AIslandTile::AIslandTile()
 {
 	TileType = ETileType::Island;
-	//Resources.Add(TPair<EResourceType, int32>(EResourceType::StoneSun, 5));
-	//Resources.Add(TPair<EResourceType, int32>(EResourceType::WoodLightning, 4));
-	//Resources.Add(TPair<EResourceType, int32>(EResourceType::Food, 3));
-	//고쳐요 나중에
-	Resource = FMath::RandRange(0, (int32)EResourceType::End - 1);
-	Amount = FMath::RandRange(1, 4);
 }
 
 void AIslandTile::GiveTileEffect()
@@ -24,17 +18,55 @@ void AIslandTile::GiveTileEffect()
 		ACommander* OwnerCommander = Cast<ACommander>(UnitOnThisTile->GetOwner());
 		if (OwnerCommander != nullptr)
 		{
-			/*for (auto Resource : Resources)
+			for (auto Resource : Resources)
 			{
-				OwnerCommander->SetResource(OwnerCommander->GetResource(Resource.Key) + Resource.Value, Resource.Key);
-			}*/
-			EResourceType Type = StaticCast<EResourceType>(Resource);
-			OwnerCommander->SetResource(OwnerCommander->GetResource(Type) + Amount, Type);
+				OwnerCommander->SetResource(
+					OwnerCommander->GetResource(StaticCast<EResourceType>(Resource.Key)) + Resource.Value, 
+					StaticCast<EResourceType>(Resource.Key));
+			}
 		}
 		else 
 		{
 			UE_LOG(LogTemp, Error, TEXT("Wrong Owner"));
 		}
+	}
+}
+
+void AIslandTile::SetResources(float Power)
+{
+	bool Selected[11] = { false };	
+	int32 NumToSelect = 0;
+	int32 NumSelected = 0;
+	uint8 TypeSelect;
+	switch (IslandType)
+	{
+	case EIslandTileType::Mine:
+		NumToSelect = FMath::RandRange(1, 3);
+		while (NumToSelect != NumSelected)
+		{
+			TypeSelect = FMath::RandRange((int32)EResourceType::StoneCloud, (int32)EResourceType::StoneMeteor);
+			if (Selected[TypeSelect]) continue;
+			Selected[TypeSelect] = true;
+			NumSelected++;
+			Resources.Add(TPair<uint8, int32>(TypeSelect, FMath::RandRange(1, 4)));
+		}
+		break;
+	case EIslandTileType::Forest:
+		NumToSelect = FMath::RandRange(1, 3);
+		while (NumToSelect != NumSelected)
+		{
+			TypeSelect = FMath::RandRange((int32)EResourceType::WoodCloud, (int32)EResourceType::WoodMeteor);
+			if (Selected[TypeSelect]) continue;
+			Selected[TypeSelect] = true;
+			NumSelected++;
+			Resources.Add(TPair<uint8, int32>(TypeSelect, FMath::RandRange(1, 4)));
+		}
+		break;
+	case EIslandTileType::Farm:
+		Resources.Add(TPair<uint8, int32>((uint8)EResourceType::Food, FMath::RandRange(1, 4)));
+		break;
+	default:
+		break;
 	}
 }
 

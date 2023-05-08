@@ -29,8 +29,8 @@ public:
 	AIslandTile();
 
 	//고쳐요 나중에
-	int32 Resource;
-	int32 Amount;
+	UPROPERTY(VisibleAnywhere)
+	TMap<uint8, int32> Resources;
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -55,6 +55,9 @@ public:
 
 	EIslandTileType GetIslandType() const { return IslandType; };
 	virtual void GiveTileEffect() override;
+
+	void SetResources(float Power);
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void OnTileReleased(AActor* Target, FKey ButtonPressed) override;

@@ -47,7 +47,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EIslandTileType IslandType;
 
+	UPROPERTY()
 	class ABaseBuilding* BuildingOnThisTile = nullptr;
+	UPROPERTY()
 	class ABaseUnit* UnitOnThisTile = nullptr;
 
 public:

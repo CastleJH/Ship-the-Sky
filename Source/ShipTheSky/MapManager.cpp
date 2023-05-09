@@ -4,6 +4,7 @@
 #include "MapManager.h"
 #include "Tile/BaseTile.h"
 #include "Tile/IslandTile.h"
+#include "Pawn/PlayerCommander.h"
 #include "STSGameState.h"
 
 UMapManager::UMapManager()
@@ -230,7 +231,7 @@ void UMapManager::GenerateMap(int32 NumCol)
 		}
 	}
 
-	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, true);
+	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, false);
 	TempSetStartLocation();
 }
 
@@ -268,6 +269,7 @@ void UMapManager::TempSetStartLocation()
 	StartPosition.Z = 5000;
 	StartPosition.X -= 1820;
 	Pawn->SetActorLocation(StartPosition);
+	Cast<APlayerCommander>(Pawn)->SetTargetIslandTile(IslandTiles[RandStartIsland][0]);
 }
 
 void UMapManager::TimePassesToAllTile(int32 GameDate)

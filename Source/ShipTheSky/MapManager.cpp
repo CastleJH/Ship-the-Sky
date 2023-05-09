@@ -231,7 +231,7 @@ void UMapManager::GenerateMap(int32 NumCol)
 		}
 	}
 
-	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, false);
+	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, true);
 	TempSetStartLocation();
 }
 

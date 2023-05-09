@@ -32,7 +32,7 @@ private:
 public:
 	class ACommander* GetCommander() { return Commander; }
 	UFUNCTION(BlueprintCallable)
-	void OnButtonCreateUnitPressed(enum EUnitType Type);
+	bool OnButtonCreateUnitPressed(enum EUnitType Type);
 	UFUNCTION(BlueprintCallable)
 	void OnButtonConstructBuildingPressed(enum EBuildingType Type);
 	UFUNCTION(BlueprintCallable)

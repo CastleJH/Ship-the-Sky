@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Building/BaseBuilding.h"
-#include "Containers/Queue.h"
 #include "Barracks.generated.h"
 
 /**
@@ -19,13 +18,16 @@ public:
 	ABarracks();
 
 private:
-	TQueue<enum EUnitType> WaitingUnitCreation;
+	TArray<enum EUnitType> WaitingUnitArray;
 	int32 TimeNeed;
 	bool bIsCreatingUnit;
 
 public:
 	UFUNCTION()
-	void AddUnitCreationToQueue(enum EUnitType UnitType);
+	bool AddUnitCreationToArray(enum EUnitType UnitType);
+
+	UFUNCTION()
+	enum EUnitType GetWaitingUnitByIndex(int32 Index) const { return WaitingUnitArray[Index]; }
 
 	UFUNCTION(BlueprintPure)
 	float GetProgressRate() const;

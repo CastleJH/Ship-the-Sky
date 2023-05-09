@@ -14,10 +14,15 @@ ABarracks::ABarracks()
 	bIsCreatingUnit = false;
 }
 
-void ABarracks::AddUnitCreationToQueue(EUnitType UnitType)
+bool ABarracks::AddUnitCreationToArray(EUnitType UnitType)
 {
-	WaitingUnitCreation.Enqueue(UnitType);
-	StartUnitCreation();
+	if (WaitingUnitArray.Num() < 6)
+	{
+		WaitingUnitArray.Add(UnitType);
+		StartUnitCreation();
+		return true;
+	}
+	return false;
 }
 
 float ABarracks::GetProgressRate() const
@@ -28,9 +33,9 @@ float ABarracks::GetProgressRate() const
 FString ABarracks::GetCreatingUnitName() const
 {
 	FString ReturnString = TEXT("기본");
-	if (WaitingUnitCreation.IsEmpty()) return ReturnString;
+	if (WaitingUnitArray.IsEmpty()) return ReturnString;
 
-	switch (*WaitingUnitCreation.Peek())
+	switch (WaitingUnitArray[0])
 	{
 	case EUnitType::Miner:
 		ReturnString = TEXT("광부");
@@ -66,7 +71,7 @@ void ABarracks::IncreaseProgress()
 void ABarracks::StartUnitCreation()
 {
 	if (bIsCreatingUnit) return;
-	if (!WaitingUnitCreation.IsEmpty())
+	if (!WaitingUnitArray.IsEmpty())
 	{
 		ResetProgress();
 		bIsCreatingUnit = true;
@@ -75,11 +80,11 @@ void ABarracks::StartUnitCreation()
 
 void ABarracks::FinishUnitCreation()
 {
-	if (!WaitingUnitCreation.IsEmpty())
+	if (!WaitingUnitArray.IsEmpty())
 	{
 		ACommander* OwnerCommander = Cast<ACommander>(GetOwner());
-		EUnitType NewUnitType;
-		WaitingUnitCreation.Dequeue(NewUnitType);
+		EUnitType NewUnitType = WaitingUnitArray[0];
+		WaitingUnitArray.RemoveAt(0);
 		OwnerCommander->CreateUnit(CurTile->GetIslandID(), NewUnitType);
 		bIsCreatingUnit = false;
 		ResetProgress();

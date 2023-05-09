@@ -19,9 +19,9 @@ ASTSPlayerController::ASTSPlayerController()
 	CameraMovementSpeed = 4000.0f;
 }
 
-void ASTSPlayerController::OnButtonCreateUnitPressed(EUnitType Type)
+bool ASTSPlayerController::OnButtonCreateUnitPressed(EUnitType Type)
 {
-	Cast<ABarracks>(Commander->GetTargetIslandTile()->GetBuilding())->AddUnitCreationToQueue(Type);
+	return Cast<ABarracks>(Commander->GetTargetIslandTile()->GetBuilding())->AddUnitCreationToArray(Type);
 }
 
 void ASTSPlayerController::OnButtonConstructBuildingPressed(EBuildingType Type)

@@ -22,6 +22,7 @@ private:
 	
 public:
 	void ResetIslandOwner(int32 NewIslandNum, bool bPlayerOwnAllIsland);
+	UFUNCTION(BlueprintPure)
 	AController* GetIslandOwner(int32 IslandID) const;
 	void SetIslandOwner(int32 IslandID, class AController* NewOwner);
 	UFUNCTION(BlueprintPure)

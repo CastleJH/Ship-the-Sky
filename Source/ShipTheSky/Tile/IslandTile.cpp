@@ -69,7 +69,6 @@ void AIslandTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 {
 	ASTSPlayerController* PlayerController = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
 	PlayerController->GetCommander()->SetTargetIslandTile(this);
-	PlayerController->SetIslandTileUIVisibility(true);
 }
 
 void AIslandTile::GiveResourceToUnit()

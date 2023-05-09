@@ -19,32 +19,6 @@ ASTSPlayerController::ASTSPlayerController()
 	CameraMovementSpeed = 4000.0f;
 }
 
-void ASTSPlayerController::SetIslandTileUIVisibility(bool bIsVisible)
-{
-	if (bIsVisible)
-	{
-		SetIslandTileUIVisibility(false);
-		if (Cast<ASTSGameState>(GetWorld()->GetGameState())->GetIslandOwner(Commander->GetTargetIslandTile()->GetIslandID()) == this)
-		{
-			IslandTileUI->SetPanelVisibility(IslandTileUI->ConstructionPanel, ESlateVisibility::Visible);
-			if (Commander->GetTargetIslandTile()->GetBuilding() != nullptr)
-			{
-				switch (Commander->GetTargetIslandTile()->GetBuilding()->GetBuildingType())
-				{
-				case EBuildingType::Barracks:
-					IslandTileUI->SetPanelVisibility(IslandTileUI->BarracksPanel, ESlateVisibility::Visible);
-					break;
-				}
-			}
-		}
-	}
-	else
-	{
-		IslandTileUI->SetPanelVisibility(IslandTileUI->ConstructionPanel, ESlateVisibility::Hidden);
-		IslandTileUI->SetPanelVisibility(IslandTileUI->BarracksPanel, ESlateVisibility::Hidden);
-	}
-}
-
 void ASTSPlayerController::OnButtonCreateUnitPressed(EUnitType Type)
 {
 	Cast<ABarracks>(Commander->GetTargetIslandTile()->GetBuilding())->AddUnitCreationToQueue(Type);
@@ -53,7 +27,6 @@ void ASTSPlayerController::OnButtonCreateUnitPressed(EUnitType Type)
 void ASTSPlayerController::OnButtonConstructBuildingPressed(EBuildingType Type)
 {
 	Commander->ConstructBuilding(Commander->GetTargetIslandTile(), Type);
-	IslandTileUI->SetPanelVisibility(IslandTileUI->BarracksPanel, ESlateVisibility::Visible);
 }
 
 void ASTSPlayerController::OnButtonGenerateMap()
@@ -80,7 +53,6 @@ void ASTSPlayerController::OnPossess(APawn* InPawn)
 	if (IslandTileUI != nullptr)
 	{
 		IslandTileUI->AddToViewport();
-		SetIslandTileUIVisibility(false);
 	}
 	else
 	{

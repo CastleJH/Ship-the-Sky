@@ -30,7 +30,6 @@ private:
 	float CameraMovementSpeed;
 
 public:
-	void SetIslandTileUIVisibility(bool bIsVisible);
 	class ACommander* GetCommander() { return Commander; }
 	UFUNCTION(BlueprintCallable)
 	void OnButtonCreateUnitPressed(enum EUnitType Type);

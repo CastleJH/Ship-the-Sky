@@ -12,7 +12,8 @@ enum class EUnitType : uint8
 	Miner = 0,
 	Woodcutter,
 	Farmer,
-	Warrior
+	Warrior,
+	None
 };
 
 UCLASS()

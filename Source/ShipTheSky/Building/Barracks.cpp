@@ -16,13 +16,35 @@ ABarracks::ABarracks()
 
 bool ABarracks::AddUnitCreationToArray(EUnitType UnitType)
 {
-	if (WaitingUnitArray.Num() < 6)
+	if (WaitingUnitArray.Num() < MaxWaitingUnit)
 	{
 		WaitingUnitArray.Add(UnitType);
 		StartUnitCreation();
 		return true;
 	}
 	return false;
+}
+
+EUnitType ABarracks::GetWaitingUnitByIndex(int32 Index) const
+{
+	if (WaitingUnitArray.IsValidIndex(Index))
+	{
+		return WaitingUnitArray[Index];
+	}
+	else
+	{
+		return EUnitType::None;
+	}
+}
+
+void ABarracks::CancelWaitingUnitByIndex(int32 Index)
+{
+	if (WaitingUnitArray.IsValidIndex(Index))
+	{
+		if (Index == 0) ResetProgress();
+		WaitingUnitArray.RemoveAt(Index);
+		if (WaitingUnitArray.IsEmpty()) bIsCreatingUnit = false;
+	}
 }
 
 float ABarracks::GetProgressRate() const

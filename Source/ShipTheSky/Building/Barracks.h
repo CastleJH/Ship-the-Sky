@@ -21,13 +21,17 @@ private:
 	TArray<enum EUnitType> WaitingUnitArray;
 	int32 TimeNeed;
 	bool bIsCreatingUnit;
+	int32 MaxWaitingUnit = 10;
 
 public:
 	UFUNCTION()
 	bool AddUnitCreationToArray(enum EUnitType UnitType);
 
-	UFUNCTION()
-	enum EUnitType GetWaitingUnitByIndex(int32 Index) const { return WaitingUnitArray[Index]; }
+	UFUNCTION(BlueprintPure)
+	enum EUnitType GetWaitingUnitByIndex(int32 Index) const;
+
+	UFUNCTION(BlueprintCallable)
+	void CancelWaitingUnitByIndex(int32 Index);
 
 	UFUNCTION(BlueprintPure)
 	float GetProgressRate() const;

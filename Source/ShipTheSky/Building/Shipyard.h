@@ -44,5 +44,5 @@ public:
 private:
 	void StartShipCreation();
 	void FinishShipCreation();
-	void CreateUnit(TArray<int32>& Resources);
+	void CreateShip(TArray<int32>& Resources);
 };

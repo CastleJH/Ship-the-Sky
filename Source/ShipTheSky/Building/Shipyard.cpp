@@ -82,14 +82,14 @@ void AShipyard::FinishShipCreation()
 	if (!WaitingShipArray.IsEmpty())
 	{
 		ACommander* OwnerCommander = Cast<ACommander>(GetOwner());
-		CreateUnit(WaitingShipArray[0]);
+		CreateShip(WaitingShipArray[0]);
 		WaitingShipArray.RemoveAt(0);
 		bIsCreatingShip = false;
 		ResetProgress();
 	}
 }
 
-void AShipyard::CreateUnit(TArray<int32>& Resources)
+void AShipyard::CreateShip(TArray<int32>& Resources)
 {
 	ACommander* Commander = nullptr;
 	if (GetOwner() == nullptr)
@@ -108,7 +108,7 @@ void AShipyard::CreateUnit(TArray<int32>& Resources)
 	}
 
 	AShip* Ship = GetWorld()->SpawnActor<AShip>(Commander->ShipClass);
-	Ship->SetOwner(this);
+	Ship->SetOwner(GetOwner());
 	Ship->SetActorHiddenInGame(true);
 
 	if (CurTile == nullptr)

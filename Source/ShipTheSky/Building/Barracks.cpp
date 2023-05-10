@@ -147,7 +147,7 @@ void ABarracks::CreateUnit(EUnitType Type)
 		Unit = GetWorld()->SpawnActor<ABaseUnit>(Commander->WarriorClass);
 		break;
 	}
-	Unit->SetOwner(this);
+	Unit->SetOwner(GetOwner());
 	Unit->SetActorHiddenInGame(true);
 
 	if (CurTile == nullptr)

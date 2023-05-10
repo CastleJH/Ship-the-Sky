@@ -25,8 +25,8 @@ protected:
 
 private:
 	class ACommander* Commander = nullptr;
-	class UIslandTileUI* IslandTileUI;
-	class UResourceUI* ResourceUI;
+	class UUserWidget* IslandTileUI;
+	class UUserWidget* ResourceUI;
 	float CameraMovementSpeed;
 
 public:

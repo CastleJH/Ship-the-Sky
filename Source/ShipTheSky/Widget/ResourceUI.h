@@ -6,6 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "ResourceUI.generated.h"
 
+/**
+ * 
+ */
 UCLASS()
 class SHIPTHESKY_API UResourceUI : public UUserWidget
 {

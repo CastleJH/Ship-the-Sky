@@ -8,11 +8,10 @@
 #include "Tile/IslandTile.h"
 #include "Building/BaseBuilding.h"
 #include "Building/Barracks.h"
-#include "Widget/IslandTileUI.h"
-#include "Widget/ResourceUI.h"
 #include "MapManager.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Blueprint/UserWidget.h"
 
 ASTSPlayerController::ASTSPlayerController()
 {
@@ -49,7 +48,7 @@ void ASTSPlayerController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 
 	Commander = Cast<ACommander>(GetPawn());
-	IslandTileUI = Cast<UIslandTileUI>(CreateWidget<UUserWidget>(GetWorld(), IslandTileUIClass));
+	IslandTileUI = CreateWidget<UUserWidget>(GetWorld(), IslandTileUIClass);
 	if (IslandTileUI != nullptr)
 	{
 		IslandTileUI->AddToViewport();
@@ -58,7 +57,7 @@ void ASTSPlayerController::OnPossess(APawn* InPawn)
 	{
 		UE_LOG(LogTemp, Error, TEXT("No UI"));
 	}
-	ResourceUI = Cast<UResourceUI>(CreateWidget<UUserWidget>(GetWorld(), ResourceUIClass));
+	ResourceUI = CreateWidget<UUserWidget>(GetWorld(), ResourceUIClass);
 	if (ResourceUI != nullptr)
 	{
 		ResourceUI->AddToViewport();

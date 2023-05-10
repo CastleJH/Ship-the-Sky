@@ -33,14 +33,21 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Tile")
 	ETileType TileType;
 
+	int32 Row;
+	int32 Col;
+
 public:
 	ETileType GetTileType() const { return TileType; }
 	virtual void TimePass(int32 GameDate);
+
+	void SetRow(int32 NewRow) { Row = NewRow; }
+	int32 GetRow() const { return Row; }
+	void SetCol(int32 NewCol) { Col = NewCol; }
+	int32 GetCol() const { return Col; }
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintCallable)
 	virtual void OnTileReleased(AActor* Target, FKey ButtonPressed);
-
 };

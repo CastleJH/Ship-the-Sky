@@ -213,6 +213,8 @@ void UMapManager::GenerateMap(int32 NumCol)
 				break;
 			}
 			MapRow.Add(Tile);
+			Tile->SetRow(CurR);
+			Tile->SetCol(CurC);
 			YCoord += YDiff;
 			CurC++;
 		}
@@ -248,15 +250,39 @@ void UMapManager::ClearMap()
 	IslandTiles.Empty();
 }
 
-TArray<class AIslandTile*> UMapManager::GetSameIslandTiles(int32 IslandID) const
+void UMapManager::GetSameIslandTiles(int32 IslandID, TArray<class AIslandTile*>& OutArray) const
 {
 	if (IslandTiles.IsValidIndex(IslandID))
 	{
-		return IslandTiles[IslandID];
+		OutArray = IslandTiles[IslandID];
 	}
 	else {
 		UE_LOG(LogTemp, Error, TEXT("Wrong island id"));
-		return TArray<class AIslandTile*>();
+	}
+}
+
+AIslandTile* UMapManager::GetMainIslandTile(int32 IslandID) const
+{
+	if (IslandTiles.IsValidIndex(IslandID) && IslandTiles[IslandID].IsValidIndex(0)) return IslandTiles[IslandID][0];
+	return nullptr;
+}
+
+void UMapManager::GetAdjacentTiles(ABaseTile* Tile, TArray<class ABaseTile*>& OutArray) const
+{
+	if (Tile)
+	{
+		int32 Row = Tile->GetRow();
+		int32 Col = Tile->GetCol();
+		int32 NewRow, NewCol;
+		for (int32 i = 0; i < 6; i++)
+		{
+			NewRow = Row + RowOffset[i];
+			NewCol = Col + ColOffset[Row % 2][i];
+			if (Map.IsValidIndex(NewRow) && Map[NewRow].IsValidIndex(NewCol))
+			{
+				OutArray.Add(Map[NewRow][NewCol]);
+			}
+		}
 	}
 }
 

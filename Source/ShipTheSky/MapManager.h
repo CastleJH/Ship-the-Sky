@@ -27,7 +27,9 @@ public:
 	UFUNCTION()
 	void TimePassesToAllTile(int32 GameDate);
 
-	TArray<class AIslandTile*> GetSameIslandTiles(int32 IslandID) const;
+	void GetSameIslandTiles(int32 IslandID, TArray<class AIslandTile*>& OutArray) const;
+	class AIslandTile* GetMainIslandTile(int32 IslandID) const;
+	void GetAdjacentTiles(class ABaseTile* Tile, TArray<class ABaseTile*>& OutArray) const;
 
 private:
 	void TempSetStartLocation();

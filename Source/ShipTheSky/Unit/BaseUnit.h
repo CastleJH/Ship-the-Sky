@@ -32,14 +32,8 @@ protected:
 	EUnitType UnitType;
 	UPROPERTY(VisibleAnywhere, Category = "Unit")
 	class AIslandTile* CurTile;
-	
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 	void LocateToIslandTile(AIslandTile* IslandTile);
 
 	EUnitType GetUnitType() const { return UnitType; }

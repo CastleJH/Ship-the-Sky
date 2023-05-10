@@ -18,23 +18,22 @@ ABaseUnit::ABaseUnit()
 	SkeletalMeshComp->CastShadow = false;
 }
 
-// Called when the game starts or when spawned
-void ABaseUnit::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void ABaseUnit::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
 void ABaseUnit::LocateToIslandTile(AIslandTile* IslandTile)
 {
-	if (IslandTile == nullptr) return;
-	ABaseTile* MainTile = GetGameInstance()->GetSubsystem<UMapManager>()->GetSameIslandTiles(IslandTile->GetIslandID())[0];
+	if (IslandTile == nullptr) 
+	{
+		UE_LOG(LogTemp, Error, TEXT("Null Island"));
+		return;
+	}
+
+	ABaseTile* MainTile = GetGameInstance()->GetSubsystem<UMapManager>()->GetMainIslandTile(IslandTile->GetIslandID());
+
+	if (MainTile == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Null Island"));
+		return;
+	}
+
 	FVector Direction = MainTile->GetActorLocation() - IslandTile->GetActorLocation();
 
 	SetActorLocation(IslandTile->GetActorLocation());

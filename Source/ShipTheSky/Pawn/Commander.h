@@ -32,7 +32,7 @@ public:
 	// Sets default values for this pawn's properties
 	ACommander();
 
-protected:
+public:
 	UPROPERTY(EditDefaultsOnly, Category = "Commander")
 	TSubclassOf<class ABaseBuilding> BarracksClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Commander")
@@ -59,14 +59,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	void FillIslandWithUnit(int32 IslandID, class ABaseUnit* Unit);
-
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	UFUNCTION(BlueprintCallable)
-	void CreateUnit(int32 IslandID, enum EUnitType Type);
 
 	UFUNCTION(BlueprintCallable)
 	void ConstructBuilding(class AIslandTile* Tile, enum EBuildingType Type);
@@ -78,4 +73,6 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	int32 GetResource(EResourceType Type) const { return Resources[(int32)Type]; }
+
+	void FillIslandWithUnit(int32 IslandID, class ABaseUnit* Unit);
 };

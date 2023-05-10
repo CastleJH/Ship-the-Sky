@@ -107,8 +107,53 @@ void ABarracks::FinishUnitCreation()
 		ACommander* OwnerCommander = Cast<ACommander>(GetOwner());
 		EUnitType NewUnitType = WaitingUnitArray[0];
 		WaitingUnitArray.RemoveAt(0);
-		OwnerCommander->CreateUnit(CurTile->GetIslandID(), NewUnitType);
+		CreateUnit(NewUnitType);
 		bIsCreatingUnit = false;
 		ResetProgress();
 	}
+}
+
+void ABarracks::CreateUnit(EUnitType Type)
+{
+	ACommander* Commander = nullptr;
+	if (GetOwner() == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Owner of Barracks"));
+		return;
+	}
+	else
+	{
+		Commander = Cast<ACommander>(GetOwner());
+		if (Commander == nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("No Owner of Barracks"));
+			return;
+		}
+	}
+
+	ABaseUnit* Unit = nullptr;
+	switch (Type)
+	{
+	case EUnitType::Woodcutter:
+		Unit = GetWorld()->SpawnActor<ABaseUnit>(Commander->WoodcutterClass);
+		break;
+	case EUnitType::Miner:
+		Unit = GetWorld()->SpawnActor<ABaseUnit>(Commander->MinerClass);
+		break;
+	case EUnitType::Farmer:
+		Unit = GetWorld()->SpawnActor<ABaseUnit>(Commander->FarmerClass);
+		break;
+	case EUnitType::Warrior:
+		Unit = GetWorld()->SpawnActor<ABaseUnit>(Commander->WarriorClass);
+		break;
+	}
+	Unit->SetOwner(this);
+	Unit->SetActorHiddenInGame(true);
+
+	if (CurTile == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Wrong Location"));
+		return;
+	}
+	Commander->FillIslandWithUnit(CurTile->GetIslandID(), Unit);
 }

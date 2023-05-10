@@ -25,7 +25,8 @@ void ACommander::BeginPlay()
 void ACommander::FillIslandWithUnit(int32 IslandID, ABaseUnit* Unit)
 {
 	AIslandTile* EmptyIslandTile = nullptr;
-	TArray<AIslandTile*> IslandTiles = GetGameInstance()->GetSubsystem<UMapManager>()->GetSameIslandTiles(IslandID);
+	TArray<AIslandTile*> IslandTiles;
+	GetGameInstance()->GetSubsystem<UMapManager>()->GetSameIslandTiles(IslandID, IslandTiles);
 	for (auto Tile : IslandTiles)
 	{
 		if (Tile->GetUnit() == nullptr)
@@ -55,35 +56,17 @@ void ACommander::Tick(float DeltaTime)
 
 }
 
-void ACommander::CreateUnit(int32 IslandID, EUnitType Type)
-{
-	ABaseUnit* Unit = nullptr;
-	switch (Type)
-	{
-	case EUnitType::Woodcutter:
-		Unit = GetWorld()->SpawnActor<ABaseUnit>(WoodcutterClass);
-		break;
-	case EUnitType::Miner:
-		Unit = GetWorld()->SpawnActor<ABaseUnit>(MinerClass);
-		break;
-	case EUnitType::Farmer:
-		Unit = GetWorld()->SpawnActor<ABaseUnit>(FarmerClass);
-		break;
-	case EUnitType::Warrior:
-		Unit = GetWorld()->SpawnActor<ABaseUnit>(WarriorClass);
-		break;
-	}
-	Unit->SetOwner(this);
-	Unit->SetActorHiddenInGame(true);
-	FillIslandWithUnit(IslandID, Unit);
-}
-
 void ACommander::ConstructBuilding(AIslandTile* Tile, EBuildingType Type)
 {
 	if (Tile && !Tile->GetBuilding())
 	{
 		ABaseBuilding* Building = nullptr;
-		ABaseTile* MainTile = GetGameInstance()->GetSubsystem<UMapManager>()->GetSameIslandTiles(Tile->GetIslandID())[0];
+		ABaseTile* MainTile = GetGameInstance()->GetSubsystem<UMapManager>()->GetMainIslandTile(Tile->GetIslandID());
+		if (MainTile == nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Nullptr Island"));
+			return;
+		}
 		FVector Direction = MainTile->GetActorLocation() - Tile->GetActorLocation();
 		switch (Type)
 		{

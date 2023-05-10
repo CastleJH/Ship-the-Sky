@@ -73,6 +73,9 @@ void ACommander::ConstructBuilding(AIslandTile* Tile, EBuildingType Type)
 		case EBuildingType::Barracks:
 			Building = GetWorld()->SpawnActor<ABaseBuilding>(BarracksClass, Tile->GetActorLocation(), Direction.Rotation());
 			break;
+		case EBuildingType::Shipyard:
+			Building = GetWorld()->SpawnActor<ABaseBuilding>(ShipyardClass, Tile->GetActorLocation(), Direction.Rotation());
+			break;
 		}
 		if (Building)
 		{

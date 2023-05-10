@@ -17,7 +17,7 @@ public:
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Ship Mesh", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	USkeletalMeshComponent* SkeletalMeshComp;
+	UStaticMeshComponent* StaticMeshComp;
 	
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Unit")
@@ -46,7 +46,6 @@ public:
 	void InitializeStatWithResources(int32 WoodCloud, int32 WoodStorm, int32 WoodSun, int32 WoodLightning, int32 WoodMeteor);
 
 	class ABaseTile* GetCurTile() const { return CurTile; }
-	void SetCurTile(class ABaseTile* NewTile) { CurTile = NewTile; }
 
 	UFUNCTION(BlueprintPure)
 	int32 GetDurability() const { return Durability; }

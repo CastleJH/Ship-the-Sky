@@ -3,6 +3,7 @@
 
 #include "Ship.h"
 #include "Tile/BaseTile.h"
+#include "Tile/IslandTile.h"
 #include "MapManager.h"
 
 // Sets default values
@@ -11,9 +12,9 @@ AShip::AShip()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	SkeletalMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Ship Mesh"));
-	RootComponent = SkeletalMeshComp;
-	SkeletalMeshComp->CastShadow = false;
+	StaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ship Mesh"));
+	RootComponent = StaticMeshComp;
+	StaticMeshComp->CastShadow = false;
 }
 
 void AShip::LocateOnTile(ABaseTile* Tile)
@@ -26,13 +27,15 @@ void AShip::LocateOnTile(ABaseTile* Tile)
 
 		while (true)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("%d"), AdjacentTiles.Num());
 			int32 Index = FMath::RandRange(0, AdjacentTiles.Num() - 1);
 			if (AdjacentTiles[Index] != nullptr && AdjacentTiles[Index]->GetTileType() != ETileType::Island)
 			{
-				FVector NewLocation = (Tile->GetActorLocation() + AdjacentTiles[Index]->GetActorLocation()) / 2;
+				FVector NewLocation = AdjacentTiles[Index]->GetActorLocation();
 				FRotator NewRotation = (AdjacentTiles[Index]->GetActorLocation() - Tile->GetActorLocation()).Rotation();
 				SetActorLocation(NewLocation + FVector(0.0f, 0.0f, 30.0f));
 				SetActorRotation(NewRotation);
+				CurTile = AdjacentTiles[Index];
 				break;
 			}
 		}
@@ -40,7 +43,9 @@ void AShip::LocateOnTile(ABaseTile* Tile)
 	else
 	{
 		SetActorLocation(Tile->GetActorLocation() + FVector(0.0f, 0.0f, 30.0f));
+		CurTile = Tile;
 	}
+	SetActorHiddenInGame(false);
 }
 
 void AShip::InitializeStatWithResources(int32 WoodCloud, int32 WoodStorm, int32 WoodSun, int32 WoodLightning, int32 WoodMeteor)

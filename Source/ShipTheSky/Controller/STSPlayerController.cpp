@@ -8,6 +8,7 @@
 #include "Tile/IslandTile.h"
 #include "Building/BaseBuilding.h"
 #include "Building/Barracks.h"
+#include "Building/Shipyard.h"
 #include "MapManager.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -21,6 +22,11 @@ ASTSPlayerController::ASTSPlayerController()
 bool ASTSPlayerController::OnButtonCreateUnitPressed(EUnitType Type)
 {
 	return Cast<ABarracks>(Commander->GetTargetIslandTile()->GetBuilding())->AddUnitCreationToArray(Type);
+}
+
+bool ASTSPlayerController::OnButtonCreateShipPressed(int32 WoodCloud, int32 WoodStorm, int32 WoodSun, int32 WoodLightning, int32 WoodMeteor)
+{
+	return Cast<AShipyard>(Commander->GetTargetIslandTile()->GetBuilding())->AddShipCreationToArray(WoodCloud, WoodStorm, WoodSun, WoodLightning, WoodMeteor);
 }
 
 void ASTSPlayerController::OnButtonConstructBuildingPressed(EBuildingType Type)

@@ -42,6 +42,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Commander")
 	TSubclassOf<class ABaseBuilding> SanctuaryClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Commander")
+	TSubclassOf<class AShip> ShipClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Commander")
 	TSubclassOf<class ABaseUnit> MinerClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Commander")
 	TSubclassOf<class ABaseUnit> WoodcutterClass;

@@ -43,7 +43,7 @@ private:
 public:
 	void LocateOnTile(class ABaseTile* Tile);
 
-	void InitializeStatWithResources(int32 WoodCloud, int32 WoodStorm, int32 WoodSun, int32 WoodLightning, int32 WoodMeteor);;
+	void InitializeStatWithResources(int32 WoodCloud, int32 WoodStorm, int32 WoodSun, int32 WoodLightning, int32 WoodMeteor);
 
 	class ABaseTile* GetCurTile() const { return CurTile; }
 	void SetCurTile(class ABaseTile* NewTile) { CurTile = NewTile; }

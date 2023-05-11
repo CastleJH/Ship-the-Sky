@@ -4,6 +4,8 @@
 #include "MapManager.h"
 #include "Tile/BaseTile.h"
 #include "Tile/IslandTile.h"
+#include "Tile/ResourceTile.h"
+#include "Tile/GuardianTile.h"
 #include "Pawn/PlayerCommander.h"
 #include "STSGameState.h"
 
@@ -182,7 +184,15 @@ void UMapManager::GenerateMap(int32 NumCol)
 				{
 					IslandID[CurR][CurC] -= 10000;
 					IslandTile = GetWorld()->SpawnActor<AIslandTile>(GuardianTileClass, FVector(XCoord, YCoord, 60.0f), FRotator::ZeroRotator);
-					IslandTiles[IslandID[CurR][CurC]].Insert(IslandTile, 0);
+					if (IslandTiles.IsValidIndex(IslandID[CurR][CurC]))
+					{
+						IslandTiles[IslandID[CurR][CurC]].Insert(IslandTile, 0);
+					}
+					else
+					{
+						UE_LOG(LogTemp, Error, TEXT("Wrong Island ID %d"), IslandID[CurR][CurC]);
+						return;
+					}
 				}
 				else
 				{
@@ -191,9 +201,9 @@ void UMapManager::GenerateMap(int32 NumCol)
 					else if (IslandType == 1) IslandTile = GetWorld()->SpawnActor<AIslandTile>(ForestTileClass, FVector(XCoord, YCoord, 60.0f), FRotator::ZeroRotator);
 					else IslandTile = GetWorld()->SpawnActor<AIslandTile>(FarmTileClass, FVector(XCoord, YCoord, 60.0f), FRotator::ZeroRotator);
 					IslandTiles[IslandID[CurR][CurC]].Add(IslandTile);
+					Cast<AResourceTile>(IslandTile)->SetResources(1.0f);
 				}
 				IslandTile->SetIslandID(IslandID[CurR][CurC]);
-				IslandTile->SetResources(1.0f);
 				Tile = IslandTile;
 				break;
 			case ETileType::Cloud:
@@ -261,9 +271,9 @@ void UMapManager::GetSameIslandTiles(int32 IslandID, TArray<class AIslandTile*>&
 	}
 }
 
-AIslandTile* UMapManager::GetMainIslandTile(int32 IslandID) const
+AGuardianTile* UMapManager::GetGuardianTile(int32 IslandID) const
 {
-	if (IslandTiles.IsValidIndex(IslandID) && IslandTiles[IslandID].IsValidIndex(0)) return IslandTiles[IslandID][0];
+	if (IslandTiles.IsValidIndex(IslandID) && IslandTiles[IslandID].IsValidIndex(0)) return Cast<AGuardianTile>(IslandTiles[IslandID][0]);
 	return nullptr;
 }
 

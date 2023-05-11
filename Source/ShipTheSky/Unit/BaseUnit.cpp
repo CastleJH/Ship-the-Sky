@@ -4,6 +4,8 @@
 #include "Unit/BaseUnit.h"
 #include "Tile/BaseTile.h"
 #include "Tile/IslandTile.h"
+#include "Tile/ResourceTile.h"
+#include "Tile/GuardianTile.h"
 #include "MapManager.h"
 #include "Pawn/Commander.h"
 
@@ -18,15 +20,15 @@ ABaseUnit::ABaseUnit()
 	SkeletalMeshComp->CastShadow = false;
 }
 
-void ABaseUnit::LocateToIslandTile(AIslandTile* IslandTile)
+void ABaseUnit::LocateToResourceTile(AResourceTile* ResourceTile)
 {
-	if (IslandTile == nullptr) 
+	if (ResourceTile == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Null Island"));
 		return;
 	}
 
-	ABaseTile* MainTile = GetGameInstance()->GetSubsystem<UMapManager>()->GetMainIslandTile(IslandTile->GetIslandID());
+	ABaseTile* MainTile = GetGameInstance()->GetSubsystem<UMapManager>()->GetGuardianTile(ResourceTile->GetIslandID());
 
 	if (MainTile == nullptr)
 	{
@@ -34,13 +36,12 @@ void ABaseUnit::LocateToIslandTile(AIslandTile* IslandTile)
 		return;
 	}
 
-	FVector Direction = MainTile->GetActorLocation() - IslandTile->GetActorLocation();
+	FVector Direction = MainTile->GetActorLocation() - ResourceTile->GetActorLocation();
 
-	SetActorLocation(IslandTile->GetActorLocation());
+	SetActorLocation(ResourceTile->GetActorLocation());
 	SetActorRotation(Direction.Rotation());
 	SetActorHiddenInGame(false);
 
-	IslandTile->SetUnit(this);
-	SetCurTile(IslandTile);
+	ResourceTile->SetUnit(this);
+	SetCurTile(ResourceTile);
 }
-

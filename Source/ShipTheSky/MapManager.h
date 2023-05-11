@@ -28,7 +28,7 @@ public:
 	void TimePassesToAllTile(int32 GameDate);
 
 	void GetSameIslandTiles(int32 IslandID, TArray<class AIslandTile*>& OutArray) const;
-	class AIslandTile* GetMainIslandTile(int32 IslandID) const;
+	class AGuardianTile* GetGuardianTile(int32 IslandID) const;
 	void GetAdjacentTiles(class ABaseTile* Tile, TArray<class ABaseTile*>& OutArray) const;
 
 private:

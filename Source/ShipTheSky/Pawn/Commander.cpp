@@ -3,6 +3,8 @@
 
 #include "Pawn/Commander.h"
 #include "Tile/IslandTile.h"
+#include "Tile/ResourceTile.h"
+#include "Tile/GuardianTile.h"
 #include "Unit/BaseUnit.h"
 #include "Building/BaseBuilding.h"
 #include "MapManager.h"
@@ -24,28 +26,31 @@ void ACommander::BeginPlay()
 
 void ACommander::FillIslandWithUnit(int32 IslandID, ABaseUnit* Unit)
 {
-	AIslandTile* EmptyIslandTile = nullptr;
+	AResourceTile* EmptyIslandTile = nullptr;
 	TArray<AIslandTile*> IslandTiles;
 	GetGameInstance()->GetSubsystem<UMapManager>()->GetSameIslandTiles(IslandID, IslandTiles);
 	for (auto Tile : IslandTiles)
 	{
-		if (Tile->GetUnit() == nullptr)
+		if (Tile->GetIslandType() != EIslandTileType::Guardian)
 		{
-			if (Unit->GetUnitType() != EUnitType::Warrior) 
+			if (Cast<AResourceTile>(Tile)->GetUnit() == nullptr)
 			{
-				if (Tile->GetIslandType() == EIslandTileType::Guardian) continue;
-				if (Tile->GetIslandType() == EIslandTileType::Mine && Unit->GetUnitType() != EUnitType::Miner) continue;
-				if (Tile->GetIslandType() == EIslandTileType::Forest && Unit->GetUnitType() != EUnitType::Woodcutter) continue;
-				if (Tile->GetIslandType() == EIslandTileType::Farm && Unit->GetUnitType() != EUnitType::Farmer) continue;
+				if (Unit->GetUnitType() != EUnitType::Warrior)
+				{
+					if (Tile->GetIslandType() == EIslandTileType::Guardian) continue;
+					if (Tile->GetIslandType() == EIslandTileType::Mine && Unit->GetUnitType() != EUnitType::Miner) continue;
+					if (Tile->GetIslandType() == EIslandTileType::Forest && Unit->GetUnitType() != EUnitType::Woodcutter) continue;
+					if (Tile->GetIslandType() == EIslandTileType::Farm && Unit->GetUnitType() != EUnitType::Farmer) continue;
+				}
+				EmptyIslandTile = Cast<AResourceTile>(Tile);
+				break;
 			}
-			EmptyIslandTile = Tile;
-			break;
 		}
 	}
 
 	if (EmptyIslandTile && Unit)
 	{
-		Unit->LocateToIslandTile(EmptyIslandTile);
+		Unit->LocateToResourceTile(EmptyIslandTile);
 	}
 }
 
@@ -56,12 +61,13 @@ void ACommander::Tick(float DeltaTime)
 
 }
 
-void ACommander::ConstructBuilding(AIslandTile* Tile, EBuildingType Type)
+void ACommander::ConstructBuilding(AResourceTile* Tile, EBuildingType Type)
 {
+	UE_LOG(LogTemp, Warning, TEXT("HERE"));
 	if (Tile && !Tile->GetBuilding())
 	{
 		ABaseBuilding* Building = nullptr;
-		ABaseTile* MainTile = GetGameInstance()->GetSubsystem<UMapManager>()->GetMainIslandTile(Tile->GetIslandID());
+		ABaseTile* MainTile = GetGameInstance()->GetSubsystem<UMapManager>()->GetGuardianTile(Tile->GetIslandID());
 		if (MainTile == nullptr)
 		{
 			UE_LOG(LogTemp, Error, TEXT("Nullptr Island"));

@@ -66,7 +66,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	void ConstructBuilding(class AIslandTile* Tile, enum EBuildingType Type);
+	void ConstructBuilding(class AResourceTile* Tile, enum EBuildingType Type);
 	
 	void SetTargetIslandTile(class AIslandTile* NewTile) { TargetIslandTile = NewTile; }
 	class AIslandTile* GetTargetIslandTile() const { return TargetIslandTile; }

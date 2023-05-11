@@ -28,17 +28,13 @@ public:
 	// Sets default values for this actor's properties
 	AIslandTile();
 
-	//고쳐요 나중에
-	UPROPERTY(VisibleAnywhere)
-	TMap<uint8, int32> Resources;
-
 protected:
 	//UPROPERTY(VisibleAnywhere, Category = UI)
 	//class UWidgetComponent* WidgetComponent;
 	//UPROPERTY(EditDefaultsOnly, Category = "Widget")
 	//TSubclassOf<class UUserWidget> IslandResourceUIClass;
 
-private:
+protected:
 	//class UIslandResourceUI* IslandResourceUI;
 
 	UPROPERTY(VisibleAnywhere)
@@ -47,33 +43,14 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EIslandTileType IslandType;
 
-	UPROPERTY()
-	class ABaseBuilding* BuildingOnThisTile = nullptr;
-	UPROPERTY()
-	class ABaseUnit* UnitOnThisTile = nullptr;
-
 public:
 	UFUNCTION(BlueprintCallable)
 	int32 GetIslandID() const { return IslandID; }
 	void SetIslandID(int32 NewIslandID) { IslandID = NewIslandID; }
 
-	void SetBuilding(class ABaseBuilding* NewBuilding) { BuildingOnThisTile = NewBuilding; }
-	UFUNCTION(BlueprintPure)
-	class ABaseBuilding* GetBuilding() const { return BuildingOnThisTile; }
-
-	void SetUnit(class ABaseUnit* NewUnit) { UnitOnThisTile = NewUnit; }
-	UFUNCTION(BlueprintPure)
-	class ABaseUnit* GetUnit() const { return UnitOnThisTile; }
-
 	EIslandTileType GetIslandType() const { return IslandType; };
-	virtual void TimePass(int32 GameDate) override;
-
-	void SetResources(float Power);
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void OnTileReleased(AActor* Target, FKey ButtonPressed) override;
-
-	void GiveResourceToUnit();
-	void GiveProgressToBuilding();
+	void OnTileReleased(AActor* Target, FKey ButtonPressed) override;
 };

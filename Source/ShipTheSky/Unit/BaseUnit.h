@@ -34,7 +34,7 @@ protected:
 	class AIslandTile* CurTile;
 
 public:
-	void LocateToIslandTile(AIslandTile* IslandTile);
+	void LocateToResourceTile(class AResourceTile* ResourceTile);
 
 	EUnitType GetUnitType() const { return UnitType; }
 	class AIslandTile* GetCurTile() const { return CurTile; }

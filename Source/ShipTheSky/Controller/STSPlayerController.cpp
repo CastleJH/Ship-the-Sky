@@ -6,6 +6,7 @@
 #include "Pawn/Commander.h"
 #include "Pawn/PlayerCommander.h"
 #include "Tile/IslandTile.h"
+#include "Tile/ResourceTile.h"
 #include "Building/BaseBuilding.h"
 #include "Building/Barracks.h"
 #include "Building/Shipyard.h"
@@ -21,17 +22,17 @@ ASTSPlayerController::ASTSPlayerController()
 
 bool ASTSPlayerController::OnButtonCreateUnitPressed(EUnitType Type)
 {
-	return Cast<ABarracks>(Commander->GetTargetIslandTile()->GetBuilding())->AddUnitCreationToArray(Type);
+	return Cast<ABarracks>(Cast<AResourceTile>(Commander->GetTargetIslandTile())->GetBuilding())->AddUnitCreationToArray(Type);
 }
 
 bool ASTSPlayerController::OnButtonCreateShipPressed(int32 WoodCloud, int32 WoodStorm, int32 WoodSun, int32 WoodLightning, int32 WoodMeteor)
 {
-	return Cast<AShipyard>(Commander->GetTargetIslandTile()->GetBuilding())->AddShipCreationToArray(WoodCloud, WoodStorm, WoodSun, WoodLightning, WoodMeteor);
+	return Cast<AShipyard>(Cast<AResourceTile>(Commander->GetTargetIslandTile())->GetBuilding())->AddShipCreationToArray(WoodCloud, WoodStorm, WoodSun, WoodLightning, WoodMeteor);
 }
 
 void ASTSPlayerController::OnButtonConstructBuildingPressed(EBuildingType Type)
 {
-	Commander->ConstructBuilding(Commander->GetTargetIslandTile(), Type);
+	Commander->ConstructBuilding(Cast<AResourceTile>(Commander->GetTargetIslandTile()), Type);
 }
 
 void ASTSPlayerController::OnButtonGenerateMap()

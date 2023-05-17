@@ -13,5 +13,7 @@ UCLASS()
 class SHIPTHESKY_API AGuardianTile : public AIslandTile
 {
 	GENERATED_BODY()
-	
+
+protected:
+	void OnTileReleased(AActor* Target, FKey ButtonPressed) override;
 };

@@ -20,7 +20,7 @@ AShip::AShip()
 void AShip::LocateOnTile(ABaseTile* Tile)
 {
 	if (Tile == nullptr) return;
-	if (Tile->GetTileType() == ETileType::Island)
+	/*if (Tile->GetTileType() == ETileType::Island)
 	{
 		TArray<ABaseTile*> AdjacentTiles;
 		GetGameInstance()->GetSubsystem<UMapManager>()->GetAdjacentTiles(Tile, AdjacentTiles);
@@ -44,7 +44,9 @@ void AShip::LocateOnTile(ABaseTile* Tile)
 	{
 		SetActorLocation(Tile->GetActorLocation() + FVector(0.0f, 0.0f, 30.0f));
 		CurTile = Tile;
-	}
+	}*/
+	SetActorLocation(Tile->GetActorLocation() + FVector(0.0f, 0.0f, 250.0f));
+	CurTile = Tile;
 	SetActorHiddenInGame(false);
 }
 

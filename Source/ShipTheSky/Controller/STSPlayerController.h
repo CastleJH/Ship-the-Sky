@@ -25,12 +25,25 @@ protected:
 
 private:
 	class ACommander* Commander = nullptr;
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	class UUserWidget* IslandTileUI;
 	class UUserWidget* ResourceUI;
 	float CameraMovementSpeed;
 
 public:
 	class ACommander* GetCommander() { return Commander; }
+	UFUNCTION(BlueprintImplementableEvent)
+	void CloseAllOwningIslandPanel();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OpenOwningIslandPanel();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OpenOwningIslandConstructionPanel();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OpenOwningIslandBarracksPanel();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OpenOwningIslandShipyardPanel();
+	UFUNCTION(BlueprintImplementableEvent)
+	void CloseOwningIslandBuildingPanel();
 	UFUNCTION(BlueprintCallable)
 	bool OnButtonCreateUnitPressed(enum EUnitType Type);
 	UFUNCTION(BlueprintCallable)

@@ -45,9 +45,10 @@ public:
 	void SetCol(int32 NewCol) { Col = NewCol; }
 	int32 GetCol() const { return Col; }
 
+	UFUNCTION(BlueprintCallable)
+	virtual void OnTileReleased(AActor* Target, FKey ButtonPressed);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	UFUNCTION(BlueprintCallable)
-	virtual void OnTileReleased(AActor* Target, FKey ButtonPressed);
 };

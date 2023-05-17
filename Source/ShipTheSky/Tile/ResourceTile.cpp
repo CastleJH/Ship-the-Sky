@@ -5,6 +5,12 @@
 #include "Pawn/Commander.h"
 #include "Unit/BaseUnit.h"
 #include "Building/BaseBuilding.h"
+#include "Controller/STSPlayerController.h"
+
+AResourceTile::AResourceTile()
+{
+	//PrimaryActorTick.bCanEverTick = true;
+}
 
 void AResourceTile::SetResources(float Power)
 {
@@ -54,6 +60,25 @@ void AResourceTile::TimePass(int32 GameDate)
 void AResourceTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 {
 	Super::OnTileReleased(Target, ButtonPressed);
+	ASTSPlayerController* PlayerController = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
+	PlayerController->GetCommander()->SetTargetIslandTile(this);
+	PlayerController->OpenOwningIslandPanel();
+	if (BuildingOnThisTile == nullptr)
+	{
+		PlayerController->OpenOwningIslandConstructionPanel();
+	}
+	else
+	{
+		switch (BuildingOnThisTile->GetBuildingType())
+		{
+		case EBuildingType::Barracks:
+			PlayerController->OpenOwningIslandBarracksPanel();
+			break;
+		case EBuildingType::Shipyard:
+			PlayerController->OpenOwningIslandShipyardPanel();
+			break;
+		}
+	}
 }
 
 void AResourceTile::GiveResourceToUnit()

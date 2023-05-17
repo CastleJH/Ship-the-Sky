@@ -33,6 +33,8 @@ bool ASTSPlayerController::OnButtonCreateShipPressed(int32 WoodCloud, int32 Wood
 void ASTSPlayerController::OnButtonConstructBuildingPressed(EBuildingType Type)
 {
 	Commander->ConstructBuilding(Cast<AResourceTile>(Commander->GetTargetIslandTile()), Type);
+	CloseAllOwningIslandPanel();
+	Commander->GetTargetIslandTile()->OnTileReleased(Commander->GetTargetIslandTile(), FKey());
 }
 
 void ASTSPlayerController::OnButtonGenerateMap()
@@ -59,6 +61,8 @@ void ASTSPlayerController::OnPossess(APawn* InPawn)
 	if (IslandTileUI != nullptr)
 	{
 		IslandTileUI->AddToViewport();
+		CloseAllOwningIslandPanel();
+		UE_LOG(LogTemp, Warning, TEXT("UI HERE"));
 	}
 	else
 	{

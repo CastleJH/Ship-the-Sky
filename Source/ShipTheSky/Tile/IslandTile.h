@@ -50,7 +50,8 @@ public:
 
 	EIslandTileType GetIslandType() const { return IslandType; };
 
+	void OnTileReleased(AActor* Target, FKey ButtonPressed) override;
+
 protected:
 	virtual void BeginPlay() override;
-	void OnTileReleased(AActor* Target, FKey ButtonPressed) override;
 };

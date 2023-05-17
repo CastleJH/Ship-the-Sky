@@ -15,7 +15,9 @@ class SHIPTHESKY_API AResourceTile : public AIslandTile
 	GENERATED_BODY()
 
 public:
-	//고쳐요 나중에
+	AResourceTile();
+
+	//아마 고칠지도?
 	UPROPERTY(VisibleAnywhere)
 	TMap<uint8, int32> Resources;
 
@@ -38,8 +40,9 @@ public:
 
 	virtual void TimePass(int32 GameDate) override;
 
-protected:
 	virtual void OnTileReleased(AActor* Target, FKey ButtonPressed) override;
+
+protected:
 
 	void GiveResourceToUnit();
 	void GiveProgressToBuilding();

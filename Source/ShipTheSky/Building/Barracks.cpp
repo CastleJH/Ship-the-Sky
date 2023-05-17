@@ -4,8 +4,10 @@
 #include "Building/Barracks.h"
 #include "Unit/BaseUnit.h"
 #include "Tile/IslandTile.h"
+#include "Tile/GuardianTile.h"
 #include "Pawn/Commander.h"
 #include "STSGameState.h"
+#include "MapManager.h"
 
 ABarracks::ABarracks()
 {
@@ -107,19 +109,20 @@ void ABarracks::FinishUnitCreation()
 		ACommander* OwnerCommander = Cast<ACommander>(GetOwner());
 		EUnitType NewUnitType = WaitingUnitArray[0];
 		WaitingUnitArray.RemoveAt(0);
-		CreateUnit(NewUnitType);
+		ABaseUnit* CreatedUnit = CreateUnit(NewUnitType);
+		GetGameInstance()->GetSubsystem<UMapManager>()->GetGuardianTile(CurTile->GetIslandID())->AddUnitOnThisIsland(CreatedUnit);
 		bIsCreatingUnit = false;
 		ResetProgress();
 	}
 }
 
-void ABarracks::CreateUnit(EUnitType Type)
+ABaseUnit* ABarracks::CreateUnit(EUnitType Type)
 {
 	ACommander* Commander = nullptr;
 	if (GetOwner() == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("No Owner of Barracks"));
-		return;
+		return nullptr;
 	}
 	else
 	{
@@ -127,7 +130,7 @@ void ABarracks::CreateUnit(EUnitType Type)
 		if (Commander == nullptr)
 		{
 			UE_LOG(LogTemp, Error, TEXT("No Owner of Barracks"));
-			return;
+			return nullptr;
 		}
 	}
 
@@ -153,7 +156,8 @@ void ABarracks::CreateUnit(EUnitType Type)
 	if (CurTile == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Wrong Location"));
-		return;
+		return nullptr;
 	}
 	Commander->FillIslandWithUnit(CurTile->GetIslandID(), Unit);
+	return Unit;
 }

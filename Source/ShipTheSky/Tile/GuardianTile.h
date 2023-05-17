@@ -13,7 +13,17 @@ UCLASS()
 class SHIPTHESKY_API AGuardianTile : public AIslandTile
 {
 	GENERATED_BODY()
-
+public:
+	AGuardianTile();
+	
 protected:
 	void OnTileReleased(AActor* Target, FKey ButtonPressed) override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TArray<class ABaseUnit*> UnitsOnThisIsland;
+
+public:
+	void AddUnitOnThisIsland(class ABaseUnit* Unit);
+	void RemoveUnitFromThisIsland(class ABaseUnit* Unit);
+	
 };

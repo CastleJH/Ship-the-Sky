@@ -47,5 +47,5 @@ public:
 private:
 	void StartUnitCreation();
 	void FinishUnitCreation();
-	void CreateUnit(EUnitType Type);
+	class ABaseUnit* CreateUnit(EUnitType Type);
 };

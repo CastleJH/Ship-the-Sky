@@ -67,7 +67,7 @@ void ACommander::ConstructBuilding(AResourceTile* Tile, EBuildingType Type)
 	if (Tile && !Tile->GetBuilding())
 	{
 		ABaseBuilding* Building = nullptr;
-		ABaseTile* MainTile = GetGameInstance()->GetSubsystem<UMapManager>()->GetGuardianTile(Tile->GetIslandID());
+		ABaseTile* MainTile = Tile->GetGuardianTile();
 		if (MainTile == nullptr)
 		{
 			UE_LOG(LogTemp, Error, TEXT("Nullptr Island"));

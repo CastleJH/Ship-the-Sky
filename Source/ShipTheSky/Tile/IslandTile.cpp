@@ -6,6 +6,7 @@
 #include "Pawn/Commander.h"
 #include "Components/WidgetComponent.h"
 #include "Widget/IslandResourceUI.h"
+#include "MapManager.h"
 
 AIslandTile::AIslandTile()
 {
@@ -21,4 +22,9 @@ void AIslandTile::BeginPlay()
 void AIslandTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 {
 	Super::OnTileReleased(Target, ButtonPressed);
+}
+
+AGuardianTile* AIslandTile::GetGuardianTile() const
+{
+	return GetGameInstance()->GetSubsystem<UMapManager>()->GetGuardianTile(IslandID);
 }

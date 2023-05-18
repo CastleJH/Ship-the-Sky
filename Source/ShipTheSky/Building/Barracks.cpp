@@ -110,7 +110,7 @@ void ABarracks::FinishUnitCreation()
 		EUnitType NewUnitType = WaitingUnitArray[0];
 		WaitingUnitArray.RemoveAt(0);
 		ABaseUnit* CreatedUnit = CreateUnit(NewUnitType);
-		GetGameInstance()->GetSubsystem<UMapManager>()->GetGuardianTile(CurTile->GetIslandID())->AddUnitOnThisIsland(CreatedUnit);
+		CurTile->GetGuardianTile()->AddUnitOnThisIsland(CreatedUnit);
 		bIsCreatingUnit = false;
 		ResetProgress();
 	}

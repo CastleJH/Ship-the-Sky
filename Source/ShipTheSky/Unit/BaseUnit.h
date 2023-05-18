@@ -36,6 +36,7 @@ protected:
 public:
 	void LocateToResourceTile(class AResourceTile* ResourceTile);
 
+	UFUNCTION(BlueprintPure)
 	EUnitType GetUnitType() const { return UnitType; }
 	class AIslandTile* GetCurTile() const { return CurTile; }
 	void SetCurTile(class AIslandTile* NewTile) { CurTile = NewTile; }

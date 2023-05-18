@@ -28,7 +28,7 @@ void ABaseUnit::LocateToResourceTile(AResourceTile* ResourceTile)
 		return;
 	}
 
-	ABaseTile* MainTile = GetGameInstance()->GetSubsystem<UMapManager>()->GetGuardianTile(ResourceTile->GetIslandID());
+	ABaseTile* MainTile = ResourceTile->GetGuardianTile();
 
 	if (MainTile == nullptr)
 	{

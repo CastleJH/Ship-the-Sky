@@ -44,13 +44,16 @@ protected:
 	EIslandTileType IslandType;
 
 public:
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintPure)
 	int32 GetIslandID() const { return IslandID; }
 	void SetIslandID(int32 NewIslandID) { IslandID = NewIslandID; }
 
 	EIslandTileType GetIslandType() const { return IslandType; };
 
 	void OnTileReleased(AActor* Target, FKey ButtonPressed) override;
+
+	UFUNCTION(BlueprintPure)
+	class AGuardianTile* GetGuardianTile() const;
 
 protected:
 	virtual void BeginPlay() override;

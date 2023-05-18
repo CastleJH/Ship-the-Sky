@@ -38,6 +38,7 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	EUnitType GetUnitType() const { return UnitType; }
+	UFUNCTION(BlueprintPure)
 	class AIslandTile* GetCurTile() const { return CurTile; }
 	void SetCurTile(class AIslandTile* NewTile) { CurTile = NewTile; }
 };

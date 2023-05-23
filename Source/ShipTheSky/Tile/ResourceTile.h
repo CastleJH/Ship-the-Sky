@@ -18,7 +18,7 @@ public:
 	AResourceTile();
 
 	//아마 고칠지도?
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TMap<uint8, int32> Resources;
 
 private:

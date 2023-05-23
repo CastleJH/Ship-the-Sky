@@ -22,12 +22,16 @@ protected:
 	TSubclassOf<class UUserWidget> IslandTileUIClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
 	TSubclassOf<class UUserWidget> ResourceUIClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Widget")
+	TSubclassOf<class UUserWidget> TileResourcesUIClass;
 
 private:
 	class ACommander* Commander = nullptr;
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	class UUserWidget* IslandTileUI;
 	class UUserWidget* ResourceUI;
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	class UUserWidget* TileResourcesUI;
 	float CameraMovementSpeed;
 
 public:

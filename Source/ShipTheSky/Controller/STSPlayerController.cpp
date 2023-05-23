@@ -57,12 +57,20 @@ void ASTSPlayerController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 
 	Commander = Cast<ACommander>(GetPawn());
+	/*TileResourcesUI = CreateWidget<UUserWidget>(GetWorld(), TileResourcesUIClass);
+	if (TileResourcesUI != nullptr)
+	{
+		IslandTileUI->AddToViewport();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("No UI"));
+	}*/
 	IslandTileUI = CreateWidget<UUserWidget>(GetWorld(), IslandTileUIClass);
 	if (IslandTileUI != nullptr)
 	{
 		IslandTileUI->AddToViewport();
 		CloseAllOwningIslandPanel();
-		UE_LOG(LogTemp, Warning, TEXT("UI HERE"));
 	}
 	else
 	{

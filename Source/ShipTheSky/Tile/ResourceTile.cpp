@@ -91,7 +91,7 @@ void AResourceTile::GiveResourceToUnit()
 		{
 			for (auto Resource : Resources)
 			{
-				if (Resource.Key == (uint8)EResourceType::End) continue;
+				if (Resource.Key >= (uint8)EResourceType::End) continue;
 				OwnerCommander->SetResource(
 					OwnerCommander->GetResource(StaticCast<EResourceType>(Resource.Key)) + Resource.Value,
 					StaticCast<EResourceType>(Resource.Key));

@@ -46,14 +46,14 @@ void ASTSPlayerController::OnButtonGenerateMap()
 
 void ASTSPlayerController::CreateTileResourcesUIHolders(float LastXCoord, float LastYCoord)
 {
-	HolderSize = 15000;
+	HolderSize = 3000;
 	TileResourcesUIHolderRow = (int32)LastXCoord / HolderSize + 1;
 	TileResourcesUIHolderCol = (int32)LastYCoord / HolderSize + 1;
 	for (int32 i = 0; i < TileResourcesUIHolderRow; i++)
 	{
 		for (int32 j = 0; j < TileResourcesUIHolderCol; j++)
 		{
-			AActor* Holder = GetWorld()->SpawnActor<AActor>(TileResourcesUIHolderClass, FVector(i * HolderSize, j * HolderSize, 50), FRotator::ZeroRotator);
+			AActor* Holder = GetWorld()->SpawnActor<AActor>(TileResourcesUIHolderClass, FVector(i * HolderSize, j * HolderSize, 100), FRotator::ZeroRotator);
 			TileResourcesUIHolders.Add(Holder);
 		}
 	}

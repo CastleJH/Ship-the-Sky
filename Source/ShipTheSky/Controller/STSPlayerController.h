@@ -24,8 +24,8 @@ protected:
 	TSubclassOf<class UUserWidget> ResourceUIClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
 	TSubclassOf<AActor> TileResourcesUIHolderClass;
-	UPROPERTY(EditDefaultsOnly, Category = "Widget")
-	TArray<class UTexture*> ResourcesTexture;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Widget")
+	TArray<class UTexture2D*> ResourcesTexture;
 
 private:
 	class ACommander* Commander = nullptr;

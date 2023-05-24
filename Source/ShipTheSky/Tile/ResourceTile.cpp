@@ -48,6 +48,7 @@ void AResourceTile::SetResources(float Power)
 	default:
 		break;
 	}
+	while (Resources.Num() < 3) Resources.Add(TPair<uint8, int32>(Resources.Num() + (uint8)EResourceType::End, 0));
 }
 
 void AResourceTile::TimePass(int32 GameDate)
@@ -90,6 +91,7 @@ void AResourceTile::GiveResourceToUnit()
 		{
 			for (auto Resource : Resources)
 			{
+				if (Resource.Key == (uint8)EResourceType::End) continue;
 				OwnerCommander->SetResource(
 					OwnerCommander->GetResource(StaticCast<EResourceType>(Resource.Key)) + Resource.Value,
 					StaticCast<EResourceType>(Resource.Key));

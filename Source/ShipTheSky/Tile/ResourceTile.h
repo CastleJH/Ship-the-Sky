@@ -36,6 +36,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	class ABaseUnit* GetUnit() const { return UnitOnThisTile; }
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnCreateTileResourcesUI();
+
 	void SetResources(float Power);
 
 	virtual void TimePass(int32 GameDate) override;

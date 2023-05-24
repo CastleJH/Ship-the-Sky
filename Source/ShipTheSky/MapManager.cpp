@@ -8,6 +8,7 @@
 #include "Tile/GuardianTile.h"
 #include "Pawn/PlayerCommander.h"
 #include "STSGameState.h"
+#include "Controller/STSPlayerController.h"
 
 UMapManager::UMapManager()
 {
@@ -232,6 +233,9 @@ void UMapManager::GenerateMap(int32 NumCol)
 		CurR++;
 		Map.Add(MapRow);
 	}
+	XCoord -= XDiff;
+	YCoord -= YDiff;
+	Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController())->CreateTileResourcesUIHolders(XCoord, YCoord);
 
 	//수호자 타일 향하도록 일반 섬타일들 회전
 	for (auto Row : IslandTiles)
@@ -240,11 +244,14 @@ void UMapManager::GenerateMap(int32 NumCol)
 		{
 			if (Elem->GetIslandType() == EIslandTileType::Guardian) continue;
 			Elem->SetActorRotation((Row[0]->GetActorLocation() - Elem->GetActorLocation()).Rotation() + FRotator(0.0f, -30.0f, 0.0f));
+			Cast<AResourceTile>(Elem)->OnCreateTileResourcesUI();
 		}
 	}
 
 	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, true);
 	TempSetStartLocation();
+
+
 }
 
 void UMapManager::ClearMap()

@@ -23,7 +23,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
 	TSubclassOf<class UUserWidget> ResourceUIClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
-	TSubclassOf<class UUserWidget> TileResourcesUIClass;
+	TSubclassOf<AActor> TileResourcesUIHolderClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Widget")
+	TArray<class UTexture*> ResourcesTexture;
 
 private:
 	class ACommander* Commander = nullptr;
@@ -31,8 +33,15 @@ private:
 	class UUserWidget* IslandTileUI;
 	class UUserWidget* ResourceUI;
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	class UUserWidget* TileResourcesUI;
+	TArray<AActor*> TileResourcesUIHolders;
 	float CameraMovementSpeed;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32 TileResourcesUIHolderRow;
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32 TileResourcesUIHolderCol;
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32 HolderSize;
 
 public:
 	class ACommander* GetCommander() { return Commander; }
@@ -56,6 +65,8 @@ public:
 	void OnButtonConstructBuildingPressed(enum EBuildingType Type);
 	UFUNCTION(BlueprintCallable)
 	void OnButtonGenerateMap();
+
+	void CreateTileResourcesUIHolders(float LastXCoord, float LastYCoord);
 
 protected:
 	virtual void SetupInputComponent() override;

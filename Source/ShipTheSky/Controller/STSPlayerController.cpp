@@ -14,6 +14,7 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/WidgetComponent.h"
 
 ASTSPlayerController::ASTSPlayerController()
 {
@@ -43,6 +44,22 @@ void ASTSPlayerController::OnButtonGenerateMap()
 	GetGameInstance()->GetSubsystem<UMapManager>()->GenerateMap(75);
 }
 
+void ASTSPlayerController::CreateTileResourcesUIHolders(float LastXCoord, float LastYCoord)
+{
+	HolderSize = 15000;
+	TileResourcesUIHolderRow = (int32)LastXCoord / HolderSize + 1;
+	TileResourcesUIHolderCol = (int32)LastYCoord / HolderSize + 1;
+	for (int32 i = 0; i < TileResourcesUIHolderRow; i++)
+	{
+		for (int32 j = 0; j < TileResourcesUIHolderCol; j++)
+		{
+			AActor* Holder = GetWorld()->SpawnActor<AActor>(TileResourcesUIHolderClass, FVector(i * HolderSize, j * HolderSize, 50), FRotator::ZeroRotator);
+			TileResourcesUIHolders.Add(Holder);
+		}
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Holder created"));
+}
+
 void ASTSPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -57,15 +74,6 @@ void ASTSPlayerController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 
 	Commander = Cast<ACommander>(GetPawn());
-	/*TileResourcesUI = CreateWidget<UUserWidget>(GetWorld(), TileResourcesUIClass);
-	if (TileResourcesUI != nullptr)
-	{
-		IslandTileUI->AddToViewport();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("No UI"));
-	}*/
 	IslandTileUI = CreateWidget<UUserWidget>(GetWorld(), IslandTileUIClass);
 	if (IslandTileUI != nullptr)
 	{

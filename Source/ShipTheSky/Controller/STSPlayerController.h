@@ -42,6 +42,8 @@ private:
 	int32 TileResourcesUIHolderCol;
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	int32 HolderSize;
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32 HolderPadding;
 
 public:
 	class ACommander* GetCommander() { return Commander; }

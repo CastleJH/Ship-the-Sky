@@ -46,7 +46,8 @@ void ASTSPlayerController::OnButtonGenerateMap()
 
 void ASTSPlayerController::CreateTileResourcesUIHolders(float LastXCoord, float LastYCoord)
 {
-	HolderSize = 3000;
+	HolderSize = 5000;
+	HolderPadding = 500;
 	TileResourcesUIHolderRow = (int32)LastXCoord / HolderSize + 1;
 	TileResourcesUIHolderCol = (int32)LastYCoord / HolderSize + 1;
 	for (int32 i = 0; i < TileResourcesUIHolderRow; i++)

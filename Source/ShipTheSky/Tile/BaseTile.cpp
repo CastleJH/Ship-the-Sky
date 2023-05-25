@@ -23,6 +23,8 @@ void ABaseTile::BeginPlay()
 {
 	Super::BeginPlay();
 	SetActorScale3D(FVector(0.94f, 0.975f, 0.975f));
+	//SetActorScale3D(FVector(0.893f, 0.92625f, 0.92625f));
+	//SetActorScale3D(FVector(0.846f, 0.8775f, 0.8775f));
 }
 
 void ABaseTile::OnTileReleased(AActor* Target, FKey ButtonPressed)

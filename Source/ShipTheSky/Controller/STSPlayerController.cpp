@@ -34,8 +34,7 @@ bool ASTSPlayerController::OnButtonCreateShipPressed(int32 WoodCloud, int32 Wood
 void ASTSPlayerController::OnButtonConstructBuildingPressed(EBuildingType Type)
 {
 	Commander->ConstructBuilding(Cast<AResourceTile>(Commander->GetTargetIslandTile()), Type);
-	CloseAllOwningIslandPanel();
-	Commander->GetTargetIslandTile()->OnTileReleased(Commander->GetTargetIslandTile(), FKey());
+	Cast<AResourceTile>(Commander->GetTargetIslandTile())->UpdateResourceTileUI();
 }
 
 void ASTSPlayerController::OnButtonGenerateMap()

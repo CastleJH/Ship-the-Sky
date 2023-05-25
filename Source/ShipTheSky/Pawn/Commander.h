@@ -54,6 +54,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Commander")
 	class AIslandTile* TargetIslandTile;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Commander")
+	class ABaseTile* TargetTile;
 
 	TArray<int32> Resources;
 
@@ -67,8 +69,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ConstructBuilding(class AResourceTile* Tile, enum EBuildingType Type);
-	
+
 	void SetTargetIslandTile(class AIslandTile* NewTile) { TargetIslandTile = NewTile; }
+	void SetTargetTile(class ABaseTile* NewTile) { TargetTile = NewTile; }
+
+	class ABaseTile* GetTargetTile() const { return TargetTile; }
 	class AIslandTile* GetTargetIslandTile() const { return TargetIslandTile; }
 
 	void SetResource(int32 Amount, EResourceType Type) { Resources[(int32)Type] = Amount; }

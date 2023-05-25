@@ -48,6 +48,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void OnTileReleased(AActor* Target, FKey ButtonPressed);
 
+	UStaticMeshComponent* GetStaticMeshComponent() const { return StaticMeshComp; }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

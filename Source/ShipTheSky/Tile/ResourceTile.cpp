@@ -62,8 +62,13 @@ void AResourceTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 {
 	Super::OnTileReleased(Target, ButtonPressed);
 	ASTSPlayerController* PlayerController = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
-	PlayerController->GetCommander()->SetTargetIslandTile(this);
-	PlayerController->OpenOwningIslandPanel();
+	if (PlayerController->GetCommander()->GetTargetIslandTile() == nullptr) return;
+	UpdateResourceTileUI();
+}
+
+void AResourceTile::UpdateResourceTileUI()
+{
+	ASTSPlayerController* PlayerController = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
 	if (BuildingOnThisTile == nullptr)
 	{
 		PlayerController->OpenOwningIslandConstructionPanel();

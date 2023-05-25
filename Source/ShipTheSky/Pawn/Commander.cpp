@@ -16,6 +16,8 @@ ACommander::ACommander()
 	PrimaryActorTick.bCanEverTick = false;
 
 	Resources.Init(0, (int32)EResourceType::End);
+	TargetIslandTile = nullptr;
+	TargetTile = nullptr;
 }
 
 // Called when the game starts or when spawned

@@ -2,6 +2,8 @@
 
 
 #include "Tile/BaseTile.h"
+#include "Controller/STSPlayerController.h"
+#include "Pawn/Commander.h"
 
 // Sets default values
 ABaseTile::ABaseTile()
@@ -30,4 +32,18 @@ void ABaseTile::BeginPlay()
 void ABaseTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 {
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *GetName());
+
+	ASTSPlayerController* PlayerController = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
+	StaticMeshComp->SetRenderCustomDepth(true);
+
+	ABaseTile* CurrentTargetTile = PlayerController->GetCommander()->GetTargetTile();
+	if (CurrentTargetTile != nullptr)
+	{
+		CurrentTargetTile->GetStaticMeshComponent()->SetRenderCustomDepth(false);
+		if (CurrentTargetTile == this) PlayerController->GetCommander()->SetTargetTile(nullptr);
+		else PlayerController->GetCommander()->SetTargetTile(this);
+	}
+	else PlayerController->GetCommander()->SetTargetTile(this);
+	PlayerController->GetCommander()->SetTargetIslandTile(nullptr);
+	PlayerController->CloseAllOwningIslandPanel();
 }

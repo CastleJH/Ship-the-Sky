@@ -25,5 +25,4 @@ protected:
 public:
 	void AddUnitOnThisIsland(class ABaseUnit* Unit);
 	void RemoveUnitFromThisIsland(class ABaseUnit* Unit);
-	
 };

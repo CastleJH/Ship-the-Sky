@@ -14,8 +14,9 @@ void AGuardianTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 {
 	Super::OnTileReleased(Target, ButtonPressed);
 	ASTSPlayerController* PlayerController = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
-	PlayerController->GetCommander()->SetTargetIslandTile(this);
-	PlayerController->OpenOwningIslandPanel();
+
+	if (PlayerController->GetCommander()->GetTargetIslandTile() == nullptr) return;
+
 	PlayerController->CloseOwningIslandBuildingPanel();
 }
 

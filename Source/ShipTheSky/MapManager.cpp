@@ -312,7 +312,7 @@ void UMapManager::TempSetStartLocation()
 	StartPosition.Z = 5000;
 	StartPosition.X -= 1820;
 	Pawn->SetActorLocation(StartPosition);
-	Cast<APlayerCommander>(Pawn)->SetTargetIslandTile(IslandTiles[RandStartIsland][0]);
+	//Cast<APlayerCommander>(Pawn)->SetTargetIslandTile(IslandTiles[RandStartIsland][0]);
 }
 
 void UMapManager::TimePassesToAllTile(int32 GameDate)

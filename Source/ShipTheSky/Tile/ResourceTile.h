@@ -45,6 +45,8 @@ public:
 
 	virtual void OnTileReleased(AActor* Target, FKey ButtonPressed) override;
 
+	void UpdateResourceTileUI();
+
 protected:
 
 	void GiveResourceToUnit();

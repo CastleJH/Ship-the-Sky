@@ -54,7 +54,7 @@ void ASTSPlayerController::CreateTileResourcesUIHolders(float LastXCoord, float 
 	{
 		for (int32 j = 0; j < TileResourcesUIHolderCol; j++)
 		{
-			AActor* Holder = GetWorld()->SpawnActor<AActor>(TileResourcesUIHolderClass, FVector(i * HolderSize, j * HolderSize, 200), FRotator::ZeroRotator);
+			AActor* Holder = GetWorld()->SpawnActor<AActor>(TileResourcesUIHolderClass, FVector(i * HolderSize, j * HolderSize, 180.0f), FRotator::ZeroRotator);
 			TileResourcesUIHolders.Add(Holder);
 		}
 	}

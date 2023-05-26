@@ -17,37 +17,18 @@ AShip::AShip()
 	StaticMeshComp->CastShadow = false;
 }
 
-void AShip::LocateOnTile(ABaseTile* Tile)
+bool AShip::TryLocateOnTile(ABaseTile* Tile)
 {
-	if (Tile == nullptr) return;
-	/*if (Tile->GetTileType() == ETileType::Island)
-	{
-		TArray<ABaseTile*> AdjacentTiles;
-		GetGameInstance()->GetSubsystem<UMapManager>()->GetAdjacentTiles(Tile, AdjacentTiles);
+	if (Tile == nullptr) return false;
+	if (Tile->GetShip() != nullptr) return false;
 
-		while (true)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("%d"), AdjacentTiles.Num());
-			int32 Index = FMath::RandRange(0, AdjacentTiles.Num() - 1);
-			if (AdjacentTiles[Index] != nullptr && AdjacentTiles[Index]->GetTileType() != ETileType::Island)
-			{
-				FVector NewLocation = AdjacentTiles[Index]->GetActorLocation();
-				FRotator NewRotation = (AdjacentTiles[Index]->GetActorLocation() - Tile->GetActorLocation()).Rotation();
-				SetActorLocation(NewLocation + FVector(0.0f, 0.0f, 30.0f));
-				SetActorRotation(NewRotation);
-				CurTile = AdjacentTiles[Index];
-				break;
-			}
-		}
-	}
-	else
-	{
-		SetActorLocation(Tile->GetActorLocation() + FVector(0.0f, 0.0f, 30.0f));
-		CurTile = Tile;
-	}*/
+	if (CurTile != nullptr) CurTile->SetShip(nullptr);
+
 	SetActorLocation(Tile->GetActorLocation() + FVector(0.0f, 0.0f, 250.0f));
 	CurTile = Tile;
+	Tile->SetShip(this);
 	SetActorHiddenInGame(false);
+	return true;
 }
 
 void AShip::InitializeStatWithResources(int32 WoodCloud, int32 WoodStorm, int32 WoodSun, int32 WoodLightning, int32 WoodMeteor)

@@ -14,28 +14,27 @@ AShipyard::AShipyard()
 	bIsCreatingShip = false;
 }
 
-bool AShipyard::AddShipCreationToArray(int32 WoodCloud, int32 WoodStorm, int32 WoodSun, int32 WoodLightning, int32 WoodMeteor)
+bool AShipyard::AddShipCreationToArray()
 {
 	if (WaitingShipArray.Num() < MaxWaitingShip)
 	{
-		TArray<int32> Resources = { WoodCloud, WoodStorm, WoodSun, WoodLightning, WoodMeteor };
-		WaitingShipArray.Add(Resources);
+		FString ShipName = FString::Printf(TEXT("Airship %d"), FMath::RandRange(100, 999));
+		WaitingShipArray.Add(ShipName);
 		StartShipCreation();
 		return true;
 	}
 	return false;
 }
 
-int32 AShipyard::GetWaitingShipResourceByIndex(int32 Index, EResourceType ResourceType) const
+FString AShipyard::GetWaitingShipNameByIndex(int32 Index) const
 {
 	if (WaitingShipArray.IsValidIndex(Index))
 	{
-		if (ResourceType < EResourceType::WoodCloud || EResourceType::WoodMeteor < ResourceType) return -1;
-		return WaitingShipArray[Index][(int32)ResourceType - (int32)EResourceType::WoodCloud];
+		return WaitingShipArray[Index];
 	}
 	else
 	{
-		return -1;
+		return FString(TEXT(" "));
 	}
 }
 
@@ -62,8 +61,8 @@ void AShipyard::IncreaseProgress()
 
 	if (Progress == TimeNeed + 1)
 	{
-		FinishShipCreation();
-		StartShipCreation();
+		if (FinishShipCreation()) 
+			StartShipCreation();
 	}
 }
 
@@ -77,25 +76,36 @@ void AShipyard::StartShipCreation()
 	}
 }
 
-void AShipyard::FinishShipCreation()
+bool AShipyard::FinishShipCreation()
 {
 	if (!WaitingShipArray.IsEmpty())
 	{
 		ACommander* OwnerCommander = Cast<ACommander>(GetOwner());
-		CreateShip(WaitingShipArray[0]);
+		bool CreationSuccess = CreateShip(WaitingShipArray[0]);
+		if (!CreationSuccess)
+		{
+			Progress = TimeNeed;
+			return false;
+		}
+
 		WaitingShipArray.RemoveAt(0);
 		bIsCreatingShip = false;
 		ResetProgress();
+
+		return true;
 	}
+	return false;
 }
 
-void AShipyard::CreateShip(TArray<int32>& Resources)
+bool AShipyard::CreateShip(FString ShipName)
 {
+	if (CurTile->GetShip() != nullptr) return false;
+
 	ACommander* Commander = nullptr;
 	if (GetOwner() == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("No Owner of Barracks"));
-		return;
+		return false;
 	}
 	else
 	{
@@ -103,7 +113,7 @@ void AShipyard::CreateShip(TArray<int32>& Resources)
 		if (Commander == nullptr)
 		{
 			UE_LOG(LogTemp, Error, TEXT("No Owner of Barracks"));
-			return;
+			return false;
 		}
 	}
 
@@ -114,8 +124,9 @@ void AShipyard::CreateShip(TArray<int32>& Resources)
 	if (CurTile == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Wrong Location"));
-		return;
+		return false;
 	}
 
-	Ship->LocateOnTile(CurTile);
+	Ship->TryLocateOnTile(CurTile);
+	return true;
 }

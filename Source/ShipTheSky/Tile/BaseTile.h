@@ -36,6 +36,10 @@ protected:
 	int32 Row;
 	int32 Col;
 
+private:
+	UPROPERTY()
+	class AShip* ShipOnThisTile = nullptr;
+
 public:
 	ETileType GetTileType() const { return TileType; }
 	virtual void TimePass(int32 GameDate);
@@ -49,6 +53,10 @@ public:
 	virtual void OnTileReleased(AActor* Target, FKey ButtonPressed);
 
 	UStaticMeshComponent* GetStaticMeshComponent() const { return StaticMeshComp; }
+
+	void SetShip(class AShip* NewShip) { ShipOnThisTile = NewShip; }
+	UFUNCTION(BlueprintPure)
+	class AShip* GetShip() const { return ShipOnThisTile; }
 
 protected:
 	// Called when the game starts or when spawned

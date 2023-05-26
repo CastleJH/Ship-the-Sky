@@ -62,7 +62,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool OnButtonCreateUnitPressed(enum EUnitType Type);
 	UFUNCTION(BlueprintCallable)
-	bool OnButtonCreateShipPressed(int32 WoodCloud, int32 WoodStorm, int32 WoodSun, int32 WoodLightning, int32 WoodMeteor);
+	bool OnButtonCreateShipPressed();
+	//bool OnButtonCreateShipPressed(int32 WoodCloud, int32 WoodStorm, int32 WoodSun, int32 WoodLightning, int32 WoodMeteor);
 	UFUNCTION(BlueprintCallable)
 	void OnButtonConstructBuildingPressed(enum EBuildingType Type);
 	UFUNCTION(BlueprintCallable)

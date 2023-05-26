@@ -18,17 +18,18 @@ public:
 	AShipyard();
 
 private:
-	TArray<TArray<int32>> WaitingShipArray;
+	TArray<FString> WaitingShipArray;
 	int32 TimeNeed;
 	bool bIsCreatingShip;
 	int32 MaxWaitingShip = 10;
 
 public:
 	UFUNCTION()
-	bool AddShipCreationToArray(int32 WoodCloud, int32 WoodStorm, int32 WoodSun, int32 WoodLightning, int32 WoodMeteor);
+	bool AddShipCreationToArray();
+	//bool AddShipCreationToArray(int32 WoodCloud, int32 WoodStorm, int32 WoodSun, int32 WoodLightning, int32 WoodMeteor);
 
 	UFUNCTION(BlueprintPure)
-	int32 GetWaitingShipResourceByIndex(int32 Index, enum EResourceType ResourceType) const;
+	FString GetWaitingShipNameByIndex(int32 Index) const;
 
 	UFUNCTION(BlueprintCallable)
 	void CancelWaitingShipByIndex(int32 Index);
@@ -43,6 +44,6 @@ public:
 
 private:
 	void StartShipCreation();
-	void FinishShipCreation();
-	void CreateShip(TArray<int32>& Resources);
+	bool FinishShipCreation();
+	bool CreateShip(FString ShipName);
 };

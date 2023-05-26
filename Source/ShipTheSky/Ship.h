@@ -23,25 +23,25 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Unit")
 	class ABaseTile* CurTile;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	int32 Durability;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 CloudResistance;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 StormResistance;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 SunResistance;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 LightningResistance;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 MeteorResistance;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 FlightPower;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 UnitCapacity;
 
 public:
-	void LocateOnTile(class ABaseTile* Tile);
+	bool TryLocateOnTile(class ABaseTile* Tile);
 
 	void InitializeStatWithResources(int32 WoodCloud, int32 WoodStorm, int32 WoodSun, int32 WoodLightning, int32 WoodMeteor);
 

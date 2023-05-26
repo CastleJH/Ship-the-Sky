@@ -8,7 +8,7 @@
 void AShipTheSkyGameModeBase::StartPlay()
 {
 	Super::StartPlay();
-	GetGameInstance()->GetSubsystem<UMapManager>()->GenerateMap(75);
+	GetGameInstance()->GetSubsystem<UMapManager>()->GenerateMap(60);
 	ASTSGameState* STSGameState = Cast<ASTSGameState>(GetWorld()->GetGameState());
 
 	if (GameState == nullptr)

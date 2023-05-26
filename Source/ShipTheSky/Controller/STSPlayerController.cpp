@@ -26,9 +26,9 @@ bool ASTSPlayerController::OnButtonCreateUnitPressed(EUnitType Type)
 	return Cast<ABarracks>(Cast<AResourceTile>(Commander->GetTargetIslandTile())->GetBuilding())->AddUnitCreationToArray(Type);
 }
 
-bool ASTSPlayerController::OnButtonCreateShipPressed(int32 WoodCloud, int32 WoodStorm, int32 WoodSun, int32 WoodLightning, int32 WoodMeteor)
+bool ASTSPlayerController::OnButtonCreateShipPressed()
 {
-	return Cast<AShipyard>(Cast<AResourceTile>(Commander->GetTargetIslandTile())->GetBuilding())->AddShipCreationToArray(WoodCloud, WoodStorm, WoodSun, WoodLightning, WoodMeteor);
+	return Cast<AShipyard>(Cast<AResourceTile>(Commander->GetTargetIslandTile())->GetBuilding())->AddShipCreationToArray();
 }
 
 void ASTSPlayerController::OnButtonConstructBuildingPressed(EBuildingType Type)
@@ -40,7 +40,7 @@ void ASTSPlayerController::OnButtonConstructBuildingPressed(EBuildingType Type)
 void ASTSPlayerController::OnButtonGenerateMap()
 {
 	GetGameInstance()->GetSubsystem<UMapManager>()->ClearMap();
-	GetGameInstance()->GetSubsystem<UMapManager>()->GenerateMap(75);
+	GetGameInstance()->GetSubsystem<UMapManager>()->GenerateMap(60);
 }
 
 void ASTSPlayerController::CreateTileResourcesUIHolders(float LastXCoord, float LastYCoord)

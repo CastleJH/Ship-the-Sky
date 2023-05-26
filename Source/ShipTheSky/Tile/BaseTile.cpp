@@ -35,15 +35,25 @@ void ABaseTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 
 	ASTSPlayerController* PlayerController = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
 	StaticMeshComp->SetRenderCustomDepth(true);
+	PlayerController->CloseOwningIslandUI();
+	PlayerController->CloseShipUI();
 
 	ABaseTile* CurrentTargetTile = PlayerController->GetCommander()->GetTargetTile();
+
 	if (CurrentTargetTile != nullptr)
 	{
 		CurrentTargetTile->GetStaticMeshComponent()->SetRenderCustomDepth(false);
 		if (CurrentTargetTile == this) PlayerController->GetCommander()->SetTargetTile(nullptr);
-		else PlayerController->GetCommander()->SetTargetTile(this);
+		else
+		{
+			PlayerController->GetCommander()->SetTargetTile(this);
+			if (ShipOnThisTile != nullptr) PlayerController->OpenShipUI();
+		}
 	}
-	else PlayerController->GetCommander()->SetTargetTile(this);
-	PlayerController->GetCommander()->SetTargetIslandTile(nullptr);
-	PlayerController->CloseAllOwningIslandPanel();
+	else
+	{
+		PlayerController->GetCommander()->SetTargetTile(this);
+		if (ShipOnThisTile != nullptr) PlayerController->OpenShipUI();
+	}
+
 }

@@ -16,8 +16,6 @@ void AGuardianTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 	ASTSPlayerController* PlayerController = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
 
 	if (PlayerController->GetCommander()->GetTargetIslandTile() == nullptr) return;
-
-	PlayerController->CloseOwningIslandBuildingPanel();
 }
 
 void AGuardianTile::AddUnitOnThisIsland(ABaseUnit* Unit)

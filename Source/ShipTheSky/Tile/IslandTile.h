@@ -29,12 +29,6 @@ public:
 	AIslandTile();
 
 protected:
-	//UPROPERTY(VisibleAnywhere, Category = UI)
-	//class UWidgetComponent* WidgetComponent;
-	//UPROPERTY(EditDefaultsOnly, Category = "Widget")
-	//TSubclassOf<class UUserWidget> IslandResourceUIClass;
-
-protected:
 	//class UIslandResourceUI* IslandResourceUI;
 
 	UPROPERTY(VisibleAnywhere)

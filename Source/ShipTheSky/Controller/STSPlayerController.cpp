@@ -34,7 +34,7 @@ bool ASTSPlayerController::OnButtonCreateShipPressed()
 void ASTSPlayerController::OnButtonConstructBuildingPressed(EBuildingType Type)
 {
 	Commander->ConstructBuilding(Cast<AResourceTile>(Commander->GetTargetIslandTile()), Type);
-	Cast<AResourceTile>(Commander->GetTargetIslandTile())->UpdateResourceTileUI();
+	OpenOwningIslandBuildingUI();
 }
 
 void ASTSPlayerController::OnButtonGenerateMap()
@@ -75,11 +75,11 @@ void ASTSPlayerController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 
 	Commander = Cast<ACommander>(GetPawn());
-	IslandTileUI = CreateWidget<UUserWidget>(GetWorld(), IslandTileUIClass);
-	if (IslandTileUI != nullptr)
+	IngameMainUI = CreateWidget<UUserWidget>(GetWorld(), IngameMainUIClass);
+	if (IngameMainUI != nullptr)
 	{
-		IslandTileUI->AddToViewport();
-		CloseAllOwningIslandPanel();
+		IngameMainUI->AddToViewport();
+		UE_LOG(LogTemp, Warning, TEXT("Main UI"));
 	}
 	else
 	{

@@ -19,7 +19,7 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
-	TSubclassOf<class UUserWidget> IslandTileUIClass;
+	TSubclassOf<class UUserWidget> IngameMainUIClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
 	TSubclassOf<class UUserWidget> ResourceUIClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
@@ -30,7 +30,7 @@ protected:
 private:
 	class ACommander* Commander = nullptr;
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	class UUserWidget* IslandTileUI;
+	class UUserWidget* IngameMainUI;
 	class UUserWidget* ResourceUI;
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TArray<AActor*> TileResourcesUIHolders;
@@ -46,19 +46,20 @@ private:
 	int32 HolderPadding;
 
 public:
-	class ACommander* GetCommander() { return Commander; }
+	UFUNCTION(BlueprintPure)
+	class ACommander* GetCommander() const { return Commander; }
 	UFUNCTION(BlueprintImplementableEvent)
-	void CloseAllOwningIslandPanel();
+	void OpenOwningIslandUI();
 	UFUNCTION(BlueprintImplementableEvent)
-	void OpenOwningIslandPanel();
+	void CloseOwningIslandUI();
 	UFUNCTION(BlueprintImplementableEvent)
-	void OpenOwningIslandConstructionPanel();
+	void OpenOwningIslandBuildingUI();
 	UFUNCTION(BlueprintImplementableEvent)
-	void OpenOwningIslandBarracksPanel();
+	void CloseOwningIslandBuildingUI();
 	UFUNCTION(BlueprintImplementableEvent)
-	void OpenOwningIslandShipyardPanel();
+	void OpenShipUI();
 	UFUNCTION(BlueprintImplementableEvent)
-	void CloseOwningIslandBuildingPanel();
+	void CloseShipUI();
 	UFUNCTION(BlueprintCallable)
 	bool OnButtonCreateUnitPressed(enum EUnitType Type);
 	UFUNCTION(BlueprintCallable)

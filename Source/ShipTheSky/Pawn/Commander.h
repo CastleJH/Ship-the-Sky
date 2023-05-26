@@ -70,10 +70,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ConstructBuilding(class AResourceTile* Tile, enum EBuildingType Type);
 
-	void SetTargetIslandTile(class AIslandTile* NewTile) { TargetIslandTile = NewTile; }
-	void SetTargetTile(class ABaseTile* NewTile) { TargetTile = NewTile; }
+	void SetTargetTile(class ABaseTile* NewTile);
 
 	class ABaseTile* GetTargetTile() const { return TargetTile; }
+	UFUNCTION(BlueprintPure)
 	class AIslandTile* GetTargetIslandTile() const { return TargetIslandTile; }
 
 	void SetResource(int32 Amount, EResourceType Type) { Resources[(int32)Type] = Amount; }

@@ -93,3 +93,9 @@ void ACommander::ConstructBuilding(AResourceTile* Tile, EBuildingType Type)
 		}
 	}
 }
+
+void ACommander::SetTargetTile(ABaseTile* NewTile)
+{
+	TargetTile = NewTile;
+	TargetIslandTile = Cast<AIslandTile>(NewTile);
+}

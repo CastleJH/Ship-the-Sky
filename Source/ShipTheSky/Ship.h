@@ -20,27 +20,27 @@ protected:
 	UStaticMeshComponent* StaticMeshComp;
 	
 private:
-	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TArray<class ABaseUnit*> Units;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Unit")
 	class ABaseTile* CurTile;
 
-	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	int32 Durability;
-	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 CloudResistance;
-	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 StormResistance;
-	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 SunResistance;
-	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 LightningResistance;
-	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 MeteorResistance;
-	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 FlightPower;
-	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 UnitCapacity;
 
 public:
@@ -81,4 +81,7 @@ public:
 	UFUNCTION(BlueprintPure)
 	int32 GetUnitCapacity() const { return UnitCapacity; }
 	void SetUnitCapacity(int32 NewUnitCapacity) { UnitCapacity = NewUnitCapacity; }
+
+	bool AddUnit(class ABaseUnit* Unit);
+	bool RemoveUnit(class ABaseUnit* Unit);
 };

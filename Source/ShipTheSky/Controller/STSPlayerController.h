@@ -68,6 +68,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnButtonConstructBuildingPressed(enum EBuildingType Type);
 	UFUNCTION(BlueprintCallable)
+	void OnButtonUnitEmbark(class ABaseUnit* Unit);
+	UFUNCTION(BlueprintCallable)
+	void OnButtonUnitDisembark(class ABaseUnit* Unit);
+	UFUNCTION(BlueprintCallable)
 	void OnButtonGenerateMap();
 
 	void CreateTileResourcesUIHolders(float LastXCoord, float LastYCoord);

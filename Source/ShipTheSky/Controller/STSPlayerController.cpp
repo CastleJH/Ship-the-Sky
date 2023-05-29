@@ -15,6 +15,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/WidgetComponent.h"
+#include "Unit/BaseUnit.h"
+#include "Ship.h"
 
 ASTSPlayerController::ASTSPlayerController()
 {
@@ -35,6 +37,31 @@ void ASTSPlayerController::OnButtonConstructBuildingPressed(EBuildingType Type)
 {
 	Commander->ConstructBuilding(Cast<AResourceTile>(Commander->GetTargetIslandTile()), Type);
 	OpenOwningIslandBuildingUI();
+}
+
+void ASTSPlayerController::OnButtonUnitEmbark(ABaseUnit* Unit)
+{
+	if (Commander->GetTargetIslandTile() != nullptr)
+	{
+		AShip* Ship = Commander->GetTargetIslandTile()->GetShip();
+		if (Ship != nullptr)
+		{
+			Unit->Embark(Ship);
+			UE_LOG(LogTemp, Warning, TEXT("Embark"));
+		}
+		else UE_LOG(LogTemp, Warning, TEXT("Embark Fail"));
+	}
+}
+
+void ASTSPlayerController::OnButtonUnitDisembark(ABaseUnit* Unit)
+{
+	AIslandTile* IslandTile = Commander->GetTargetIslandTile();
+	if (IslandTile != nullptr)
+	{
+		AShip* Ship = Commander->GetTargetIslandTile()->GetShip();
+		Unit->Disembark(IslandTile->GetIslandID());
+		UE_LOG(LogTemp, Warning, TEXT("Disembark"));
+	}
 }
 
 void ASTSPlayerController::OnButtonGenerateMap()

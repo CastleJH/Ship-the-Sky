@@ -32,13 +32,19 @@ protected:
 	EUnitType UnitType;
 	UPROPERTY(VisibleAnywhere, Category = "Unit")
 	class AIslandTile* CurTile;
+	UPROPERTY(VisibleAnywhere, Category = "Unit")
+	class AShip* CurShip;
 
 public:
 	void LocateToResourceTile(class AResourceTile* ResourceTile);
+	bool Embark(class AShip* Ship);
+	bool Disembark(int32 IslandID);
 
 	UFUNCTION(BlueprintPure)
 	EUnitType GetUnitType() const { return UnitType; }
 	UFUNCTION(BlueprintPure)
 	class AIslandTile* GetCurTile() const { return CurTile; }
 	void SetCurTile(class AIslandTile* NewTile) { CurTile = NewTile; }
+	UFUNCTION(BlueprintPure)
+	class AShip* GetCurShip() const { return CurShip; }
 };

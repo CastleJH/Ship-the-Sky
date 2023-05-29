@@ -8,6 +8,7 @@
 #include "Tile/GuardianTile.h"
 #include "MapManager.h"
 #include "Pawn/Commander.h"
+#include "Ship.h"
 
 // Sets default values
 ABaseUnit::ABaseUnit()
@@ -43,5 +44,37 @@ void ABaseUnit::LocateToResourceTile(AResourceTile* ResourceTile)
 	SetActorHiddenInGame(false);
 
 	ResourceTile->SetUnit(this);
-	SetCurTile(ResourceTile);
+	CurTile = ResourceTile;
+}
+
+bool ABaseUnit::Embark(AShip* Ship)
+{
+	if (Ship != nullptr && CurTile != nullptr && Ship->AddUnit(this))
+	{
+		SetActorHiddenInGame(true);
+
+		CurTile->GetGuardianTile()->RemoveUnitFromThisIsland(this);
+		Cast<AResourceTile>(CurTile)->SetUnit(nullptr);
+		CurTile = nullptr;
+
+		CurShip = Ship;
+		return true;
+	}
+	return false;
+}
+
+bool ABaseUnit::Disembark(int32 IslandID)
+{
+	if (CurShip != nullptr && CurShip->RemoveUnit(this))
+	{
+		AGuardianTile* GuardianTile = GetGameInstance()->GetSubsystem<UMapManager>()->GetGuardianTile(IslandID);
+		if (GuardianTile != nullptr)
+		{
+			Cast<ACommander>(GetOwner())->FillIslandWithUnit(IslandID, this);
+			CurShip = nullptr;
+			GuardianTile->AddUnitOnThisIsland(this);
+			return true;
+		}
+	}
+	return false;
 }

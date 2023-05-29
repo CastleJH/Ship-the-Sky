@@ -20,6 +20,9 @@ protected:
 	UStaticMeshComponent* StaticMeshComp;
 	
 private:
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TArray<class ABaseUnit*> Units;
+	
 	UPROPERTY(VisibleAnywhere, Category = "Unit")
 	class ABaseTile* CurTile;
 

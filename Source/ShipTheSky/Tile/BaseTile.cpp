@@ -55,5 +55,4 @@ void ABaseTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 		PlayerController->GetCommander()->SetTargetTile(this);
 		if (ShipOnThisTile != nullptr) PlayerController->OpenShipUI();
 	}
-
 }

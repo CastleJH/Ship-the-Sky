@@ -31,6 +31,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Unit")
 	EUnitType UnitType;
 	UPROPERTY(VisibleAnywhere, Category = "Unit")
+	int32 CurIslandID;
+	UPROPERTY(VisibleAnywhere, Category = "Unit")
 	class AIslandTile* CurTile;
 	UPROPERTY(VisibleAnywhere, Category = "Unit")
 	class AShip* CurShip;
@@ -42,6 +44,9 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	EUnitType GetUnitType() const { return UnitType; }
+	UFUNCTION(BlueprintPure)
+	int32 GetCurIslandID() const { return CurIslandID; }
+	void SetCurIslandID(int32 NewIslandID) { CurIslandID = NewIslandID; }
 	UFUNCTION(BlueprintPure)
 	class AIslandTile* GetCurTile() const { return CurTile; }
 	void SetCurTile(class AIslandTile* NewTile) { CurTile = NewTile; }

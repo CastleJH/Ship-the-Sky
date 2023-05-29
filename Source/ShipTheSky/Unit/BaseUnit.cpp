@@ -37,6 +37,12 @@ void ABaseUnit::LocateToResourceTile(AResourceTile* ResourceTile)
 		return;
 	}
 
+	if (ResourceTile->GetIslandID() != CurIslandID)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Different ISland"));
+		return;
+	}
+
 	FVector Direction = MainTile->GetActorLocation() - ResourceTile->GetActorLocation();
 
 	SetActorLocation(ResourceTile->GetActorLocation());
@@ -49,17 +55,23 @@ void ABaseUnit::LocateToResourceTile(AResourceTile* ResourceTile)
 
 bool ABaseUnit::Embark(AShip* Ship)
 {
-	if (Ship != nullptr && CurTile != nullptr && Ship->AddUnit(this))
+	if (Ship != nullptr && CurIslandID != -1 && Ship->AddUnit(this))
 	{
 		SetActorHiddenInGame(true);
 
-		CurTile->GetGuardianTile()->RemoveUnitFromThisIsland(this);
-		Cast<AResourceTile>(CurTile)->SetUnit(nullptr);
-		CurTile = nullptr;
+		GetGameInstance()->GetSubsystem<UMapManager>()->GetGuardianTile(CurIslandID)->RemoveUnitFromThisIsland(this);
+		if (CurTile != nullptr)
+		{
+			Cast<AResourceTile>(CurTile)->SetUnit(nullptr);
+			CurTile = nullptr;
+		}
 
 		CurShip = Ship;
 		return true;
 	}
+	if (Ship == nullptr) UE_LOG(LogTemp, Warning, TEXT("Ship nullptr fail"));
+	if (CurIslandID == -1) UE_LOG(LogTemp, Warning, TEXT("CurTile nullptr fail"));
+	if (!Ship->AddUnit(this)) UE_LOG(LogTemp, Warning, TEXT("Add Unit fail"));
 	return false;
 }
 
@@ -70,9 +82,9 @@ bool ABaseUnit::Disembark(int32 IslandID)
 		AGuardianTile* GuardianTile = GetGameInstance()->GetSubsystem<UMapManager>()->GetGuardianTile(IslandID);
 		if (GuardianTile != nullptr)
 		{
-			Cast<ACommander>(GetOwner())->FillIslandWithUnit(IslandID, this);
 			CurShip = nullptr;
 			GuardianTile->AddUnitOnThisIsland(this);
+			Cast<ACommander>(GetOwner())->FillIslandWithUnit(IslandID, this);
 			return true;
 		}
 	}

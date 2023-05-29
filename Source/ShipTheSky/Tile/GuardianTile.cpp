@@ -4,6 +4,7 @@
 #include "Tile/GuardianTile.h"
 #include "Controller/STSPlayerController.h"
 #include "Pawn/Commander.h"
+#include "Unit/BaseUnit.h"
 
 AGuardianTile::AGuardianTile()
 {
@@ -30,6 +31,7 @@ void AGuardianTile::AddUnitOnThisIsland(ABaseUnit* Unit)
 		else
 		{
 			UnitsOnThisIsland.Add(Unit);
+			Unit->SetCurIslandID(IslandID);
 		}
 	}
 }
@@ -41,5 +43,6 @@ void AGuardianTile::RemoveUnitFromThisIsland(ABaseUnit* Unit)
 		int32 Index;
 		UnitsOnThisIsland.Find(Unit, Index);
 		UnitsOnThisIsland.RemoveAt(Index);
+		Unit->SetCurIslandID(-1);
 	}
 }

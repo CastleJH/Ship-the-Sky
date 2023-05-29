@@ -110,7 +110,6 @@ void ABarracks::FinishUnitCreation()
 		EUnitType NewUnitType = WaitingUnitArray[0];
 		WaitingUnitArray.RemoveAt(0);
 		ABaseUnit* CreatedUnit = CreateUnit(NewUnitType);
-		CurTile->GetGuardianTile()->AddUnitOnThisIsland(CreatedUnit);
 		bIsCreatingUnit = false;
 		ResetProgress();
 	}
@@ -158,6 +157,7 @@ ABaseUnit* ABarracks::CreateUnit(EUnitType Type)
 		UE_LOG(LogTemp, Error, TEXT("Wrong Location"));
 		return nullptr;
 	}
+	CurTile->GetGuardianTile()->AddUnitOnThisIsland(Unit);
 	Commander->FillIslandWithUnit(CurTile->GetIslandID(), Unit);
 	return Unit;
 }

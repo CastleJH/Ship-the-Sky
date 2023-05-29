@@ -58,15 +58,27 @@ void AShip::InitializeStatWithResources(int32 WoodCloud, int32 WoodStorm, int32 
 
 bool AShip::AddUnit(ABaseUnit* Unit)
 {
-	if (Units.Contains(Unit)) return false;
-	if (Units.Num() == UnitCapacity) return false;
+	if (Units.Contains(Unit)) 
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Already In"));
+		return false;
+	}
+	if (Units.Num() == UnitCapacity)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Full"));
+		return false;
+	}
 	Units.Add(Unit);
 	return true;
 }
 
 bool AShip::RemoveUnit(class ABaseUnit* Unit)
 {
-	if (!Units.Contains(Unit)) return false;
+	if (!Units.Contains(Unit))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Not Exists"));
+		return false;
+	}
 	Units.Remove(Unit);
 	return true;
 }

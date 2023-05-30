@@ -21,6 +21,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TMap<uint8, int32> Resources;
 
+protected:
+	UPROPERTY(VisibleAnywhere, Category = "Widget", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	class UWidgetComponent* ResourcesWidgetComp;
+
 private:
 	UPROPERTY()
 	class ABaseBuilding* BuildingOnThisTile = nullptr;
@@ -36,17 +40,18 @@ public:
 	UFUNCTION(BlueprintPure)
 	class ABaseUnit* GetUnit() const { return UnitOnThisTile; }
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void OnCreateTileResourcesUI();
-
 	void SetResources(float Power);
 
 	virtual void TimePass(int32 GameDate) override;
 
 	virtual void OnTileReleased(AActor* Target, FKey ButtonPressed) override;
 
-protected:
+	void UpdateTileResourcesUI();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnUpdateTileResourcesUI();
 
+protected:
+	virtual void BeginPlay() override;
 	void GiveResourceToUnit();
 	void GiveProgressToBuilding();
 };

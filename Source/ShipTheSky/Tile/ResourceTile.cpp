@@ -6,10 +6,18 @@
 #include "Unit/BaseUnit.h"
 #include "Building/BaseBuilding.h"
 #include "Controller/STSPlayerController.h"
+#include "Components/WidgetComponent.h"
 
 AResourceTile::AResourceTile()
 {
 	//PrimaryActorTick.bCanEverTick = true;
+
+	ResourcesWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("Tile Resources UI"));
+	ResourcesWidgetComp->SetupAttachment(RootComponent);
+	ResourcesWidgetComp->SetRelativeRotation(FRotator(90.0f, 180.0f, 0.0f));
+	ResourcesWidgetComp->SetDrawSize(FVector2D(75.0f, 40.0f));
+	ResourcesWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
+	ResourcesWidgetComp->SetTickMode(ETickMode::Automatic);
 }
 
 void AResourceTile::SetResources(float Power)
@@ -64,6 +72,17 @@ void AResourceTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 	ASTSPlayerController* PlayerController = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
 	if (PlayerController->GetCommander()->GetTargetIslandTile() == nullptr) return;
 	PlayerController->OpenOwningIslandBuildingUI();
+}
+
+void AResourceTile::UpdateTileResourcesUI()
+{
+	ResourcesWidgetComp->SetWorldLocation(GetActorLocation() + FVector(-130.0f, 0.0f, 0.0f));
+	OnUpdateTileResourcesUI();
+}
+
+void AResourceTile::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 void AResourceTile::GiveResourceToUnit()

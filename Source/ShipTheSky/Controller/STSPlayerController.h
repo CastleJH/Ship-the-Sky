@@ -16,6 +16,8 @@ class SHIPTHESKY_API ASTSPlayerController : public APlayerController
 
 public:
 	ASTSPlayerController();
+	UPROPERTY(EditDefaultsOnly, Category = "Widget")
+	TSubclassOf<class UUserWidget> TileResourcesUIClass;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")

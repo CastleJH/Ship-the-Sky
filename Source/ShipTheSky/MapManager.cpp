@@ -244,7 +244,9 @@ void UMapManager::GenerateMap(int32 NumCol)
 		{
 			if (Elem->GetIslandType() == EIslandTileType::Guardian) continue;
 			Elem->SetActorRotation((Row[0]->GetActorLocation() - Elem->GetActorLocation()).Rotation() + FRotator(0.0f, -30.0f, 0.0f));
-			Cast<AResourceTile>(Elem)->OnCreateTileResourcesUI();
+			//Cast<AResourceTile>(Elem)->OnCreateTileResourcesUI();
+			Cast<AResourceTile>(Elem)->UpdateTileResourcesUI();
+			
 		}
 	}
 

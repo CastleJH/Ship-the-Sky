@@ -30,6 +30,8 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Tile Mesh", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* StaticMeshComp;
+	UPROPERTY(VisibleAnywhere, Category = "Widget", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	class UWidgetComponent* OutlineWidgetComp;
 	UPROPERTY(VisibleAnywhere, Category = "Tile")
 	ETileType TileType;
 

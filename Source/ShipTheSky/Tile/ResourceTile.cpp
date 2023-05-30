@@ -12,12 +12,12 @@ AResourceTile::AResourceTile()
 {
 	//PrimaryActorTick.bCanEverTick = true;
 
-	ResourcesWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("Tile Resources UI"));
-	ResourcesWidgetComp->SetupAttachment(RootComponent);
-	ResourcesWidgetComp->SetRelativeRotation(FRotator(90.0f, 180.0f, 0.0f));
-	ResourcesWidgetComp->SetDrawSize(FVector2D(75.0f, 40.0f));
-	ResourcesWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
-	ResourcesWidgetComp->SetTickMode(ETickMode::Automatic);
+	//ResourcesWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("Tile Resources UI"));
+	//ResourcesWidgetComp->SetupAttachment(RootComponent);
+	//ResourcesWidgetComp->SetRelativeRotation(FRotator(90.0f, 180.0f, 0.0f));
+	//ResourcesWidgetComp->SetDrawSize(FVector2D(75.0f, 40.0f));
+	//ResourcesWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
+	//ResourcesWidgetComp->SetTickMode(ETickMode::Automatic);
 }
 
 void AResourceTile::SetResources(float Power)
@@ -57,6 +57,7 @@ void AResourceTile::SetResources(float Power)
 		break;
 	}
 	while (Resources.Num() < 3) Resources.Add(TPair<uint8, int32>(Resources.Num() + (uint8)EResourceType::End, 0));
+	UpdateTileResourcesUI();
 }
 
 void AResourceTile::TimePass(int32 GameDate)
@@ -76,7 +77,7 @@ void AResourceTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 
 void AResourceTile::UpdateTileResourcesUI()
 {
-	ResourcesWidgetComp->SetWorldLocation(GetActorLocation() + FVector(-130.0f, 0.0f, 0.0f));
+	//ResourcesWidgetComp->SetWorldLocation(GetActorLocation() + FVector(-130.0f, 0.0f, 0.0f));
 	OnUpdateTileResourcesUI();
 }
 

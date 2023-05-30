@@ -15,9 +15,9 @@ ABaseTile::ABaseTile()
 	RootComponent = StaticMeshComp;
 	StaticMeshComp->CastShadow = false;
 
-	OutlineWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("Outline UI"));
-	OutlineWidgetComp->SetupAttachment(RootComponent);
-	OutlineWidgetComp->SetTickMode(ETickMode::Automatic);
+	//OutlineWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("Outline UI"));
+	//OutlineWidgetComp->SetupAttachment(RootComponent);
+	//OutlineWidgetComp->SetTickMode(ETickMode::Automatic);
 
 	OnReleased.AddDynamic(this, &ABaseTile::OnTileReleased);
 }

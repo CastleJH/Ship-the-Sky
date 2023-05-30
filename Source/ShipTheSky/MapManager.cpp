@@ -138,7 +138,7 @@ void UMapManager::GenerateMap(int32 NumCol)
 				}
 				if (IslandTileNum == 5) break;
 			}
-			if (IslandTileNum == 0)
+			while (IslandTileNum == 0)
 			{
 				int32 RandLoc = FMath::RandRange(0, 5);
 				NewR = RandRow + RowOffset[RandLoc];
@@ -156,20 +156,73 @@ void UMapManager::GenerateMap(int32 NumCol)
 		}
 	}
 
-	//타일 스폰
+	//수호자 타일 먼저 스폰
 	float Offs = 500.f;
 	float XCoord = 0.0f, YCoord = 0.0f;
 	float XDiff = Offs * 0.25f + Offs / FMath::Sqrt(3.0f);
 	float YDiff = Offs;
 	CurR = 0;
+	Map.SetNum(MapData.Num());
 	for (auto Row : MapData)
 	{
 		TArray<ABaseTile*> MapRow;
+		MapRow.SetNum(Row.Num());
+
 		YCoord = (CurR & 1) ? -Offs * 0.5f : 0.0f;
 		CurC = 0;
 
-		ABaseTile* Tile;
 		AIslandTile* IslandTile;
+		for (auto Elem : Row)
+		{
+			if (Elem == ETileType::Island)
+			{
+				if (!IslandID.IsValidIndex(CurR) || !IslandID[CurR].IsValidIndex(CurC))
+				{
+					UE_LOG(LogTemp, Error, TEXT("Wrong IslandID index."));
+					return;
+				}
+				if (IslandID[CurR][CurC] >= 10000)
+				{
+					int32 GuardianTileID = IslandID[CurR][CurC] - 10000;
+					IslandTile = GetWorld()->SpawnActor<AIslandTile>(GuardianTileClass, FVector(XCoord, YCoord, 60.0f), FRotator::ZeroRotator);
+					if (IslandTiles.IsValidIndex(GuardianTileID))
+					{
+						IslandTiles[GuardianTileID].Insert(IslandTile, 0);
+					}
+					else
+					{
+						UE_LOG(LogTemp, Error, TEXT("Wrong Island ID %d"), GuardianTileID);
+						return;
+					}
+					IslandTile->SetIslandID(GuardianTileID);
+					MapRow[0] = IslandTile;
+					IslandTile->SetRow(CurR);
+					IslandTile->SetCol(CurC);
+				}
+			}
+			YCoord += YDiff;
+			CurC++;
+		}
+		Map[CurR] = MapRow;
+		XCoord += XDiff;
+		CurR++;
+	}
+	XCoord -= XDiff;
+	YCoord -= YDiff;
+
+	//나머지 타일 스폰
+	Offs = 500.f;
+	XCoord = 0.0f, YCoord = 0.0f;
+	XDiff = Offs * 0.25f + Offs / FMath::Sqrt(3.0f);
+	YDiff = Offs;
+	CurR = 0;
+	for (auto Row : MapData)
+	{
+		YCoord = (CurR & 1) ? -Offs * 0.5f : 0.0f;
+		CurC = 0;
+
+		ABaseTile* Tile = nullptr;
+		AIslandTile* IslandTile = nullptr;
 		int32 IslandType;
 		for (auto Elem : Row)
 		{
@@ -181,31 +234,24 @@ void UMapManager::GenerateMap(int32 NumCol)
 					UE_LOG(LogTemp, Error, TEXT("Wrong IslandID index."));
 					return;
 				}
-				if (IslandID[CurR][CurC] >= 10000)
+				if (IslandID[CurR][CurC] < 10000)
 				{
-					IslandID[CurR][CurC] -= 10000;
-					IslandTile = GetWorld()->SpawnActor<AIslandTile>(GuardianTileClass, FVector(XCoord, YCoord, 60.0f), FRotator::ZeroRotator);
-					if (IslandTiles.IsValidIndex(IslandID[CurR][CurC]))
+					if (!IslandTiles.IsValidIndex(IslandID[CurR][CurC]) || !IslandTiles[IslandID[CurR][CurC]].IsValidIndex(0))
 					{
-						IslandTiles[IslandID[CurR][CurC]].Insert(IslandTile, 0);
-					}
-					else
-					{
-						UE_LOG(LogTemp, Error, TEXT("Wrong Island ID %d"), IslandID[CurR][CurC]);
+						UE_LOG(LogTemp, Error, TEXT("Wrong Guardian tile index."));
 						return;
 					}
-				}
-				else
-				{
+					FRotator Rotator = (IslandTiles[IslandID[CurR][CurC]][0]->GetActorLocation() - FVector(XCoord, YCoord, 60.0f)).Rotation() + FRotator(0.0f, -30.0f, 0.0f);
+
 					IslandType = FMath::RandRange(0, 2);
-					if (IslandType == 0) IslandTile = GetWorld()->SpawnActor<AIslandTile>(MineTileClass, FVector(XCoord, YCoord, 60.0f), FRotator::ZeroRotator);
-					else if (IslandType == 1) IslandTile = GetWorld()->SpawnActor<AIslandTile>(ForestTileClass, FVector(XCoord, YCoord, 60.0f), FRotator::ZeroRotator);
-					else IslandTile = GetWorld()->SpawnActor<AIslandTile>(FarmTileClass, FVector(XCoord, YCoord, 60.0f), FRotator::ZeroRotator);
+					if (IslandType == 0) IslandTile = GetWorld()->SpawnActor<AIslandTile>(MineTileClass, FVector(XCoord, YCoord, 60.0f), Rotator);
+					else if (IslandType == 1) IslandTile = GetWorld()->SpawnActor<AIslandTile>(ForestTileClass, FVector(XCoord, YCoord, 60.0f), Rotator);
+					else IslandTile = GetWorld()->SpawnActor<AIslandTile>(FarmTileClass, FVector(XCoord, YCoord, 60.0f), Rotator);
 					IslandTiles[IslandID[CurR][CurC]].Add(IslandTile);
 					Cast<AResourceTile>(IslandTile)->SetResources(1.0f);
+					IslandTile->SetIslandID(IslandID[CurR][CurC]);
+					Tile = IslandTile;
 				}
-				IslandTile->SetIslandID(IslandID[CurR][CurC]);
-				Tile = IslandTile;
 				break;
 			case ETileType::Cloud:
 				Tile = GetWorld()->SpawnActor<ABaseTile>(CloudTileClass, FVector(XCoord, YCoord, 0.0f), FRotator::ZeroRotator);
@@ -223,32 +269,25 @@ void UMapManager::GenerateMap(int32 NumCol)
 				Tile = GetWorld()->SpawnActor<ABaseTile>(MeteorTileClass, FVector(XCoord, YCoord, 0.0f), FRotator::ZeroRotator);
 				break;
 			}
-			MapRow.Add(Tile);
-			Tile->SetRow(CurR);
-			Tile->SetCol(CurC);
+			if (Elem != ETileType::Island || IslandID[CurR][CurC] < 10000)
+			{
+				if (Tile == nullptr)
+				{
+					UE_LOG(LogTemp, Error, TEXT("NULL TILE"));
+				}
+				Map[CurR][CurC] = Tile;
+				Tile->SetRow(CurR);
+				Tile->SetCol(CurC);
+			}
 			YCoord += YDiff;
 			CurC++;
 		}
 		XCoord += XDiff;
 		CurR++;
-		Map.Add(MapRow);
 	}
 	XCoord -= XDiff;
 	YCoord -= YDiff;
 	Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController())->CreateTileResourcesUIHolders(XCoord, YCoord);
-
-	//수호자 타일 향하도록 일반 섬타일들 회전
-	for (auto Row : IslandTiles)
-	{
-		for (auto Elem : Row)
-		{
-			if (Elem->GetIslandType() == EIslandTileType::Guardian) continue;
-			Elem->SetActorRotation((Row[0]->GetActorLocation() - Elem->GetActorLocation()).Rotation() + FRotator(0.0f, -30.0f, 0.0f));
-			//Cast<AResourceTile>(Elem)->OnCreateTileResourcesUI();
-			Cast<AResourceTile>(Elem)->UpdateTileResourcesUI();
-			
-		}
-	}
 
 	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, true);
 	TempSetStartLocation();

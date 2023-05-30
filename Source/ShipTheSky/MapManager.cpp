@@ -287,7 +287,18 @@ void UMapManager::GenerateMap(int32 NumCol)
 	}
 	XCoord -= XDiff;
 	YCoord -= YDiff;
+	
+	/*Holder 를 쓸 때만 사용***************************
 	Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController())->CreateTileResourcesUIHolders(XCoord, YCoord);
+	for (auto Row : IslandTiles)
+	{
+		for (auto Elem : Row)
+		{
+			AResourceTile* ResourceTile = Cast<AResourceTile>(Elem);
+			if (ResourceTile != nullptr) ResourceTile->OnUpdateTileResourcesUI();
+		}
+	}
+	***************************/
 
 	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, true);
 	TempSetStartLocation();

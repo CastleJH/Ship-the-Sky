@@ -10,7 +10,7 @@
 
 AResourceTile::AResourceTile()
 {
-	//PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = true;
 
 	//ResourcesWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("Tile Resources UI"));
 	//ResourcesWidgetComp->SetupAttachment(RootComponent);
@@ -77,8 +77,8 @@ void AResourceTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 
 void AResourceTile::UpdateTileResourcesUI()
 {
+	//OnUpdateTileResourcesUI();
 	//ResourcesWidgetComp->SetWorldLocation(GetActorLocation() + FVector(-130.0f, 0.0f, 0.0f));
-	OnUpdateTileResourcesUI();
 }
 
 void AResourceTile::BeginPlay()

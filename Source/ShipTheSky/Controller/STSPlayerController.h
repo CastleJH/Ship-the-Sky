@@ -34,7 +34,7 @@ private:
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	class UUserWidget* IngameMainUI;
 	class UUserWidget* ResourceUI;
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TArray<AActor*> TileResourcesUIHolders;
 	float CameraMovementSpeed;
 

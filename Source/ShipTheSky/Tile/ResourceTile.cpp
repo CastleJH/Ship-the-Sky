@@ -12,12 +12,13 @@ AResourceTile::AResourceTile()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	//ResourcesWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("Tile Resources UI"));
-	//ResourcesWidgetComp->SetupAttachment(RootComponent);
-	//ResourcesWidgetComp->SetRelativeRotation(FRotator(90.0f, 180.0f, 0.0f));
-	//ResourcesWidgetComp->SetDrawSize(FVector2D(75.0f, 40.0f));
-	//ResourcesWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
-	//ResourcesWidgetComp->SetTickMode(ETickMode::Automatic);
+	ResourcesWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("Tile Resources UI"));
+	ResourcesWidgetComp->SetupAttachment(RootComponent);
+	ResourcesWidgetComp->SetRelativeRotation(FRotator(90.0f, 180.0f, 0.0f));
+	ResourcesWidgetComp->SetDrawSize(FVector2D(75.0f, 40.0f));
+	ResourcesWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
+	ResourcesWidgetComp->SetTickMode(ETickMode::Automatic);
+	ResourcesWidgetComp->SetWidgetClass(LoadClass<UUserWidget>(nullptr, TEXT("/Game/UI/WBP_TileResourcesUI.WBP_TileResourcesUI_C")));
 }
 
 void AResourceTile::SetResources(float Power)

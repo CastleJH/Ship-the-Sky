@@ -78,8 +78,8 @@ void AResourceTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 
 void AResourceTile::UpdateTileResourcesUI()
 {
-	//OnUpdateTileResourcesUI();
-	//ResourcesWidgetComp->SetWorldLocation(GetActorLocation() + FVector(-130.0f, 0.0f, 0.0f));
+	OnUpdateTileResourcesUI();
+	ResourcesWidgetComp->SetWorldLocation(GetActorLocation() + FVector(-180.0f, 0.0f, 0.0f));
 }
 
 void AResourceTile::BeginPlay()

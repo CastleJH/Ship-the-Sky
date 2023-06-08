@@ -4,6 +4,7 @@
 #include "Tile/BaseTile.h"
 #include "Controller/STSPlayerController.h"
 #include "Pawn/Commander.h"
+#include "Ship.h"
 #include "Components/WidgetComponent.h"
 
 // Sets default values
@@ -41,7 +42,7 @@ void ABaseTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 
 	if (PlayerController->GetIsPathSelectionMode())
 	{
-
+		PlayerController->GetCommander()->GetTargetTile()->GetShip()->TryAddTileToPath(this);
 	}
 	else
 	{

@@ -10,14 +10,14 @@
 AShip::AShip()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	StaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ship Mesh"));
 	RootComponent = StaticMeshComp;
 	StaticMeshComp->CastShadow = false;
 
 	Durability = 100;
-	FlightPower = 10;
+	FlightPower = 3;
 	UnitCapacity = 4;
 
 	CloudResistance = FMath::RandRange(0, 10);
@@ -81,6 +81,29 @@ bool AShip::RemoveUnit(class ABaseUnit* Unit)
 	}
 	Units.Remove(Unit);
 	return true;
+}
+
+bool AShip::TryAddTileToPath(ABaseTile* Tile)
+{
+	if (Path.Num() != 0 && Path.Last(0) == Tile) return false;
+	else Path.Add(Tile);
+	return true;
+}
+
+void AShip::FollowPath()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Next"));
+	if (!Path.IsEmpty())
+	{
+		bool Success = TryLocateOnTile(Path[0]);
+		if (Success) Path.RemoveAt(0);
+
+		if (!Path.IsEmpty())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Next"));
+			GetWorld()->GetTimerManager().SetTimer(MoveTimer, this, &AShip::FollowPath, FlightPower, false, FlightPower);
+		}
+	}
 }
 
 

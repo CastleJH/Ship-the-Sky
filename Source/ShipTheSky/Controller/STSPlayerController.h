@@ -86,6 +86,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnButtonGenerateMap();
 	UFUNCTION(BlueprintCallable)
+	void OnButtonDepartShip();
+	UFUNCTION(BlueprintCallable)
 	void SetIsPathSelectionMode(bool IsPathSelectionMode);
 	UFUNCTION(BlueprintPure)
 	bool GetIsPathSelectionMode() const { return bIsPathSelectionMode; }

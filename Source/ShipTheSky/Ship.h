@@ -43,6 +43,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 UnitCapacity;
 
+	TArray<class ABaseTile*> Path;
+	FTimerHandle MoveTimer;
+
 public:
 	bool TryLocateOnTile(class ABaseTile* Tile);
 
@@ -84,4 +87,8 @@ public:
 
 	bool AddUnit(class ABaseUnit* Unit);
 	bool RemoveUnit(class ABaseUnit* Unit);
+
+	bool TryAddTileToPath(class ABaseTile* Tile);
+
+	void FollowPath();
 };

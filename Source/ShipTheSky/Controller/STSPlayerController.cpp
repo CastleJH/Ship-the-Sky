@@ -72,6 +72,11 @@ void ASTSPlayerController::OnButtonGenerateMap()
 	GetGameInstance()->GetSubsystem<UMapManager>()->GenerateMap(60);
 }
 
+void ASTSPlayerController::OnButtonDepartShip()
+{
+	GetCommander()->GetTargetTile()->GetShip()->FollowPath();
+}
+
 void ASTSPlayerController::SetIsPathSelectionMode(bool IsPathSelectionMode)
 {
 	bIsPathSelectionMode = IsPathSelectionMode;

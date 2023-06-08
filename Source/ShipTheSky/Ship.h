@@ -47,7 +47,9 @@ private:
 	FTimerHandle MoveTimer;
 
 public:
-	bool TryLocateOnTile(class ABaseTile* Tile);
+	void Tick(float DeltaTime) override;
+
+	bool TryLocateOnTile(class ABaseTile* Tile, bool RightAfter);
 
 	void InitializeStatWithResources(int32 WoodCloud, int32 WoodStorm, int32 WoodSun, int32 WoodLightning, int32 WoodMeteor);
 

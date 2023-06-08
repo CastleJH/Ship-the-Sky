@@ -127,6 +127,6 @@ bool AShipyard::CreateShip(FString ShipName)
 		return false;
 	}
 
-	Ship->TryLocateOnTile(CurTile);
+	Ship->TryLocateOnTile(CurTile, true);
 	return true;
 }

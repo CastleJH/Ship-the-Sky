@@ -5,6 +5,7 @@
 #include "Tile/BaseTile.h"
 #include "Tile/IslandTile.h"
 #include "MapManager.h"
+#include "Kismet/KismetMathLibrary.h" 
 
 // Sets default values
 AShip::AShip()
@@ -27,14 +28,22 @@ AShip::AShip()
 	MeteorResistance = FMath::RandRange(0, 10);
 }
 
-bool AShip::TryLocateOnTile(ABaseTile* Tile)
+void AShip::Tick(float DeltaTime)
+{
+	FVector LerpedPosition = FMath::Lerp(GetActorLocation(), CurTile->GetActorLocation() + FVector(0.0f, 0.0f, 250.0f), 0.05f);
+
+
+	SetActorLocation(LerpedPosition);
+}
+
+bool AShip::TryLocateOnTile(ABaseTile* Tile, bool RightAfter)
 {
 	if (Tile == nullptr) return false;
 	if (Tile->GetShip() != nullptr) return false;
 
 	if (CurTile != nullptr) CurTile->SetShip(nullptr);
 
-	SetActorLocation(Tile->GetActorLocation() + FVector(0.0f, 0.0f, 250.0f));
+	if (RightAfter) SetActorLocation(Tile->GetActorLocation() + FVector(0.0f, 0.0f, 250.0f));
 	CurTile = Tile;
 	Tile->SetShip(this);
 	SetActorHiddenInGame(false);
@@ -95,7 +104,7 @@ void AShip::FollowPath()
 	UE_LOG(LogTemp, Warning, TEXT("Next"));
 	if (!Path.IsEmpty())
 	{
-		bool Success = TryLocateOnTile(Path[0]);
+		bool Success = TryLocateOnTile(Path[0], false);
 		if (Success) Path.RemoveAt(0);
 
 		if (!Path.IsEmpty())

@@ -72,6 +72,25 @@ void ASTSPlayerController::OnButtonGenerateMap()
 	GetGameInstance()->GetSubsystem<UMapManager>()->GenerateMap(60);
 }
 
+void ASTSPlayerController::SetIsPathSelectionMode(bool IsPathSelectionMode)
+{
+	bIsPathSelectionMode = IsPathSelectionMode;
+	if (bIsPathSelectionMode)
+	{
+		CloseOwningIslandUI();
+		CloseShipUI();
+		
+		PathSelectionUI->AddToViewport();
+	}
+	else
+	{
+		OpenOwningIslandUI();
+		OpenShipUI();
+
+		PathSelectionUI->RemoveFromViewport();
+	}
+}
+
 void ASTSPlayerController::CreateTileResourcesUIHolders(float LastXCoord, float LastYCoord)
 {
 	//return;
@@ -123,6 +142,17 @@ void ASTSPlayerController::OnPossess(APawn* InPawn)
 	{
 		UE_LOG(LogTemp, Error, TEXT("No UI"));
 	}
+	PathSelectionUI = CreateWidget<UUserWidget>(GetWorld(), PathSelectionUIClass);
+	if (PathSelectionUI != nullptr)
+	{
+		//PathSelectionUI->AddToViewport();
+		//ClosePathSelectionUI();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("No UI"));
+	}
+
 }
 
 void ASTSPlayerController::MoveCameraHorizontal(float Value)

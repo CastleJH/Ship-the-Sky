@@ -16,7 +16,14 @@ void AGuardianTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 	Super::OnTileReleased(Target, ButtonPressed);
 	ASTSPlayerController* PlayerController = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
 
-	if (PlayerController->GetCommander()->GetTargetIslandTile() == nullptr) return;
+	if (PlayerController->GetIsPathSelectionMode())
+	{
+
+	}
+	else
+	{
+		if (PlayerController->GetCommander()->GetTargetIslandTile() == nullptr) return;
+	}
 }
 
 void AGuardianTile::AddUnitOnThisIsland(ABaseUnit* Unit)

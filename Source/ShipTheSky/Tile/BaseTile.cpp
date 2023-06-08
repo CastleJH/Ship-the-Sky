@@ -38,25 +38,34 @@ void ABaseTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *GetName());
 
 	ASTSPlayerController* PlayerController = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
-	//StaticMeshComp->SetRenderCustomDepth(true);
-	PlayerController->CloseOwningIslandUI();
-	PlayerController->CloseShipUI();
 
-	ABaseTile* CurrentTargetTile = PlayerController->GetCommander()->GetTargetTile();
-
-	if (CurrentTargetTile != nullptr)
+	if (PlayerController->GetIsPathSelectionMode())
 	{
-		//CurrentTargetTile->GetStaticMeshComponent()->SetRenderCustomDepth(false);
-		if (CurrentTargetTile == this) PlayerController->GetCommander()->SetTargetTile(nullptr);
+
+	}
+	else
+	{
+		//StaticMeshComp->SetRenderCustomDepth(true);
+
+		PlayerController->CloseOwningIslandUI();
+		PlayerController->CloseShipUI();
+
+		ABaseTile* CurrentTargetTile = PlayerController->GetCommander()->GetTargetTile();
+
+		if (CurrentTargetTile != nullptr)
+		{
+			//CurrentTargetTile->GetStaticMeshComponent()->SetRenderCustomDepth(false);
+			if (CurrentTargetTile == this) PlayerController->GetCommander()->SetTargetTile(nullptr);
+			else
+			{
+				PlayerController->GetCommander()->SetTargetTile(this);
+				if (ShipOnThisTile != nullptr) PlayerController->OpenShipUI();
+			}
+		}
 		else
 		{
 			PlayerController->GetCommander()->SetTargetTile(this);
 			if (ShipOnThisTile != nullptr) PlayerController->OpenShipUI();
 		}
-	}
-	else
-	{
-		PlayerController->GetCommander()->SetTargetTile(this);
-		if (ShipOnThisTile != nullptr) PlayerController->OpenShipUI();
 	}
 }

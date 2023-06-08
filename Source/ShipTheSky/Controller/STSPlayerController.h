@@ -25,6 +25,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
 	TSubclassOf<class UUserWidget> ResourceUIClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
+	TSubclassOf<class UUserWidget> PathSelectionUIClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Widget")
 	TSubclassOf<AActor> TileResourcesUIHolderClass;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Widget")
 	TArray<class UTexture2D*> ResourcesTexture;
@@ -34,6 +36,8 @@ private:
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	class UUserWidget* IngameMainUI;
 	class UUserWidget* ResourceUI;
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	class UUserWidget* PathSelectionUI;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TArray<AActor*> TileResourcesUIHolders;
 	float CameraMovementSpeed;
@@ -64,10 +68,10 @@ public:
 	void OpenShipUI();
 	UFUNCTION(BlueprintImplementableEvent)
 	void CloseShipUI();
-	UFUNCTION(BlueprintImplementableEvent)
-	void OpenShipPathSelectionUI();
-	UFUNCTION(BlueprintImplementableEvent)
-	void CloseShipPathSelectionUI();
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void OpenPathSelectionUI();
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void ClosePathSelectionUI();
 	UFUNCTION(BlueprintCallable)
 	bool OnButtonCreateUnitPressed(enum EUnitType Type);
 	UFUNCTION(BlueprintCallable)
@@ -82,9 +86,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnButtonGenerateMap();
 	UFUNCTION(BlueprintCallable)
-	void SetIsPathSelectionMode(bool IsPathSelectionMode) { bIsPathSelectionMode = IsPathSelectionMode; }
-	UFUNCTION(BlueprintCallable)
-	bool GetIsPathSelectionMode(bool IsPathSelection) const { return bIsPathSelectionMode; }
+	void SetIsPathSelectionMode(bool IsPathSelectionMode);
+	UFUNCTION(BlueprintPure)
+	bool GetIsPathSelectionMode() const { return bIsPathSelectionMode; }
 
 	void CreateTileResourcesUIHolders(float LastXCoord, float LastYCoord);
 

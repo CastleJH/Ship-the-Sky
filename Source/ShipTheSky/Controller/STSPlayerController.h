@@ -47,6 +47,8 @@ private:
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	int32 HolderPadding;
 
+	bool bIsPathSelectionMode;
+
 public:
 	UFUNCTION(BlueprintPure)
 	class ACommander* GetCommander() const { return Commander; }
@@ -62,6 +64,10 @@ public:
 	void OpenShipUI();
 	UFUNCTION(BlueprintImplementableEvent)
 	void CloseShipUI();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OpenShipPathSelectionUI();
+	UFUNCTION(BlueprintImplementableEvent)
+	void CloseShipPathSelectionUI();
 	UFUNCTION(BlueprintCallable)
 	bool OnButtonCreateUnitPressed(enum EUnitType Type);
 	UFUNCTION(BlueprintCallable)
@@ -75,6 +81,10 @@ public:
 	void OnButtonUnitDisembark(class ABaseUnit* Unit);
 	UFUNCTION(BlueprintCallable)
 	void OnButtonGenerateMap();
+	UFUNCTION(BlueprintCallable)
+	void SetIsPathSelectionMode(bool IsPathSelectionMode) { bIsPathSelectionMode = IsPathSelectionMode; }
+	UFUNCTION(BlueprintCallable)
+	bool GetIsPathSelectionMode(bool IsPathSelection) const { return bIsPathSelectionMode; }
 
 	void CreateTileResourcesUIHolders(float LastXCoord, float LastYCoord);
 

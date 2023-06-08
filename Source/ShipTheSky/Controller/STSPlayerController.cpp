@@ -21,6 +21,8 @@
 ASTSPlayerController::ASTSPlayerController()
 {
 	CameraMovementSpeed = 4000.0f;
+
+	bIsPathSelectionMode = false;
 }
 
 bool ASTSPlayerController::OnButtonCreateUnitPressed(EUnitType Type)

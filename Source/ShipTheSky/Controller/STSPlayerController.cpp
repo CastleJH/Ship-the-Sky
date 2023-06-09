@@ -74,7 +74,11 @@ void ASTSPlayerController::OnButtonGenerateMap()
 
 void ASTSPlayerController::OnButtonDepartShip()
 {
-	GetCommander()->GetTargetTile()->GetShip()->FollowPath();
+	CloseOwningIslandUI();
+	//if (GetCommander()->GetTargetTile()->GetShip() == nullptr) return;
+	//GetCommander()->GetTargetTile()->GetShip()->FollowPath();
+	if (GetCommander()->GetTargetShip() == nullptr) return;
+	GetCommander()->GetTargetShip()->FollowPath();
 }
 
 void ASTSPlayerController::SetIsPathSelectionMode(bool IsPathSelectionMode)
@@ -83,6 +87,7 @@ void ASTSPlayerController::SetIsPathSelectionMode(bool IsPathSelectionMode)
 	if (bIsPathSelectionMode)
 	{
 		CloseOwningIslandUI();
+		CloseShipUI();
 		CloseShipUI();
 		
 		PathSelectionUI->AddToViewport();

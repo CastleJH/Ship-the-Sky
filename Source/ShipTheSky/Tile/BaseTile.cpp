@@ -42,11 +42,17 @@ void ABaseTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 
 	if (PlayerController->GetIsPathSelectionMode())
 	{
+		if (PlayerController->GetCommander()->GetTargetTile()->GetShip() == nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No Ship"));
+			return;
+		}
 		PlayerController->GetCommander()->GetTargetTile()->GetShip()->TryAddTileToPath(this);
 	}
 	else
 	{
-		//StaticMeshComp->SetRenderCustomDepth(true);
+		//พ๊ วั มู ม๖ฟ๖
+		StaticMeshComp->SetRenderCustomDepth(true);
 
 		PlayerController->CloseOwningIslandUI();
 		PlayerController->CloseShipUI();
@@ -55,13 +61,15 @@ void ABaseTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 
 		if (CurrentTargetTile != nullptr)
 		{
-			//CurrentTargetTile->GetStaticMeshComponent()->SetRenderCustomDepth(false);
+			//พ๊ วั มู ม๖ฟ๖
+			CurrentTargetTile->GetStaticMeshComponent()->SetRenderCustomDepth(false);
 			if (CurrentTargetTile == this) PlayerController->GetCommander()->SetTargetTile(nullptr);
 			else
 			{
 				PlayerController->GetCommander()->SetTargetTile(this);
 				if (ShipOnThisTile != nullptr) PlayerController->OpenShipUI();
 			}
+			PlayerController->GetCommander()->SetTargetShip(ShipOnThisTile);
 		}
 		else
 		{

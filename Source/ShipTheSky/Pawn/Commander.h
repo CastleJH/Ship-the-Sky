@@ -56,6 +56,8 @@ public:
 	class AIslandTile* TargetIslandTile;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Commander")
 	class ABaseTile* TargetTile;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Commander")
+	class AShip* TargetShip;
 
 	TArray<int32> Resources;
 
@@ -75,6 +77,10 @@ public:
 	class ABaseTile* GetTargetTile() const { return TargetTile; }
 	UFUNCTION(BlueprintPure)
 	class AIslandTile* GetTargetIslandTile() const { return TargetIslandTile; }
+
+	void SetTargetShip(class AShip* Ship) { TargetShip = Ship; }
+
+	class AShip* GetTargetShip() const { return TargetShip; }
 
 	void SetResource(int32 Amount, EResourceType Type) { Resources[(int32)Type] = Amount; }
 

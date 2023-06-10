@@ -95,7 +95,10 @@ bool AShip::RemoveUnit(class ABaseUnit* Unit)
 bool AShip::TryAddTileToPath(ABaseTile* Tile)
 {
 	if (Path.Num() != 0 && Path.Last(0) == Tile) return false;
-	else Path.Add(Tile);
+	else
+	{
+		Path.Add(Tile);
+	}
 	return true;
 }
 

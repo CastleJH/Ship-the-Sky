@@ -43,6 +43,7 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 UnitCapacity;
 
+	UPROPERTY(VisibleAnywhere)
 	TArray<class ABaseTile*> Path;
 	FTimerHandle MoveTimer;
 

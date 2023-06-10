@@ -53,6 +53,9 @@ private:
 
 	bool bIsPathSelectionMode;
 
+	UFUNCTION()
+	void MouseRay();
+
 public:
 	UFUNCTION(BlueprintPure)
 	class ACommander* GetCommander() const { return Commander; }

@@ -23,6 +23,7 @@ ASTSPlayerController::ASTSPlayerController()
 	CameraMovementSpeed = 4000.0f;
 
 	bIsPathSelectionMode = false;
+	//bEnableMouseOverEvents = true;
 }
 
 bool ASTSPlayerController::OnButtonCreateUnitPressed(EUnitType Type)
@@ -57,10 +58,10 @@ void ASTSPlayerController::OnButtonUnitEmbark(ABaseUnit* Unit)
 
 void ASTSPlayerController::OnButtonUnitDisembark(ABaseUnit* Unit)
 {
-	AIslandTile* IslandTile = Commander->GetTargetIslandTile();
-	if (IslandTile != nullptr)
+	if (Commander->GetTargetShip() != nullptr)
 	{
-		AShip* Ship = Commander->GetTargetIslandTile()->GetShip();
+		AIslandTile* IslandTile = Cast<AIslandTile>(Commander->GetTargetShip()->GetCurTile());
+		if (IslandTile != nullptr)
 		Unit->Disembark(IslandTile->GetIslandID());
 		UE_LOG(LogTemp, Warning, TEXT("Disembark"));
 	}
@@ -126,6 +127,7 @@ void ASTSPlayerController::SetupInputComponent()
 	InputComponent->BindAxis(TEXT("MoveRight"), this, &ASTSPlayerController::MoveCameraHorizontal);
 	InputComponent->BindAxis(TEXT("MoveForward"), this, &ASTSPlayerController::MoveCameraVertical);
 	InputComponent->BindAxis(TEXT("Zoom"), this, &ASTSPlayerController::ZoomCamera);
+	//InputComponent->BindAction(TEXT("MouseRay"), EInputEvent::IE_Repeat, this, &ASTSPlayerController::MouseRay);
 }
 
 void ASTSPlayerController::OnPossess(APawn* InPawn)
@@ -184,4 +186,16 @@ void ASTSPlayerController::ZoomCamera(float Value)
 	FVector DeltaLocation = FVector::ZeroVector;
 	DeltaLocation.Z = Value * CameraMovementSpeed * UGameplayStatics::GetWorldDeltaSeconds(this) * 3.0f;
 	GetPawn()->AddActorWorldOffset(DeltaLocation);
+}
+
+void ASTSPlayerController::MouseRay()
+{
+	FHitResult OutResult;
+	GetHitResultUnderCursor(ECollisionChannel::ECC_WorldStatic, false, OutResult);
+	if (OutResult.bBlockingHit)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s %s"), *OutResult.GetActor()->GetActorNameOrLabel(), *OutResult.GetActor()->GetActorLocation().ToString());
+		if (GetCommander()->GetTargetShip() == nullptr) return;
+		GetCommander()->GetTargetShip()->TryAddTileToPath(Cast<ABaseTile>(OutResult.GetActor()));
+	}
 }

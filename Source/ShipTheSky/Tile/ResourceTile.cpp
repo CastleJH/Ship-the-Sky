@@ -2,6 +2,7 @@
 
 
 #include "Tile/ResourceTile.h"
+#include "Enums.h"
 #include "Pawn/Commander.h"
 #include "Unit/BaseUnit.h"
 #include "Building/BaseBuilding.h"
@@ -63,7 +64,7 @@ void AResourceTile::SetResources(float Power)
 
 void AResourceTile::TimePass(int32 GameDate)
 {
-	//나중에 1은 더 크게!! GameDAte % 30 == 29로.
+	//나중에 1은 더 크게!! GameDate % 30 == 29로.
 	if (GameDate % 1 == 0) GiveResourceToUnit();
 	GiveProgressToBuilding();
 }

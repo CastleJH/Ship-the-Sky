@@ -37,9 +37,9 @@ void ABaseUnit::LocateToResourceTile(AResourceTile* ResourceTile)
 		return;
 	}
 
-	if (ResourceTile->GetIslandID() != CurIslandID)
+	if (ResourceTile->GetIslandID() != CurIslandTile->GetIslandID())
 	{
-		UE_LOG(LogTemp, Error, TEXT("Different ISland"));
+		UE_LOG(LogTemp, Error, TEXT("Different Island"));
 		return;
 	}
 
@@ -50,35 +50,38 @@ void ABaseUnit::LocateToResourceTile(AResourceTile* ResourceTile)
 	SetActorHiddenInGame(false);
 
 	ResourceTile->SetUnit(this);
-	CurTile = ResourceTile;
+	CurIslandTile = ResourceTile;
 }
 
 bool ABaseUnit::Embark(AShip* Ship)
 {
-	if (Ship != nullptr && CurIslandID != -1 && Ship->AddUnit(this))
+	if (Ship != nullptr && CurIslandTile != nullptr && Ship->AddUnit(this))
 	{
 		SetActorHiddenInGame(true);
 
-		GetGameInstance()->GetSubsystem<UMapManager>()->GetGuardianTile(CurIslandID)->RemoveUnitFromThisIsland(this);
-		if (CurTile != nullptr)
+		if (CurIslandTile != nullptr)
 		{
-			Cast<AResourceTile>(CurTile)->SetUnit(nullptr);
-			CurTile = nullptr;
+			Cast<AResourceTile>(CurIslandTile)->SetUnit(nullptr);
+			GetGameInstance()->GetSubsystem<UMapManager>()->GetGuardianTile(CurIslandTile->GetIslandID())->RemoveUnitFromThisIsland(this);
+			SetCurIslandTile(nullptr);
 		}
 
 		CurShip = Ship;
 		return true;
 	}
 	if (Ship == nullptr) UE_LOG(LogTemp, Warning, TEXT("Ship nullptr fail"));
-	if (CurIslandID == -1) UE_LOG(LogTemp, Warning, TEXT("CurTile nullptr fail"));
+	if (CurIslandTile == nullptr) UE_LOG(LogTemp, Warning, TEXT("CurTile nullptr fail"));
 	if (!Ship->AddUnit(this)) UE_LOG(LogTemp, Warning, TEXT("Add Unit fail"));
 	return false;
 }
 
-bool ABaseUnit::Disembark(int32 IslandID)
+bool ABaseUnit::Disembark()
 {
 	if (CurShip != nullptr && CurShip->RemoveUnit(this))
 	{
+		AIslandTile* IslandTile = Cast<AIslandTile>(CurShip->GetCurTile());
+		if (IslandTile == nullptr) return false;
+		int32 IslandID = IslandTile->GetIslandID();
 		AGuardianTile* GuardianTile = GetGameInstance()->GetSubsystem<UMapManager>()->GetGuardianTile(IslandID);
 		if (GuardianTile != nullptr)
 		{

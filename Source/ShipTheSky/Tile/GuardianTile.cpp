@@ -38,7 +38,7 @@ void AGuardianTile::AddUnitOnThisIsland(ABaseUnit* Unit)
 		else
 		{
 			UnitsOnThisIsland.Add(Unit);
-			Unit->SetCurIslandID(IslandID);
+			Unit->SetCurIslandTile(this);
 		}
 	}
 }
@@ -47,9 +47,7 @@ void AGuardianTile::RemoveUnitFromThisIsland(ABaseUnit* Unit)
 {
 	if (UnitsOnThisIsland.Contains(Unit))
 	{
-		int32 Index;
-		UnitsOnThisIsland.Find(Unit, Index);
-		UnitsOnThisIsland.RemoveAt(Index);
-		Unit->SetCurIslandID(-1);
+		UnitsOnThisIsland.Remove(Unit);
+		Unit->SetCurIslandTile(nullptr);
 	}
 }

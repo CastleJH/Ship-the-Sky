@@ -6,7 +6,9 @@
 #include "Tile/ResourceTile.h"
 #include "Tile/GuardianTile.h"
 #include "Unit/BaseUnit.h"
-#include "Building/BaseBuilding.h"
+#include "Building/Barracks.h"
+#include "Building/Shipyard.h"
+#include "Ship.h"
 #include "MapManager.h"
 
 // Sets default values
@@ -18,49 +20,6 @@ ACommander::ACommander()
 	Resources.Init(0, (int32)EResourceType::End);
 	TargetIslandTile = nullptr;
 	TargetTile = nullptr;
-}
-
-// Called when the game starts or when spawned
-void ACommander::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-void ACommander::FillIslandWithUnit(int32 IslandID, ABaseUnit* Unit)
-{
-	AResourceTile* EmptyIslandTile = nullptr;
-	TArray<AIslandTile*> IslandTiles;
-	GetGameInstance()->GetSubsystem<UMapManager>()->GetSameIslandTiles(IslandID, IslandTiles);
-	for (auto Tile : IslandTiles)
-	{
-		if (Tile->GetIslandType() != EIslandTileType::Guardian)
-		{
-			if (Cast<AResourceTile>(Tile)->GetUnit() == nullptr)
-			{
-				if (Unit->GetUnitType() != EUnitType::Warrior)
-				{
-					if (Tile->GetIslandType() == EIslandTileType::Guardian) continue;
-					if (Tile->GetIslandType() == EIslandTileType::Mine && Unit->GetUnitType() != EUnitType::Miner) continue;
-					if (Tile->GetIslandType() == EIslandTileType::Forest && Unit->GetUnitType() != EUnitType::Woodcutter) continue;
-					if (Tile->GetIslandType() == EIslandTileType::Farm && Unit->GetUnitType() != EUnitType::Farmer) continue;
-				}
-				EmptyIslandTile = Cast<AResourceTile>(Tile);
-				break;
-			}
-		}
-	}
-
-	if (EmptyIslandTile && Unit)
-	{
-		Unit->LocateToResourceTile(EmptyIslandTile);
-	}
-}
-
-// Called every frame
-void ACommander::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
 }
 
 void ACommander::ConstructBuilding(AResourceTile* Tile, EBuildingType Type)
@@ -94,8 +53,74 @@ void ACommander::ConstructBuilding(AResourceTile* Tile, EBuildingType Type)
 	}
 }
 
+bool ACommander::TryCreateUnit(ABarracks* Barracks, EUnitType Type)
+{
+	if (Barracks == nullptr) return false;
+	Barracks->AddUnitCreationToArray(Type);
+	return true;
+}
+
+bool ACommander::TryCreateShip(AShipyard* Shipyard)
+{
+	if (Shipyard == nullptr) return false;
+	Shipyard->AddShipCreationToArray();
+	return true;
+}
+
+bool ACommander::TryEmbarkUnit(AShip* Ship, ABaseUnit* Unit)
+{
+	if (Ship == nullptr) return false;
+	if (Unit == nullptr) return false;
+	return Unit->Embark(Ship);
+}
+
+bool ACommander::TryDisembarkUnit(ABaseUnit* Unit)
+{
+	if (Unit == nullptr) return false;
+	return Unit->Disembark();
+}
+
+bool ACommander::TryDepartShip(AShip* Ship)
+{
+	if (Ship == nullptr) return false;
+	Ship->FollowPath();
+	return true;
+}
+
+void ACommander::FillIslandWithUnit(int32 IslandID, ABaseUnit* Unit)
+{
+	AResourceTile* EmptyIslandTile = nullptr;
+	TArray<AIslandTile*> IslandTiles;
+	GetGameInstance()->GetSubsystem<UMapManager>()->GetSameIslandTiles(IslandID, IslandTiles);
+	for (auto Tile : IslandTiles)
+	{
+		if (Tile->GetIslandType() != EIslandTileType::Guardian)
+		{
+			if (Cast<AResourceTile>(Tile)->GetUnit() == nullptr)
+			{
+				if (Unit->GetUnitType() != EUnitType::Warrior)
+				{
+					if (Tile->GetIslandType() == EIslandTileType::Guardian) continue;
+					if (Tile->GetIslandType() == EIslandTileType::Mine && Unit->GetUnitType() != EUnitType::Miner) continue;
+					if (Tile->GetIslandType() == EIslandTileType::Forest && Unit->GetUnitType() != EUnitType::Woodcutter) continue;
+					if (Tile->GetIslandType() == EIslandTileType::Farm && Unit->GetUnitType() != EUnitType::Farmer) continue;
+				}
+				EmptyIslandTile = Cast<AResourceTile>(Tile);
+				break;
+			}
+		}
+	}
+
+	if (EmptyIslandTile && Unit)
+	{
+		Unit->LocateToResourceTile(EmptyIslandTile);
+	}
+}
+
 void ACommander::SetTargetTile(ABaseTile* NewTile)
 {
 	TargetTile = NewTile;
 	TargetIslandTile = Cast<AIslandTile>(NewTile);
+	TargetResourceTile = Cast<AResourceTile>(NewTile);
+	TargetGuardianTile = Cast<AResourceTile>(NewTile);
 }

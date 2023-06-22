@@ -3,11 +3,8 @@
 
 #include "Controller/STSPlayerController.h"
 #include "STSGameState.h"
-#include "Pawn/Commander.h"
 #include "Pawn/PlayerCommander.h"
-#include "Tile/IslandTile.h"
 #include "Tile/ResourceTile.h"
-#include "Building/BaseBuilding.h"
 #include "Building/Barracks.h"
 #include "Building/Shipyard.h"
 #include "MapManager.h"
@@ -23,17 +20,18 @@ ASTSPlayerController::ASTSPlayerController()
 	CameraMovementSpeed = 4000.0f;
 
 	bIsPathSelectionMode = false;
-	//bEnableMouseOverEvents = true;
 }
 
 bool ASTSPlayerController::OnButtonCreateUnitPressed(EUnitType Type)
 {
-	return Cast<ABarracks>(Cast<AResourceTile>(Commander->GetTargetIslandTile())->GetBuilding())->AddUnitCreationToArray(Type);
+	if (Commander->GetTargetIslandTile() == nullptr) return false;
+	return Commander->TryCreateUnit(Cast<ABarracks>(Commander->GetTargetResoureTile()->GetBuilding()), Type);
 }
 
 bool ASTSPlayerController::OnButtonCreateShipPressed()
 {
-	return Cast<AShipyard>(Cast<AResourceTile>(Commander->GetTargetIslandTile())->GetBuilding())->AddShipCreationToArray();
+	if (Commander->GetTargetIslandTile() == nullptr) return false;
+	return Commander->TryCreateShip(Cast<AShipyard>(Commander->GetTargetResoureTile()->GetBuilding()));
 }
 
 void ASTSPlayerController::OnButtonConstructBuildingPressed(EBuildingType Type)
@@ -44,42 +42,18 @@ void ASTSPlayerController::OnButtonConstructBuildingPressed(EBuildingType Type)
 
 void ASTSPlayerController::OnButtonUnitEmbark(ABaseUnit* Unit)
 {
-	if (Commander->GetTargetIslandTile() != nullptr)
-	{
-		AShip* Ship = Commander->GetTargetIslandTile()->GetShip();
-		if (Ship != nullptr)
-		{
-			Unit->Embark(Ship);
-			UE_LOG(LogTemp, Warning, TEXT("Embark"));
-		}
-		else UE_LOG(LogTemp, Warning, TEXT("Embark Fail"));
-	}
+	Commander->TryEmbarkUnit(Commander->GetTargetShip(), Unit);
 }
 
 void ASTSPlayerController::OnButtonUnitDisembark(ABaseUnit* Unit)
 {
-	if (Commander->GetTargetShip() != nullptr)
-	{
-		AIslandTile* IslandTile = Cast<AIslandTile>(Commander->GetTargetShip()->GetCurTile());
-		if (IslandTile != nullptr)
-		Unit->Disembark(IslandTile->GetIslandID());
-		UE_LOG(LogTemp, Warning, TEXT("Disembark"));
-	}
-}
-
-void ASTSPlayerController::OnButtonGenerateMap()
-{
-	GetGameInstance()->GetSubsystem<UMapManager>()->ClearMap();
-	GetGameInstance()->GetSubsystem<UMapManager>()->GenerateMap(60);
+	Commander->TryDisembarkUnit(Unit);
 }
 
 void ASTSPlayerController::OnButtonDepartShip()
 {
 	CloseOwningIslandUI();
-	//if (GetCommander()->GetTargetTile()->GetShip() == nullptr) return;
-	//GetCommander()->GetTargetTile()->GetShip()->FollowPath();
-	if (GetCommander()->GetTargetShip() == nullptr) return;
-	GetCommander()->GetTargetShip()->FollowPath();
+	Commander->TryDepartShip(Commander->GetTargetShip());
 }
 
 void ASTSPlayerController::SetIsPathSelectionMode(bool IsPathSelectionMode)
@@ -100,24 +74,6 @@ void ASTSPlayerController::SetIsPathSelectionMode(bool IsPathSelectionMode)
 
 		PathSelectionUI->RemoveFromViewport();
 	}
-}
-
-void ASTSPlayerController::CreateTileResourcesUIHolders(float LastXCoord, float LastYCoord)
-{
-	//return;
-	HolderSize = 5000;
-	HolderPadding = 500;
-	TileResourcesUIHolderRow = (int32)LastXCoord / HolderSize + 1;
-	TileResourcesUIHolderCol = (int32)LastYCoord / HolderSize + 1;
-	for (int32 i = 0; i < TileResourcesUIHolderRow; i++)
-	{
-		for (int32 j = 0; j < TileResourcesUIHolderCol; j++)
-		{
-			AActor* Holder = GetWorld()->SpawnActor<AActor>(TileResourcesUIHolderClass, FVector(i * HolderSize, j * HolderSize, 180.0f), FRotator::ZeroRotator);
-			TileResourcesUIHolders.Add(Holder);
-		}
-	}
-	UE_LOG(LogTemp, Warning, TEXT("Holder created"));
 }
 
 void ASTSPlayerController::SetupInputComponent()

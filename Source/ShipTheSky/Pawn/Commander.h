@@ -4,24 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Enums.h"
 #include "Commander.generated.h"
 
-UENUM(BlueprintType)
-enum class EResourceType : uint8
-{
-	StoneCloud = 0,
-	StoneStorm,
-	StoneSun,
-	StoneLightning,
-	StoneMeteor,
-	WoodCloud,
-	WoodStorm,
-	WoodSun,
-	WoodLightning,
-	WoodMeteor,
-	Food,
-	End
-};
 
 UCLASS()
 class SHIPTHESKY_API ACommander : public APawn
@@ -33,6 +18,7 @@ public:
 	ACommander();
 
 public:
+	//건설할 건물 클래스
 	UPROPERTY(EditDefaultsOnly, Category = "Commander")
 	TSubclassOf<class ABaseBuilding> BarracksClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Commander")
@@ -41,8 +27,12 @@ public:
 	TSubclassOf<class ABaseBuilding> PortalClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Commander")
 	TSubclassOf<class ABaseBuilding> SanctuaryClass;
+	
+	//비행선 클래스
 	UPROPERTY(EditDefaultsOnly, Category = "Commander")
 	TSubclassOf<class AShip> ShipClass;
+
+	//유닛 클래스
 	UPROPERTY(EditDefaultsOnly, Category = "Commander")
 	TSubclassOf<class ABaseUnit> MinerClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Commander")
@@ -52,40 +42,56 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Commander")
 	TSubclassOf<class ABaseUnit> WarriorClass;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Commander")
-	class AIslandTile* TargetIslandTile;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Commander")
+private:
+	//지휘관이 작업 중인 타겟들
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Commander", meta = (AllowPrivateAccess = "true"))
 	class ABaseTile* TargetTile;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Commander")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Commander", meta = (AllowPrivateAccess = "true"))
+	class AIslandTile* TargetIslandTile;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Commander", meta = (AllowPrivateAccess = "true"))
+	class AResourceTile* TargetResourceTile;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Commander", meta = (AllowPrivateAccess = "true"))
+	class AResourceTile* TargetGuardianTile;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Commander", meta = (AllowPrivateAccess = "true"))
 	class AShip* TargetShip;
 
+	//지휘관이 보유한 자원
+	UPROPERTY(VisibleAnywhere)
 	TArray<int32> Resources;
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+public:
+	//지휘관이 내릴 수 있는 명령
 	UFUNCTION(BlueprintCallable)
 	void ConstructBuilding(class AResourceTile* Tile, enum EBuildingType Type);
+	UFUNCTION(BlueprintCallable)
+	bool TryCreateUnit(class ABarracks* Barracks, enum EUnitType Type);
+	UFUNCTION(BlueprintCallable)
+	bool TryCreateShip(class AShipyard* Shipyard);
+	UFUNCTION(BlueprintCallable)
+	bool TryEmbarkUnit(class AShip* Ship, class ABaseUnit* Unit);
+	UFUNCTION(BlueprintCallable)
+	bool TryDisembarkUnit(class ABaseUnit* Unit);
+	UFUNCTION(BlueprintCallable)
+	bool TryDepartShip(class AShip* Ship);
+	UFUNCTION(BlueprintCallable)
+	void FillIslandWithUnit(int32 IslandID, class ABaseUnit* Unit);
 
+	//지휘관 관련 변수들 접근
+	UFUNCTION(BlueprintCallable)
 	void SetTargetTile(class ABaseTile* NewTile);
-
+	UFUNCTION(BlueprintPure)
 	class ABaseTile* GetTargetTile() const { return TargetTile; }
 	UFUNCTION(BlueprintPure)
 	class AIslandTile* GetTargetIslandTile() const { return TargetIslandTile; }
-
+	UFUNCTION(BlueprintPure)
+	class AResourceTile* GetTargetResoureTile() const { return TargetResourceTile; }
+	UFUNCTION(BlueprintPure)
+	class AResourceTile* GetTargetGuardianTile() const { return TargetGuardianTile; }
+	UFUNCTION(BlueprintCallable)
 	void SetTargetShip(class AShip* Ship) { TargetShip = Ship; }
-
+	UFUNCTION(BlueprintPure)
 	class AShip* GetTargetShip() const { return TargetShip; }
-
 	void SetResource(int32 Amount, EResourceType Type) { Resources[(int32)Type] = Amount; }
-
 	UFUNCTION(BlueprintPure)
 	int32 GetResource(EResourceType Type) const { return Resources[(int32)Type]; }
-
-	void FillIslandWithUnit(int32 IslandID, class ABaseUnit* Unit);
 };

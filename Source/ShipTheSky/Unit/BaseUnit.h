@@ -4,17 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Enums.h"
 #include "BaseUnit.generated.h"
 
-UENUM(BlueprintType)
-enum class EUnitType : uint8
-{
-	Miner = 0,
-	Woodcutter,
-	Farmer,
-	Warrior,
-	None
-};
 
 UCLASS()
 class SHIPTHESKY_API ABaseUnit : public AActor
@@ -31,25 +23,20 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Unit")
 	EUnitType UnitType;
 	UPROPERTY(VisibleAnywhere, Category = "Unit")
-	int32 CurIslandID;
-	UPROPERTY(VisibleAnywhere, Category = "Unit")
-	class AIslandTile* CurTile;
+	class AIslandTile* CurIslandTile;
 	UPROPERTY(VisibleAnywhere, Category = "Unit")
 	class AShip* CurShip;
 
 public:
 	void LocateToResourceTile(class AResourceTile* ResourceTile);
 	bool Embark(class AShip* Ship);
-	bool Disembark(int32 IslandID);
+	bool Disembark();
 
 	UFUNCTION(BlueprintPure)
 	EUnitType GetUnitType() const { return UnitType; }
 	UFUNCTION(BlueprintPure)
-	int32 GetCurIslandID() const { return CurIslandID; }
-	void SetCurIslandID(int32 NewIslandID) { CurIslandID = NewIslandID; }
-	UFUNCTION(BlueprintPure)
-	class AIslandTile* GetCurTile() const { return CurTile; }
-	void SetCurTile(class AIslandTile* NewTile) { CurTile = NewTile; }
+	class AIslandTile* GetCurIslandTile() const { return CurIslandTile; }
+	void SetCurIslandTile(class AIslandTile* NewTile) { CurIslandTile = NewTile; }
 	UFUNCTION(BlueprintPure)
 	class AShip* GetCurShip() const { return CurShip; }
 };

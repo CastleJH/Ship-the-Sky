@@ -6,15 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "BaseBuilding.generated.h"
 
-UENUM(BlueprintType)
-enum class EBuildingType : uint8
-{
-	Barracks = 0,
-	Shipyard,
-	Portal,
-	Sanctuary
-};
-
 UCLASS()
 class SHIPTHESKY_API ABaseBuilding : public AActor
 {

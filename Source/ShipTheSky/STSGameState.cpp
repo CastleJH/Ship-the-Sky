@@ -8,8 +8,6 @@ void ASTSGameState::ResetIslandOwner(int32 NewIslandNum, bool bPlayerOwnAllIslan
 {
 	if (bPlayerOwnAllIsland) IslandOwner.Init(GetWorld()->GetFirstPlayerController(), NewIslandNum);
 	else IslandOwner.Init(nullptr, NewIslandNum);
-	for (auto elem : Actors) elem->Destroy();
-	Actors.Empty();
 }
 
 AController* ASTSGameState::GetIslandOwner(int32 IslandID) const
@@ -48,7 +46,7 @@ void ASTSGameState::ResetGameDate()
 	GameDateString = FString::Printf(TEXT("%d.%02d.%02d"), Year, Month, Day);
 }
 
-void ASTSGameState::SetGameDate()
+void ASTSGameState::IncreaseGameDate()
 {
 	GameDateInt32++;
 

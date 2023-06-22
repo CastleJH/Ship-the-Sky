@@ -16,49 +16,50 @@ class SHIPTHESKY_API ASTSPlayerController : public APlayerController
 
 public:
 	ASTSPlayerController();
+
+private:
+	//보유한 지휘관(폰)
+	UPROPERTY()
+	class ACommander* Commander = nullptr;
+
+	//UI 클래스
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
 	TSubclassOf<class UUserWidget> TileResourcesUIClass;
-
-protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
 	TSubclassOf<class UUserWidget> IngameMainUIClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
 	TSubclassOf<class UUserWidget> ResourceUIClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
 	TSubclassOf<class UUserWidget> PathSelectionUIClass;
-	UPROPERTY(EditDefaultsOnly, Category = "Widget")
-	TSubclassOf<AActor> TileResourcesUIHolderClass;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Widget")
-	TArray<class UTexture2D*> ResourcesTexture;
 
-private:
-	class ACommander* Commander = nullptr;
+	//UI
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	class UUserWidget* IngameMainUI;
+	UPROPERTY()
 	class UUserWidget* ResourceUI;
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	class UUserWidget* PathSelectionUI;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TArray<AActor*> TileResourcesUIHolders;
+
+	//자원 UI 이미지
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget", meta = (AllowPrivateAccess = "true"))
+	TArray<class UTexture2D*> ResourcesTexture;
+
+	//유저 입력 관련 변수들
 	float CameraMovementSpeed;
-
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	int32 TileResourcesUIHolderRow;
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	int32 TileResourcesUIHolderCol;
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	int32 HolderSize;
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	int32 HolderPadding;
-
 	bool bIsPathSelectionMode;
-
-	UFUNCTION()
-	void MouseRay();
 
 public:
 	UFUNCTION(BlueprintPure)
 	class ACommander* GetCommander() const { return Commander; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetIsPathSelectionMode(bool IsPathSelectionMode);
+	UFUNCTION(BlueprintPure)
+	bool GetIsPathSelectionMode() const { return bIsPathSelectionMode; }
+	
+	//UI 관련 함수
 	UFUNCTION(BlueprintImplementableEvent)
 	void OpenOwningIslandUI();
 	UFUNCTION(BlueprintImplementableEvent)
@@ -87,22 +88,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnButtonUnitDisembark(class ABaseUnit* Unit);
 	UFUNCTION(BlueprintCallable)
-	void OnButtonGenerateMap();
-	UFUNCTION(BlueprintCallable)
 	void OnButtonDepartShip();
-	UFUNCTION(BlueprintCallable)
-	void SetIsPathSelectionMode(bool IsPathSelectionMode);
-	UFUNCTION(BlueprintPure)
-	bool GetIsPathSelectionMode() const { return bIsPathSelectionMode; }
-
-	void CreateTileResourcesUIHolders(float LastXCoord, float LastYCoord);
-
-protected:
-	virtual void SetupInputComponent() override;
-	virtual void OnPossess(APawn* InPawn) override;
 
 private:
+	//유저 입력
+	virtual void SetupInputComponent() override;
 	void MoveCameraHorizontal(float Value);
 	void MoveCameraVertical(float Value);
 	void ZoomCamera(float Value);
+
+	virtual void OnPossess(APawn* InPawn) override;
+
+	UFUNCTION()
+	void MouseRay();
 };

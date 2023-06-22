@@ -2,13 +2,13 @@
 
 
 #include "MapManager.h"
-#include "Tile/BaseTile.h"
+#include "STSGameState.h"
 #include "Tile/IslandTile.h"
 #include "Tile/ResourceTile.h"
 #include "Tile/GuardianTile.h"
 #include "Pawn/PlayerCommander.h"
-#include "STSGameState.h"
 #include "Controller/STSPlayerController.h"
+#include "Enums.h"
 
 UMapManager::UMapManager()
 {
@@ -287,34 +287,20 @@ void UMapManager::GenerateMap(int32 NumCol)
 	}
 	XCoord -= XDiff;
 	YCoord -= YDiff;
-	
-	/*Holder 를 쓸 때만 사용***************************
-	Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController())->CreateTileResourcesUIHolders(XCoord, YCoord);
-	for (auto Row : IslandTiles)
-	{
-		for (auto Elem : Row)
-		{
-			AResourceTile* ResourceTile = Cast<AResourceTile>(Elem);
-			if (ResourceTile != nullptr) ResourceTile->OnUpdateTileResourcesUI();
-		}
-	}
-	***************************/
 
 	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, true);
 	TempSetStartLocation();
 }
 
-void UMapManager::ClearMap()
+void UMapManager::TimePassesToAllTile(int32 GameDate)
 {
-	for (auto Array : Map)
+	for (auto Island : IslandTiles)
 	{
-		for (auto Tile : Array)
+		for (auto Tile : Island)
 		{
-			Tile->Destroy();
+			if (Tile) Tile->TimePass(GameDate);
 		}
 	}
-	Map.Empty();
-	IslandTiles.Empty();
 }
 
 void UMapManager::GetSameIslandTiles(int32 IslandID, TArray<class AIslandTile*>& OutArray) const
@@ -363,15 +349,4 @@ void UMapManager::TempSetStartLocation()
 	StartPosition.X -= 1820;
 	Pawn->SetActorLocation(StartPosition);
 	//Cast<APlayerCommander>(Pawn)->SetTargetIslandTile(IslandTiles[RandStartIsland][0]);
-}
-
-void UMapManager::TimePassesToAllTile(int32 GameDate)
-{
-	for (auto Island : IslandTiles)
-	{
-		for (auto Tile : Island)
-		{
-			if (Tile) Tile->TimePass(GameDate);
-		}
-	}
 }

@@ -21,18 +21,25 @@ private:
 	FString GameDateString;
 	
 public:
+	//섬 소유권 초기화
 	void ResetIslandOwner(int32 NewIslandNum, bool bPlayerOwnAllIsland);
 
+	//섬 소유자 반환
 	UFUNCTION(BlueprintPure)
 	AController* GetIslandOwner(int32 IslandID) const;
 	
+	//섬 소유자 설정
 	void SetIslandOwner(int32 IslandID, class AController* NewOwner);
-	
+
+	//게임 날짜 초기화
+	void ResetGameDate();
+
+	//게임 날짜 반환
 	UFUNCTION(BlueprintPure)
 	FString GetGameDate() const { return GameDateString; }
-	void ResetGameDate();
-	void SetGameDate();
+
+	//게임 날짜 증가
+	void IncreaseGameDate();
 
 	FTimerHandle DateTimer;
-	TArray<AActor*> Actors;
 };

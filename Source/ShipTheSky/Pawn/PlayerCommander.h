@@ -19,7 +19,7 @@ public:
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Tile Mesh", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* CameraComp;
+	TObjectPtr<class UCameraComponent> CameraComp;
 
 protected:
 	// Called when the game starts or when spawned

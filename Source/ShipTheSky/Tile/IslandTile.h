@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Tile/BaseTile.h"
+#include "Enums.h"
 #include "IslandTile.generated.h"
 
 /**
@@ -25,29 +26,26 @@ class SHIPTHESKY_API AIslandTile : public ABaseTile
 	GENERATED_BODY()
 	
 public:
-	// Sets default values for this actor's properties
 	AIslandTile();
 
 protected:
-	//class UIslandResourceUI* IslandResourceUI;
-
+	//섬 관련 변수
 	UPROPERTY(VisibleAnywhere)
 	int32 IslandID = -1;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EIslandTileType IslandType;
 
 public:
+	//섬 관련 변수 접근
 	UFUNCTION(BlueprintPure)
 	int32 GetIslandID() const { return IslandID; }
 	void SetIslandID(int32 NewIslandID) { IslandID = NewIslandID; }
-
 	EIslandTileType GetIslandType() const { return IslandType; };
-
-	void OnTileReleased(AActor* Target, FKey ButtonPressed) override;
-
 	UFUNCTION(BlueprintPure)
 	class AGuardianTile* GetGuardianTile() const;
+	
+	//임시
+	void OnTileReleased(AActor* Target, FKey ButtonPressed) override;
 
 protected:
 	virtual void BeginPlay() override;

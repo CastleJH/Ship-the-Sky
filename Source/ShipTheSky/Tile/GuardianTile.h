@@ -17,7 +17,7 @@ public:
 	AGuardianTile();
 	
 protected:
-	void OnTileReleased(AActor* Target, FKey ButtonPressed) override;
+	virtual void OnTileSelectedAsView(class ASTSPlayerController* PlayerController) override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<class ABaseUnit*> UnitsOnThisIsland;

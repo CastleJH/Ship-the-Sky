@@ -47,7 +47,7 @@ public:
 	virtual void TimePass(int32 GameDate) override;
 
 	//임시
-	virtual void OnTileReleased(AActor* Target, FKey ButtonPressed) override;
+	virtual void OnTileSelectedAsView(class ASTSPlayerController* PlayerController) override;
 
 	//타일 자원 UI 설정
 	void UpdateTileResourcesUI();

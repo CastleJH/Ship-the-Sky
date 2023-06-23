@@ -19,8 +19,10 @@ public:
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Unit Mesh", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	USkeletalMeshComponent* SkeletalMeshComp;
+	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComp;
 	UPROPERTY(VisibleAnywhere, Category = "Unit")
+	
+	//유닛 관련 변수
 	EUnitType UnitType;
 	UPROPERTY(VisibleAnywhere, Category = "Unit")
 	class AIslandTile* CurIslandTile;
@@ -28,10 +30,12 @@ protected:
 	class AShip* CurShip;
 
 public:
+	//유닛에게 들어올 수 있는 명령
 	void LocateToResourceTile(class AResourceTile* ResourceTile);
 	bool Embark(class AShip* Ship);
 	bool Disembark();
 
+	//유닛 관련 변수 접근
 	UFUNCTION(BlueprintPure)
 	EUnitType GetUnitType() const { return UnitType; }
 	UFUNCTION(BlueprintPure)

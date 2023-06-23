@@ -14,12 +14,16 @@
 #include "Components/WidgetComponent.h"
 #include "Unit/BaseUnit.h"
 #include "Ship.h"
+#include "InputMappingContext.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 
 ASTSPlayerController::ASTSPlayerController()
 {
-	CameraMovementSpeed = 4000.0f;
-
+	CameraMovementSpeed = 125.0f;
+	CameraZoomSpeed = 400.0f;
 	bIsPathSelectionMode = false;
+	bIsPathSelectionValid = false;
 }
 
 bool ASTSPlayerController::OnButtonCreateUnitPressed(EUnitType Type)
@@ -59,20 +63,29 @@ void ASTSPlayerController::OnButtonDepartShip()
 void ASTSPlayerController::SetIsPathSelectionMode(bool IsPathSelectionMode)
 {
 	bIsPathSelectionMode = IsPathSelectionMode;
+	UInputMappingContext* NewMappingContext = PathSelectionMode;
 	if (bIsPathSelectionMode)
 	{
 		CloseOwningIslandUI();
 		CloseShipUI();
 		CloseShipUI();
-		
+		NewMappingContext = PathSelectionMode;
 		PathSelectionUI->AddToViewport();
 	}
 	else
 	{
 		OpenOwningIslandUI();
 		OpenShipUI();
-
+		NewMappingContext = TileSelectionMode;
 		PathSelectionUI->RemoveFromViewport();
+	}
+
+
+	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->ClearAllMappings();
+		Subsystem->AddMappingContext(NewMappingContext, 0);
 	}
 }
 
@@ -80,10 +93,57 @@ void ASTSPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	InputComponent->BindAxis(TEXT("MoveRight"), this, &ASTSPlayerController::MoveCameraHorizontal);
-	InputComponent->BindAxis(TEXT("MoveForward"), this, &ASTSPlayerController::MoveCameraVertical);
-	InputComponent->BindAxis(TEXT("Zoom"), this, &ASTSPlayerController::ZoomCamera);
-	//InputComponent->BindAction(TEXT("MouseRay"), EInputEvent::IE_Repeat, this, &ASTSPlayerController::MouseRay);
+	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
+
+	if (EnhancedInputComponent == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Wrong InputComponent"));
+	}
+	EnhancedInputComponent->BindAction(InputMove, ETriggerEvent::Triggered, this, &ASTSPlayerController::MoveCamera);
+	EnhancedInputComponent->BindAction(InputZoom, ETriggerEvent::Triggered, this, &ASTSPlayerController::ZoomCamera);
+	EnhancedInputComponent->BindAction(InputMouseReleased, ETriggerEvent::Triggered, this, &ASTSPlayerController::MouseReleased);
+	EnhancedInputComponent->BindAction(InputMousePressedForPath, ETriggerEvent::Triggered, this, &ASTSPlayerController::MousePressedForPath);
+	EnhancedInputComponent->BindAction(InputMouseDraggedForPath, ETriggerEvent::Triggered, this, &ASTSPlayerController::MouseDraggedForPath);
+
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->ClearAllMappings();
+		UInputMappingContext* NewMappingContext = TileSelectionMode;
+		Subsystem->AddMappingContext(NewMappingContext, 0);
+	}
+}
+
+void ASTSPlayerController::MoveCamera(const FInputActionValue& Value)
+{
+	FVector2D MovementVector = Value.Get<FVector2D>();
+	Commander->AddActorWorldOffset(FVector(MovementVector.X, MovementVector.Y, 0.0f) * CameraMovementSpeed);
+	//Commander->AddMovementInput(FVector(MovementVector.X, MovementVector.Y, 0.0f), CameraMovementSpeed);
+}
+
+void ASTSPlayerController::ZoomCamera(const FInputActionValue& Value)
+{
+	float Zoom = Value.Get<float>();
+	Commander->AddActorWorldOffset(FVector(0.0f, 0.0f, Zoom) * CameraZoomSpeed);
+	//Commander->AddMovementInput(FVector(0.0f, 0.0f, Zoom), CameraZoomSpeed);
+}
+
+void ASTSPlayerController::MouseReleased(const FInputActionValue& Value)
+{
+	ABaseTile* Tile = MouseRay();
+	if (Tile != nullptr) Tile->OnTileSelectedAsView(this);
+}
+
+void ASTSPlayerController::MousePressedForPath(const FInputActionValue& Value)
+{
+	ABaseTile* Tile = MouseRay();
+	if (Tile != nullptr) bIsPathSelectionValid = Tile->OnTileFirstSelectedAsPath(this);
+}
+
+void ASTSPlayerController::MouseDraggedForPath(const FInputActionValue& Value)
+{
+	if (!bIsPathSelectionValid) return;
+	ABaseTile* Tile = MouseRay();
+	if (Tile != nullptr) Tile->OnTileSelectedAsPath(this);
 }
 
 void ASTSPlayerController::OnPossess(APawn* InPawn)
@@ -123,35 +183,14 @@ void ASTSPlayerController::OnPossess(APawn* InPawn)
 
 }
 
-void ASTSPlayerController::MoveCameraHorizontal(float Value)
-{
-	FVector DeltaLocation = FVector::ZeroVector;
-	DeltaLocation.Y = Value * CameraMovementSpeed * UGameplayStatics::GetWorldDeltaSeconds(this);
-	GetPawn()->AddActorWorldOffset(DeltaLocation);
-}
-
-void ASTSPlayerController::MoveCameraVertical(float Value)
-{
-	FVector DeltaLocation = FVector::ZeroVector;
-	DeltaLocation.X = Value * CameraMovementSpeed * UGameplayStatics::GetWorldDeltaSeconds(this);
-	GetPawn()->AddActorWorldOffset(DeltaLocation);
-}
-
-void ASTSPlayerController::ZoomCamera(float Value)
-{
-	FVector DeltaLocation = FVector::ZeroVector;
-	DeltaLocation.Z = Value * CameraMovementSpeed * UGameplayStatics::GetWorldDeltaSeconds(this) * 3.0f;
-	GetPawn()->AddActorWorldOffset(DeltaLocation);
-}
-
-void ASTSPlayerController::MouseRay()
+ABaseTile* ASTSPlayerController::MouseRay()
 {
 	FHitResult OutResult;
 	GetHitResultUnderCursor(ECollisionChannel::ECC_WorldStatic, false, OutResult);
 	if (OutResult.bBlockingHit)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s %s"), *OutResult.GetActor()->GetActorNameOrLabel(), *OutResult.GetActor()->GetActorLocation().ToString());
-		if (GetCommander()->GetTargetShip() == nullptr) return;
-		GetCommander()->GetTargetShip()->TryAddTileToPath(Cast<ABaseTile>(OutResult.GetActor()));
+		ABaseTile* ReturnTile = Cast<ABaseTile>(OutResult.GetActor());
+		return ReturnTile;
 	}
+	return nullptr;
 }

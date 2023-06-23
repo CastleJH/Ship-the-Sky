@@ -15,8 +15,6 @@ ABaseTile::ABaseTile()
 	StaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Tile Mesh"));
 	RootComponent = StaticMeshComp;
 	StaticMeshComp->CastShadow = false;
-
-	OnReleased.AddDynamic(this, &ABaseTile::OnTileReleased);
 }
 
 void ABaseTile::TimePass(int32 GameDate)
@@ -30,22 +28,9 @@ void ABaseTile::BeginPlay()
 	SetActorScale3D(FVector(0.94f, 0.975f, 0.975f));
 }
 
-void ABaseTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
+void ABaseTile::OnTileSelectedAsView(ASTSPlayerController* PlayerController)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *GetName());
-
-	ASTSPlayerController* PlayerController = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
-
-	if (PlayerController->GetIsPathSelectionMode())
-	{
-		if (PlayerController->GetCommander()->GetTargetTile()->GetShip() == nullptr)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("No Ship"));
-			return;
-		}
-		PlayerController->GetCommander()->GetTargetTile()->GetShip()->TryAddTileToPath(this);
-	}
-	else
+	if (PlayerController->GetIsPathSelectionMode() == false)
 	{
 		//พ๊ วั มู ม๖ฟ๖
 		StaticMeshComp->SetRenderCustomDepth(true);
@@ -72,5 +57,32 @@ void ABaseTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
 			PlayerController->GetCommander()->SetTargetTile(this);
 			if (ShipOnThisTile != nullptr) PlayerController->OpenShipUI();
 		}
+	}
+}
+
+bool ABaseTile::OnTileFirstSelectedAsPath(ASTSPlayerController* PlayerController)
+{
+	if (PlayerController->GetIsPathSelectionMode())
+	{
+		if (PlayerController->GetCommander()->GetTargetShip() == nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No Ship"));
+			return false;
+		}
+		return PlayerController->GetCommander()->GetTargetShip()->TryAddTileToPath(this, true);
+	}
+	return false;
+}
+
+void ABaseTile::OnTileSelectedAsPath(ASTSPlayerController* PlayerController)
+{
+	if (PlayerController->GetIsPathSelectionMode())
+	{
+		if (PlayerController->GetCommander()->GetTargetShip() == nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No Ship"));
+			return;
+		}
+		PlayerController->GetCommander()->GetTargetShip()->TryAddTileToPath(this, false);
 	}
 }

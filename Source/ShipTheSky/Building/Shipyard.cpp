@@ -50,7 +50,7 @@ void AShipyard::CancelWaitingShipByIndex(int32 Index)
 
 float AShipyard::GetProgressRate() const
 {
-	return (float)Progress / (float)TimeNeed;
+	return FMath::Min(1.0f, (float)Progress / (float)TimeNeed);
 }
 
 void AShipyard::IncreaseProgress()
@@ -58,8 +58,8 @@ void AShipyard::IncreaseProgress()
 	if (!bIsCreatingShip) return;
 
 	Super::IncreaseProgress();
-
-	if (Progress == TimeNeed + 1)
+	
+	if (Progress >= TimeNeed + 1)
 	{
 		if (FinishShipCreation()) 
 			StartShipCreation();
@@ -124,9 +124,13 @@ bool AShipyard::CreateShip(FString ShipName)
 	if (CurTile == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Wrong Location"));
+		Ship->Destroy();
 		return false;
 	}
-
-	Ship->TryLocateOnTile(CurTile, true);
-	return true;
+	if (Ship->TryLocateOnTile(CurTile, true)) return true;
+	else
+	{
+		Ship->Destroy();
+		return false;
+	}
 }

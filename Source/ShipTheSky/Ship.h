@@ -17,15 +17,18 @@ public:
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Ship Mesh", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* StaticMeshComp;
+	TObjectPtr<UStaticMeshComponent> StaticMeshComp;
 	
 private:
+	//탑승 유닛
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TArray<class ABaseUnit*> Units;
 	
+	//현재 위치
 	UPROPERTY(VisibleAnywhere, Category = "Unit")
 	class ABaseTile* CurTile;
 
+	//비행선 스탯
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	int32 Durability;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -43,6 +46,7 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 UnitCapacity;
 
+	//비행 관련 변수
 	UPROPERTY(VisibleAnywhere)
 	TArray<class ABaseTile*> Path;
 	FTimerHandle MoveTimer;
@@ -54,6 +58,7 @@ public:
 
 	void InitializeStatWithResources(int32 WoodCloud, int32 WoodStorm, int32 WoodSun, int32 WoodLightning, int32 WoodMeteor);
 
+	//비행선 관련 변수 접근
 	class ABaseTile* GetCurTile() const { return CurTile; }
 
 	UFUNCTION(BlueprintPure)
@@ -88,10 +93,11 @@ public:
 	int32 GetUnitCapacity() const { return UnitCapacity; }
 	void SetUnitCapacity(int32 NewUnitCapacity) { UnitCapacity = NewUnitCapacity; }
 
+	//비행 관련
 	bool AddUnit(class ABaseUnit* Unit);
 	bool RemoveUnit(class ABaseUnit* Unit);
 
-	bool TryAddTileToPath(class ABaseTile* Tile);
+	bool TryAddTileToPath(class ABaseTile* Tile, bool bIsFirstPath);
 
 	void FollowPath();
 };

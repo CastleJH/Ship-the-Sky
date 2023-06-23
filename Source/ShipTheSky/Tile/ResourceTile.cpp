@@ -69,11 +69,9 @@ void AResourceTile::TimePass(int32 GameDate)
 	GiveProgressToBuilding();
 }
 
-void AResourceTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
+void AResourceTile::OnTileSelectedAsView(class ASTSPlayerController* PlayerController)
 {
-	Super::OnTileReleased(Target, ButtonPressed);
-	ASTSPlayerController* PlayerController = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
-
+	Super::OnTileSelectedAsView(PlayerController);
 	if (PlayerController->GetIsPathSelectionMode())
 	{
 

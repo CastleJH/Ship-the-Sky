@@ -17,26 +17,25 @@ public:
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Building Mesh", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* StaticMeshComp;
+	TObjectPtr<UStaticMeshComponent> StaticMeshComp;
+
+	//건물 관련 변수
 	UPROPERTY(VisibleAnywhere, Category = "Building")
 	EBuildingType BuildingType;
 	UPROPERTY(VisibleAnywhere, Category = "Building")
 	class AIslandTile* CurTile;
+
+	//건물의 작업 관련 변수
 	int32 Progress;
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
 public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+	//건물 관련 변수 접근
 	UFUNCTION(BlueprintPure)
 	EBuildingType GetBuildingType() const { return BuildingType; }
 	class AIslandTile* GetCurTile() const { return CurTile; }
 	void SetCurTile(class AIslandTile* NewTile) { CurTile = NewTile; };
 
+	//작업 진행
 	virtual void IncreaseProgress() { Progress++; }
 	void ResetProgress() { Progress = 0; }
 	int32 GetProgress() const { return Progress; }

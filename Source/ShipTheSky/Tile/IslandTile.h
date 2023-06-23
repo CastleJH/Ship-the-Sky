@@ -45,7 +45,7 @@ public:
 	class AGuardianTile* GetGuardianTile() const;
 	
 	//юс╫ц
-	void OnTileReleased(AActor* Target, FKey ButtonPressed) override;
+	virtual void OnTileSelectedAsView(class ASTSPlayerController* PlayerController) override;
 
 protected:
 	virtual void BeginPlay() override;

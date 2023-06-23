@@ -61,7 +61,8 @@ bool ABaseUnit::Embark(AShip* Ship)
 
 		if (CurIslandTile != nullptr)
 		{
-			Cast<AResourceTile>(CurIslandTile)->SetUnit(nullptr);
+			AResourceTile* Tile = Cast<AResourceTile>(CurIslandTile);
+			if (Tile != nullptr) Tile->SetUnit(nullptr);
 			GetGameInstance()->GetSubsystem<UMapManager>()->GetGuardianTile(CurIslandTile->GetIslandID())->RemoveUnitFromThisIsland(this);
 			SetCurIslandTile(nullptr);
 		}

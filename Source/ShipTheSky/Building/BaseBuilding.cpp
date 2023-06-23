@@ -14,18 +14,3 @@ ABaseBuilding::ABaseBuilding()
 	StaticMeshComp->CastShadow = false;
 
 }
-
-// Called when the game starts or when spawned
-void ABaseBuilding::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void ABaseBuilding::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-

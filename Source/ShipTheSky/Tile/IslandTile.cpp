@@ -19,10 +19,9 @@ void AIslandTile::BeginPlay()
 	SetActorScale3D(FVector(1.0f, 1.0f, 1.0f));
 }
 
-void AIslandTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
+void AIslandTile::OnTileSelectedAsView(ASTSPlayerController* PlayerController)
 {
-	Super::OnTileReleased(Target, ButtonPressed);
-	ASTSPlayerController* PlayerController = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
+	Super::OnTileSelectedAsView(PlayerController);
 
 	if (PlayerController->GetIsPathSelectionMode())
 	{

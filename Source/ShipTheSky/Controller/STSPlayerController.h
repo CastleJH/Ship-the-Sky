@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "InputActionValue.h"
 #include "STSPlayerController.generated.h"
 
 /**
@@ -48,7 +49,9 @@ private:
 
 	//유저 입력 관련 변수들
 	float CameraMovementSpeed;
+	float CameraZoomSpeed;
 	bool bIsPathSelectionMode;
+	bool bIsPathSelectionValid;
 
 public:
 	UFUNCTION(BlueprintPure)
@@ -92,13 +95,31 @@ public:
 
 private:
 	//유저 입력
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class UInputMappingContext> TileSelectionMode;
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class UInputMappingContext> PathSelectionMode;
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class UInputAction> InputMove;
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class UInputAction> InputZoom;
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class UInputAction> InputMouseReleased;
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class UInputAction> InputMousePressedForPath;
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class UInputAction> InputMouseDraggedForPath;
+
 	virtual void SetupInputComponent() override;
-	void MoveCameraHorizontal(float Value);
-	void MoveCameraVertical(float Value);
-	void ZoomCamera(float Value);
+
+	void MoveCamera(const FInputActionValue& Value);
+	void ZoomCamera(const FInputActionValue& Value);
+	void MouseReleased(const FInputActionValue& Value);
+	void MousePressedForPath(const FInputActionValue& Value);
+	void MouseDraggedForPath(const FInputActionValue& Value);
 
 	virtual void OnPossess(APawn* InPawn) override;
 
 	UFUNCTION()
-	void MouseRay();
+	class ABaseTile* MouseRay();
 };

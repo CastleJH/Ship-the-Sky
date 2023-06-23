@@ -36,7 +36,7 @@ public:
 
 	//타일 속성 관련 변수 접근
 	ETileType GetTileType() const { return TileType; }
-	void SetShip(class AShip* NewShip) { ShipOnThisTile = NewShip; }
+	virtual void SetShip(class AShip* NewShip) { ShipOnThisTile = NewShip; }
 	UFUNCTION(BlueprintPure)
 	class AShip* GetShip() const { return ShipOnThisTile; }
 	void SetRow(int32 NewRow) { Row = NewRow; }
@@ -46,7 +46,11 @@ public:
 
 	//임시
 	UFUNCTION(BlueprintCallable)
-	virtual void OnTileReleased(AActor* Target, FKey ButtonPressed);
+	virtual void OnTileSelectedAsView(class ASTSPlayerController* PlayerController);
+	UFUNCTION(BlueprintCallable)
+	bool OnTileFirstSelectedAsPath(class ASTSPlayerController* PlayerController);
+	UFUNCTION(BlueprintCallable)
+	void OnTileSelectedAsPath(class ASTSPlayerController* PlayerController);
 	UFUNCTION()
 	UStaticMeshComponent* GetStaticMeshComponent() const { return StaticMeshComp; }
 

@@ -11,11 +11,9 @@ AGuardianTile::AGuardianTile()
 	IslandType = EIslandTileType::Guardian;
 }
 
-void AGuardianTile::OnTileReleased(AActor* Target, FKey ButtonPressed)
+void AGuardianTile::OnTileSelectedAsView(class ASTSPlayerController* PlayerController)
 {
-	Super::OnTileReleased(Target, ButtonPressed);
-	ASTSPlayerController* PlayerController = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
-
+	Super::OnTileSelectedAsView(PlayerController);
 	if (PlayerController->GetIsPathSelectionMode())
 	{
 

@@ -32,7 +32,6 @@ void AShip::Tick(float DeltaTime)
 {
 	FVector LerpedPosition = FMath::Lerp(GetActorLocation(), CurTile->GetActorLocation() + FVector(0.0f, 0.0f, 250.0f), 0.05f);
 
-
 	SetActorLocation(LerpedPosition);
 }
 
@@ -92,14 +91,25 @@ bool AShip::RemoveUnit(class ABaseUnit* Unit)
 	return true;
 }
 
-bool AShip::TryAddTileToPath(ABaseTile* Tile)
+bool AShip::TryAddTileToPath(ABaseTile* Tile, bool bIsFirstPath)
 {
-	if (Path.Num() != 0 && Path.Last(0) == Tile) return false;
+	if (bIsFirstPath)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("CheckFirst"));
+		if (Path.Num() == 0 && Tile != CurTile) return false;
+		if (Path.Num() != 0 && Tile != Path.Last(0)) return false;
+		return true;
+	}
+	else if (Path.Num() != 0 && Path.Last(0) == Tile)
+	{
+		return false;
+	}
 	else
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Added %s"), *Tile->GetActorNameOrLabel());
 		Path.Add(Tile);
+		return true;
 	}
-	return true;
 }
 
 void AShip::FollowPath()
@@ -107,6 +117,11 @@ void AShip::FollowPath()
 	UE_LOG(LogTemp, Warning, TEXT("Next"));
 	if (!Path.IsEmpty())
 	{
+		if (Path[0] == CurTile)
+		{
+			Path.RemoveAt(0);
+			if (Path.IsEmpty()) return;
+		}
 		bool Success = TryLocateOnTile(Path[0], false);
 		if (Success) Path.RemoveAt(0);
 

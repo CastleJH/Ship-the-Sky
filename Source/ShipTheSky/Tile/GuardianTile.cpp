@@ -59,7 +59,7 @@ void AGuardianTile::BeginPlay()
 	AActor* Guardian = GetWorld()->SpawnActor<AActor>(Guardians[Index]);
 	Guardian->SetOwner(this);
 	Guardian->SetActorLocation(GetActorLocation());
-	Guardian->SetActorScale3D(FVector(2.0f, 2.0f, 2.0f));
+	Guardian->SetActorScale3D(FVector(3.0f, 3.0f, 3.0f));
 	FVector Direction(0.0f, 90.0f, 0.0f);
 	Guardian->SetActorRotation(Direction.Rotation());
 }

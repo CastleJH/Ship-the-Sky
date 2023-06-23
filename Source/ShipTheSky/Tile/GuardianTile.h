@@ -22,7 +22,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<class ABaseUnit*> UnitsOnThisIsland;
 
+	UPROPERTY(EditDefaultsOnly)
+	TArray<TSubclassOf<AActor>> Guardians;
 public:
 	void AddUnitOnThisIsland(class ABaseUnit* Unit);
 	void RemoveUnitFromThisIsland(class ABaseUnit* Unit);
+
+protected:
+	virtual void BeginPlay() override;
 };

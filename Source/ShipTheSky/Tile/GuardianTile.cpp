@@ -49,3 +49,17 @@ void AGuardianTile::RemoveUnitFromThisIsland(ABaseUnit* Unit)
 		Unit->SetCurIslandTile(nullptr);
 	}
 }
+
+void AGuardianTile::BeginPlay()
+{
+	Super::BeginPlay();
+
+	int32 Index = FMath::RandRange(0, Guardians.Num() - 1);
+
+	AActor* Guardian = GetWorld()->SpawnActor<AActor>(Guardians[Index]);
+	Guardian->SetOwner(this);
+	Guardian->SetActorLocation(GetActorLocation());
+	Guardian->SetActorScale3D(FVector(2.0f, 2.0f, 2.0f));
+	FVector Direction(0.0f, 90.0f, 0.0f);
+	Guardian->SetActorRotation(Direction.Rotation());
+}

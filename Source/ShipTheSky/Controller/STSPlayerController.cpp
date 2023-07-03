@@ -41,7 +41,6 @@ bool ASTSPlayerController::OnButtonCreateShipPressed()
 void ASTSPlayerController::OnButtonConstructBuildingPressed(EBuildingType Type)
 {
 	Commander->ConstructBuilding(Cast<AResourceTile>(Commander->GetTargetIslandTile()), Type);
-	OpenOwningIslandBuildingUI();
 }
 
 void ASTSPlayerController::OnButtonUnitEmbark(ABaseUnit* Unit)
@@ -56,8 +55,12 @@ void ASTSPlayerController::OnButtonUnitDisembark(ABaseUnit* Unit)
 
 void ASTSPlayerController::OnButtonDepartShip()
 {
-	CloseOwningIslandUI();
 	Commander->TryDepartShip(Commander->GetTargetShip());
+	SetIsPathSelectionMode(false);
+}
+
+void ASTSPlayerController::OnButtonStopShip()
+{
 }
 
 void ASTSPlayerController::SetIsPathSelectionMode(bool IsPathSelectionMode)
@@ -66,18 +69,11 @@ void ASTSPlayerController::SetIsPathSelectionMode(bool IsPathSelectionMode)
 	UInputMappingContext* NewMappingContext = PathSelectionMode;
 	if (bIsPathSelectionMode)
 	{
-		CloseOwningIslandUI();
-		CloseShipUI();
-		CloseShipUI();
 		NewMappingContext = PathSelectionMode;
-		PathSelectionUI->AddToViewport();
 	}
 	else
 	{
-		OpenOwningIslandUI();
-		OpenShipUI();
 		NewMappingContext = TileSelectionMode;
-		PathSelectionUI->RemoveFromViewport();
 	}
 
 
@@ -117,14 +113,12 @@ void ASTSPlayerController::MoveCamera(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
 	Commander->AddActorWorldOffset(FVector(MovementVector.X, MovementVector.Y, 0.0f) * CameraMovementSpeed);
-	//Commander->AddMovementInput(FVector(MovementVector.X, MovementVector.Y, 0.0f), CameraMovementSpeed);
 }
 
 void ASTSPlayerController::ZoomCamera(const FInputActionValue& Value)
 {
 	float Zoom = Value.Get<float>();
 	Commander->AddActorWorldOffset(FVector(0.0f, 0.0f, Zoom) * CameraZoomSpeed);
-	//Commander->AddMovementInput(FVector(0.0f, 0.0f, Zoom), CameraZoomSpeed);
 }
 
 void ASTSPlayerController::MouseReleased(const FInputActionValue& Value)
@@ -151,36 +145,16 @@ void ASTSPlayerController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 
 	Commander = Cast<ACommander>(GetPawn());
-	IngameMainUI = CreateWidget<UUserWidget>(GetWorld(), IngameMainUIClass);
-	if (IngameMainUI != nullptr)
+	IngameUI = CreateWidget<UUserWidget>(GetWorld(), IngameUIClass);
+	if (IngameUI != nullptr)
 	{
-		IngameMainUI->AddToViewport();
+		IngameUI->AddToViewport();
 		UE_LOG(LogTemp, Warning, TEXT("Main UI"));
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("No UI"));
 	}
-	ResourceUI = CreateWidget<UUserWidget>(GetWorld(), ResourceUIClass);
-	if (ResourceUI != nullptr)
-	{
-		ResourceUI->AddToViewport();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("No UI"));
-	}
-	PathSelectionUI = CreateWidget<UUserWidget>(GetWorld(), PathSelectionUIClass);
-	if (PathSelectionUI != nullptr)
-	{
-		//PathSelectionUI->AddToViewport();
-		//ClosePathSelectionUI();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("No UI"));
-	}
-
 }
 
 ABaseTile* ASTSPlayerController::MouseRay()

@@ -29,10 +29,7 @@ void AIslandTile::OnTileSelectedAsView(ASTSPlayerController* PlayerController)
 	}
 	else
 	{
-		if (PlayerController->GetCommander()->GetTargetTile() == nullptr) return;
 
-		PlayerController->CloseOwningIslandBuildingUI();
-		PlayerController->OpenOwningIslandUI();
 	}
 	
 }

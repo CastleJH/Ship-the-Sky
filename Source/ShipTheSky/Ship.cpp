@@ -112,6 +112,11 @@ bool AShip::TryAddTileToPath(ABaseTile* Tile, bool bIsFirstPath)
 	}
 }
 
+void AShip::EmptyPath()
+{
+	Path.Empty();
+}
+
 void AShip::FollowPath()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Next"));

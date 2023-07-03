@@ -17,7 +17,7 @@ ACommander::ACommander()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	Resources.Init(0, (int32)EResourceType::End);
+	Resources.Init(0, (int32)EResourceType::None);
 	TargetIslandTile = nullptr;
 	TargetTile = nullptr;
 }

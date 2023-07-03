@@ -25,23 +25,13 @@ private:
 
 	//UI 클래스
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
-	TSubclassOf<class UUserWidget> TileResourcesUIClass;
+	TSubclassOf<class UUserWidget> IngameUIClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
-	TSubclassOf<class UUserWidget> IngameMainUIClass;
-	UPROPERTY(EditDefaultsOnly, Category = "Widget")
-	TSubclassOf<class UUserWidget> ResourceUIClass;
-	UPROPERTY(EditDefaultsOnly, Category = "Widget")
-	TSubclassOf<class UUserWidget> PathSelectionUIClass;
+	TSubclassOf<class UUserWidget> TileResourceUIClass;
 
 	//UI
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	class UUserWidget* IngameMainUI;
-	UPROPERTY()
-	class UUserWidget* ResourceUI;
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	class UUserWidget* PathSelectionUI;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	TArray<AActor*> TileResourcesUIHolders;
+	class UUserWidget* IngameUI;
 
 	//자원 UI 이미지
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget", meta = (AllowPrivateAccess = "true"))
@@ -57,33 +47,17 @@ public:
 	UFUNCTION(BlueprintPure)
 	class ACommander* GetCommander() const { return Commander; }
 
+	//경로 선택 모드
 	UFUNCTION(BlueprintCallable)
 	void SetIsPathSelectionMode(bool IsPathSelectionMode);
 	UFUNCTION(BlueprintPure)
-	bool GetIsPathSelectionMode() const { return bIsPathSelectionMode; }
-	
-	//UI 관련 함수
-	UFUNCTION(BlueprintImplementableEvent)
-	void OpenOwningIslandUI();
-	UFUNCTION(BlueprintImplementableEvent)
-	void CloseOwningIslandUI();
-	UFUNCTION(BlueprintImplementableEvent)
-	void OpenOwningIslandBuildingUI();
-	UFUNCTION(BlueprintImplementableEvent)
-	void CloseOwningIslandBuildingUI();
-	UFUNCTION(BlueprintImplementableEvent)
-	void OpenShipUI();
-	UFUNCTION(BlueprintImplementableEvent)
-	void CloseShipUI();
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void OpenPathSelectionUI();
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void ClosePathSelectionUI();
+	bool GetIsPathSelectionMode() const { return bIsPathSelectionMode; }	
+
+	//UI 버튼 눌릴 때
 	UFUNCTION(BlueprintCallable)
 	bool OnButtonCreateUnitPressed(enum EUnitType Type);
 	UFUNCTION(BlueprintCallable)
 	bool OnButtonCreateShipPressed();
-	//bool OnButtonCreateShipPressed(int32 WoodCloud, int32 WoodStorm, int32 WoodSun, int32 WoodLightning, int32 WoodMeteor);
 	UFUNCTION(BlueprintCallable)
 	void OnButtonConstructBuildingPressed(enum EBuildingType Type);
 	UFUNCTION(BlueprintCallable)
@@ -92,6 +66,8 @@ public:
 	void OnButtonUnitDisembark(class ABaseUnit* Unit);
 	UFUNCTION(BlueprintCallable)
 	void OnButtonDepartShip();
+	UFUNCTION(BlueprintCallable)
+	void OnButtonStopShip();
 
 private:
 	//유저 입력

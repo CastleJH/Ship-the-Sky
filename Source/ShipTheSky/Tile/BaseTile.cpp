@@ -6,15 +6,24 @@
 #include "Pawn/Commander.h"
 #include "Ship.h"
 #include "Components/WidgetComponent.h"
+#include "BaseTile.h"
 
 // Sets default values
 ABaseTile::ABaseTile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	StaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Tile Mesh"));
 	RootComponent = StaticMeshComp;
 	StaticMeshComp->CastShadow = false;
+}
+
+void ABaseTile::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *GetName());
+	Cast<ACommander>(GetWorld()->GetFirstPlayerController()->GetPawn())->SetTargetShip(ShipOnThisTile);
 }
 
 void ABaseTile::TimePass(int32 GameDate)
@@ -25,6 +34,7 @@ void ABaseTile::TimePass(int32 GameDate)
 void ABaseTile::BeginPlay()
 {
 	Super::BeginPlay();
+	SetActorTickEnabled(false);
 	SetActorScale3D(FVector(0.94f, 0.975f, 0.975f));
 }
 
@@ -35,27 +45,24 @@ void ABaseTile::OnTileSelectedAsView(ASTSPlayerController* PlayerController)
 		//พ๊ วั มู ม๖ฟ๖
 		StaticMeshComp->SetRenderCustomDepth(true);
 
-		PlayerController->CloseOwningIslandUI();
-		PlayerController->CloseShipUI();
-
 		ABaseTile* CurrentTargetTile = PlayerController->GetCommander()->GetTargetTile();
 
 		if (CurrentTargetTile != nullptr)
 		{
 			//พ๊ วั มู ม๖ฟ๖
 			CurrentTargetTile->GetStaticMeshComponent()->SetRenderCustomDepth(false);
+			CurrentTargetTile->SetActorTickEnabled(false);
 			if (CurrentTargetTile == this) PlayerController->GetCommander()->SetTargetTile(nullptr);
 			else
 			{
 				PlayerController->GetCommander()->SetTargetTile(this);
-				if (ShipOnThisTile != nullptr) PlayerController->OpenShipUI();
+				SetActorTickEnabled(true);
 			}
-			PlayerController->GetCommander()->SetTargetShip(ShipOnThisTile);
 		}
 		else
 		{
 			PlayerController->GetCommander()->SetTargetTile(this);
-			if (ShipOnThisTile != nullptr) PlayerController->OpenShipUI();
+			SetActorTickEnabled(true);
 		}
 	}
 }

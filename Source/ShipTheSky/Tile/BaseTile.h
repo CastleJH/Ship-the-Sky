@@ -31,6 +31,8 @@ protected:
 	int32 Col;
 
 public:
+	virtual void Tick(float DeltaSeconds) override;
+
 	//타일이 일정 시간마다 실행할 함수
 	virtual void TimePass(int32 GameDate);
 

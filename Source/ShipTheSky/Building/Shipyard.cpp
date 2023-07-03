@@ -34,7 +34,7 @@ FString AShipyard::GetWaitingShipNameByIndex(int32 Index) const
 	}
 	else
 	{
-		return FString(TEXT(" "));
+		return FString(TEXT(""));
 	}
 }
 

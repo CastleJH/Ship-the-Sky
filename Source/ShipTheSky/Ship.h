@@ -98,6 +98,9 @@ public:
 	bool RemoveUnit(class ABaseUnit* Unit);
 
 	bool TryAddTileToPath(class ABaseTile* Tile, bool bIsFirstPath);
+	UFUNCTION(BlueprintCallable)
+	void EmptyPath();
 
 	void FollowPath();
+
 };

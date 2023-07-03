@@ -42,7 +42,7 @@ void UMapManager::GenerateMap(int32 NumCol)
 		TArray<int32> IslandIDRow;
 		for (int32 Col = 0; Col < NumCol; Col++)
 		{
-			NewRow.Add(ETileType(FMath::RandRange(1, (int32)ETileType::End - 1)));
+			NewRow.Add(ETileType(FMath::RandRange(1, (int32)ETileType::None - 1)));
 			IslandIDRow.Add(-1);
 		}
 		MapData.Add(NewRow);
@@ -58,7 +58,7 @@ void UMapManager::GenerateMap(int32 NumCol)
 			{
 				if (!MapData.IsValidIndex(CurR) || !MapData[CurR].IsValidIndex(CurC)) continue;
 
-				int32 Poss[(int32)ETileType::End + 1] = { 0 };
+				int32 Poss[(int32)ETileType::None + 1] = { 0 };
 				MaxPoss = 0;
 				for (int i = 0; i < 6; i++)
 				{

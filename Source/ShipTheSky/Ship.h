@@ -59,6 +59,7 @@ public:
 	void InitializeStatWithResources(int32 WoodCloud, int32 WoodStorm, int32 WoodSun, int32 WoodLightning, int32 WoodMeteor);
 
 	//비행선 관련 변수 접근
+	UFUNCTION(BlueprintPure)
 	class ABaseTile* GetCurTile() const { return CurTile; }
 
 	UFUNCTION(BlueprintPure)

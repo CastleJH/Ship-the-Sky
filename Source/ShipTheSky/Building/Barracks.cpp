@@ -12,7 +12,7 @@
 ABarracks::ABarracks()
 {
 	BuildingType = EBuildingType::Barracks;
-	TimeNeed = 10;
+	TimeNeed = 3;
 	bIsCreatingUnit = false;
 }
 

@@ -17,9 +17,12 @@
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameFramework/SpringArmComponent.h"
 
 ASTSPlayerController::ASTSPlayerController()
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	CameraMovementSpeed = 125.0f;
 	CameraZoomSpeed = 400.0f;
 	bIsPathSelectionMode = false;
@@ -61,6 +64,11 @@ void ASTSPlayerController::OnButtonDepartShip()
 
 void ASTSPlayerController::OnButtonStopShip()
 {
+}
+
+void ASTSPlayerController::OnButtonLookTile(class ABaseTile* Tile)
+{
+	PlayerCommander->MoveCommanderToTile(Tile, true);
 }
 
 void ASTSPlayerController::SetIsPathSelectionMode(bool IsPathSelectionMode)
@@ -118,13 +126,17 @@ void ASTSPlayerController::MoveCamera(const FInputActionValue& Value)
 void ASTSPlayerController::ZoomCamera(const FInputActionValue& Value)
 {
 	float Zoom = Value.Get<float>();
-	Commander->AddActorWorldOffset(FVector(0.0f, 0.0f, Zoom) * CameraZoomSpeed);
+	PlayerCommander->SpringArmComp->TargetArmLength += CameraZoomSpeed * Zoom;
 }
 
 void ASTSPlayerController::MouseReleased(const FInputActionValue& Value)
 {
 	ABaseTile* Tile = MouseRay();
-	if (Tile != nullptr) Tile->OnTileSelectedAsView(this);
+	if (Tile != nullptr)
+	{
+		Tile->OnTileSelectedAsView(this);
+		LockedShip = nullptr;
+	}
 }
 
 void ASTSPlayerController::MousePressedForPath(const FInputActionValue& Value)
@@ -145,6 +157,7 @@ void ASTSPlayerController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 
 	Commander = Cast<ACommander>(GetPawn());
+	PlayerCommander = Cast<APlayerCommander>(Commander);
 	IngameUI = CreateWidget<UUserWidget>(GetWorld(), IngameUIClass);
 	if (IngameUI != nullptr)
 	{
@@ -167,4 +180,15 @@ ABaseTile* ASTSPlayerController::MouseRay()
 		return ReturnTile;
 	}
 	return nullptr;
+}
+
+void ASTSPlayerController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (LockedShip != nullptr)
+	{
+		if (Commander->GetTargetTile() != LockedShip->GetCurTile()) LockedShip->GetCurTile()->OnTileSelectedAsView(this);
+		Commander->SetActorLocation(LockedShip->GetActorLocation());
+	}
 }

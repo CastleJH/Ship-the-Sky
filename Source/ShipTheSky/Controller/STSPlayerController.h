@@ -22,6 +22,8 @@ private:
 	//보유한 지휘관(폰)
 	UPROPERTY()
 	class ACommander* Commander = nullptr;
+	UPROPERTY()
+	class APlayerCommander* PlayerCommander;
 
 	//UI 클래스
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
@@ -42,6 +44,10 @@ private:
 	float CameraZoomSpeed;
 	bool bIsPathSelectionMode;
 	bool bIsPathSelectionValid;
+
+	//비행선 고정 모드
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	class AShip* LockedShip;
 
 public:
 	UFUNCTION(BlueprintPure)
@@ -68,6 +74,8 @@ public:
 	void OnButtonDepartShip();
 	UFUNCTION(BlueprintCallable)
 	void OnButtonStopShip();
+	UFUNCTION(BlueprintCallable)
+	void OnButtonLookTile(class ABaseTile* Tile);
 
 private:
 	//유저 입력
@@ -98,4 +106,7 @@ private:
 
 	UFUNCTION()
 	class ABaseTile* MouseRay();
+
+public:
+	virtual void Tick(float DeltaSeconds) override;
 };

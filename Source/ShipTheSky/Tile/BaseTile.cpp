@@ -22,7 +22,6 @@ void ABaseTile::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *GetName());
 	Cast<ACommander>(GetWorld()->GetFirstPlayerController()->GetPawn())->SetTargetShip(ShipOnThisTile);
 }
 

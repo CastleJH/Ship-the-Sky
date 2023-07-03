@@ -342,11 +342,7 @@ void UMapManager::GetAdjacentTiles(ABaseTile* Tile, TArray<class ABaseTile*>& Ou
 void UMapManager::TempSetStartLocation()
 {
 	int32 RandStartIsland = 50;
-	APawn* Pawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 	GetWorld()->GetGameState<ASTSGameState>()->SetIslandOwner(50, GetWorld()->GetFirstPlayerController());
-	FVector StartPosition = IslandTiles[RandStartIsland][0]->GetActorLocation();
-	StartPosition.Z = 5000;
-	StartPosition.X -= 1820;
-	Pawn->SetActorLocation(StartPosition);
-	//Cast<APlayerCommander>(Pawn)->SetTargetIslandTile(IslandTiles[RandStartIsland][0]);
+
+	Cast<APlayerCommander>(GetWorld()->GetFirstPlayerController()->GetPawn())->MoveCommanderToTile(IslandTiles[RandStartIsland][0], true);
 }

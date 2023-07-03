@@ -10,7 +10,7 @@ AShipyard::AShipyard()
 {
 	BuildingType = EBuildingType::Shipyard;
 
-	TimeNeed = 10;
+	TimeNeed = 3;
 	bIsCreatingShip = false;
 }
 

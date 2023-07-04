@@ -10,7 +10,7 @@
 
 APlayerCommander::APlayerCommander()
 {
-	SpringArmLength = 4500.0f;
+	SpringArmLength = 4000.0f;
 
 	Root = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Root"));
 	RootComponent = Root;

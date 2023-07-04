@@ -16,9 +16,13 @@ ABaseUnit::ABaseUnit()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	SkeletalMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Unit Mesh"));
-	RootComponent = SkeletalMeshComp;
-	SkeletalMeshComp->CastShadow = false;
+	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	RootComponent = Root;
+	SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent0"));
+	SkeletalMeshComponent ->SetupAttachment(Root);
+	SkeletalMeshComponent->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
+	SkeletalMeshComponent->SetRelativeScale3D(FVector(2.0f, 2.0f, 2.0f));
+	SkeletalMeshComponent->CastShadow = false;
 }
 
 void ABaseUnit::LocateToResourceTile(AResourceTile* ResourceTile)

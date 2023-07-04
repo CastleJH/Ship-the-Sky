@@ -44,6 +44,7 @@ private:
 	float CameraZoomSpeed;
 	bool bIsPathSelectionMode;
 	bool bIsPathSelectionValid;
+	bool bIsUnitRelocationMode;
 
 	//비행선 고정 모드
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
@@ -52,7 +53,9 @@ private:
 	//기타 내부적으로 쓰이는 변수들
 	UPROPERTY()
 	class AShip* PrevShip;
+	UPROPERTY()
 	class AIslandTile* FirstTile;
+	UPROPERTY()
 	class ABaseUnit* UnitWaitingRelocationFromUI;
 
 public:
@@ -115,6 +118,8 @@ private:
 
 	UFUNCTION()
 	void RelocateUnitOnTwoTile(class AIslandTile* Tile1, class AIslandTile* Tile2);
+	UFUNCTION()
+	void RelocateUnitWithUI(class ABaseUnit* Unit, class AIslandTile* Tile);
 
 	virtual void OnPossess(APawn* InPawn) override;
 

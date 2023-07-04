@@ -28,6 +28,7 @@ ASTSPlayerController::ASTSPlayerController()
 	CameraZoomSpeed = 400.0f;
 	bIsPathSelectionMode = false;
 	bIsPathSelectionValid = false;
+	bIsUnitRelocationMode = false;
 }
 
 bool ASTSPlayerController::OnButtonCreateUnitPressed(EUnitType Type)
@@ -75,6 +76,7 @@ void ASTSPlayerController::OnButtonLookTile(class ABaseTile* Tile)
 
 void ASTSPlayerController::OnButtonLocateUnitOnTile(ABaseUnit* Unit)
 {
+	bIsUnitRelocationMode = true;
 	UnitWaitingRelocationFromUI = Unit;
 }
 
@@ -156,9 +158,19 @@ void ASTSPlayerController::MouseReleased(const FInputActionValue& Value)
 		LockedShip = nullptr;
 
 		AIslandTile* SecondTile = Cast<AIslandTile>(Tile);
-		if (FirstTile && SecondTile && FirstTile != SecondTile)
+
+		if (bIsUnitRelocationMode)
 		{
-			RelocateUnitOnTwoTile(FirstTile, SecondTile);
+			UE_LOG(LogTemp, Warning, TEXT("From UI"));
+			RelocateUnitWithUI(UnitWaitingRelocationFromUI, SecondTile);
+			bIsUnitRelocationMode = false;
+		}
+		else
+		{
+			if (FirstTile && SecondTile && FirstTile != SecondTile)
+			{
+				RelocateUnitOnTwoTile(FirstTile, SecondTile);
+			}
 		}
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Released"));
@@ -191,6 +203,19 @@ void ASTSPlayerController::RelocateUnitOnTwoTile(AIslandTile* Tile1, AIslandTile
 	if (Unit2 != nullptr) Unit2->LocateOnIslandTile(Tile1, false);
 }
 
+void ASTSPlayerController::RelocateUnitWithUI(ABaseUnit* Unit, AIslandTile* Tile)
+{
+	if (!Unit) return;
+	AIslandTile* UnitTile = Unit->GetCurIslandTile();
+
+	ABaseUnit* OtherUnit = nullptr;
+	AResourceTile* OtherUnitTile = Cast<AResourceTile>(Tile);
+	if (OtherUnitTile) OtherUnit = OtherUnitTile->GetUnit();
+
+	if (Unit != nullptr) Unit->LocateOnIslandTile(Tile, false);
+	if (OtherUnit != nullptr) OtherUnit->LocateOnIslandTile(UnitTile, false);
+}
+
 void ASTSPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
@@ -216,7 +241,6 @@ ABaseTile* ASTSPlayerController::MouseRay()
 	if (OutResult.bBlockingHit)
 	{
 		ABaseTile* ReturnTile = Cast<ABaseTile>(OutResult.GetActor());
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *ReturnTile->GetName());
 		return ReturnTile;
 	}
 	return nullptr;
@@ -249,15 +273,5 @@ void ASTSPlayerController::Tick(float DeltaSeconds)
 	if (Commander->GetTargetShip())
 	{
 		Commander->GetTargetShip()->UpdatePathUI();
-	}
-
-	if (UnitWaitingRelocationFromUI)
-	{
-		AIslandTile* IslandTile = Cast<AIslandTile>(MouseRay());
-		if (IslandTile)
-		{
-			RelocateUnitOnTwoTile(UnitWaitingRelocationFromUI->GetCurIslandTile(), IslandTile);
-		}
-		UnitWaitingRelocationFromUI = nullptr;
 	}
 }

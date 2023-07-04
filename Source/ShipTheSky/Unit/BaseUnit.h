@@ -31,6 +31,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Unit")
 	class AShip* CurShip;
 
+	//애니메이션 관련 변수
+	UPROPERTY()
+	class UUnitAnimInstance* AnimInstance;
+
 public:
 	//유닛에게 들어올 수 있는 명령
 	void LocateOnIslandTile(class AIslandTile* Tile, bool bIsImmediate);
@@ -53,4 +57,6 @@ private:
 
 	virtual void Tick(float DeltaSeconds) override;
 	void MakePath(class ABaseTile* From, class ABaseTile* To);
+
+	virtual void BeginPlay() override;
 };

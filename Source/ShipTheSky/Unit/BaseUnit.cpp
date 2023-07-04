@@ -9,6 +9,7 @@
 #include "MapManager.h"
 #include "Pawn/Commander.h"
 #include "Ship.h"
+#include "Animation/UnitAnimInstance.h"
 
 // Sets default values
 ABaseUnit::ABaseUnit()
@@ -156,6 +157,8 @@ void ABaseUnit::Tick(float DeltaSeconds)
 				SetActorRotation(Direction.Rotation());
 				SetActorHiddenInGame(false);
 			}
+			AnimInstance->bIsIdle = true;
+			AnimInstance->bIsWalking = false;
 		}
 		Path.RemoveAt(0);
 		UE_LOG(LogTemp, Warning, TEXT("RemovePath"));
@@ -180,5 +183,14 @@ void ABaseUnit::MakePath(class ABaseTile* From, class ABaseTile* To)
 		Path.Add(Cast<AIslandTile>(From)->GetGuardianTile());
 	}
 	Path.Add(To);
+	AnimInstance->bIsIdle = false;
+	AnimInstance->bIsWalking = true;
 	SetActorHiddenInGame(false);
+}
+
+void ABaseUnit::BeginPlay()
+{
+	Super::BeginPlay();
+
+	AnimInstance = Cast<UUnitAnimInstance>(SkeletalMeshComponent->GetAnimInstance());
 }

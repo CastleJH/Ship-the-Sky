@@ -25,10 +25,11 @@ APlayerCommander::APlayerCommander()
 
 void APlayerCommander::MoveCommanderToTile(ABaseTile* Tile, bool bSelectTileToo)
 {
+	if (!Tile) return;
 	SetActorLocation(Tile->GetActorLocation());
 	if (bSelectTileToo)
 	{
-		Tile->OnTileSelectedAsView(Cast<ASTSPlayerController>(GetController()));
+		if (TargetTile != Tile) Tile->OnTileSelectedAsView(Cast<ASTSPlayerController>(GetController()));
 	}
 }
 

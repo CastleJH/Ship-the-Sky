@@ -42,7 +42,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Commander")
 	TSubclassOf<class ABaseUnit> WarriorClass;
 
-private:
+protected:
 	//지휘관이 작업 중인 타겟들
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Commander", meta = (AllowPrivateAccess = "true"))
 	class ABaseTile* TargetTile;

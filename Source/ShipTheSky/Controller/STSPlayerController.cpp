@@ -5,6 +5,7 @@
 #include "STSGameState.h"
 #include "Pawn/PlayerCommander.h"
 #include "Tile/ResourceTile.h"
+#include "Tile/GuardianTile.h"
 #include "Building/Barracks.h"
 #include "Building/Shipyard.h"
 #include "MapManager.h"
@@ -106,6 +107,7 @@ void ASTSPlayerController::SetupInputComponent()
 	}
 	EnhancedInputComponent->BindAction(InputMove, ETriggerEvent::Triggered, this, &ASTSPlayerController::MoveCamera);
 	EnhancedInputComponent->BindAction(InputZoom, ETriggerEvent::Triggered, this, &ASTSPlayerController::ZoomCamera);
+	EnhancedInputComponent->BindAction(InputMousePressedForReloc, ETriggerEvent::Triggered, this, &ASTSPlayerController::MousePressedForeReloc);
 	EnhancedInputComponent->BindAction(InputMouseReleased, ETriggerEvent::Triggered, this, &ASTSPlayerController::MouseReleased);
 	EnhancedInputComponent->BindAction(InputMousePressedForPath, ETriggerEvent::Triggered, this, &ASTSPlayerController::MousePressedForPath);
 	EnhancedInputComponent->BindAction(InputMouseDraggedForPath, ETriggerEvent::Triggered, this, &ASTSPlayerController::MouseDraggedForPath);
@@ -130,6 +132,16 @@ void ASTSPlayerController::ZoomCamera(const FInputActionValue& Value)
 	PlayerCommander->SpringArmComp->TargetArmLength += CameraZoomSpeed * Zoom;
 }
 
+void ASTSPlayerController::MousePressedForeReloc(const FInputActionValue& Value)
+{
+	ABaseTile* Tile = MouseRay();
+	if (Tile != nullptr)
+	{
+		FirstTile = Cast<AIslandTile>(Tile);
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Pressed"));
+}
+
 void ASTSPlayerController::MouseReleased(const FInputActionValue& Value)
 {
 	ABaseTile* Tile = MouseRay();
@@ -137,7 +149,14 @@ void ASTSPlayerController::MouseReleased(const FInputActionValue& Value)
 	{
 		Tile->OnTileSelectedAsView(this);
 		LockedShip = nullptr;
+
+		AIslandTile* SecondTile = Cast<AIslandTile>(Tile);
+		if (FirstTile && SecondTile && FirstTile != SecondTile)
+		{
+			RelocateUnitOnTwoTile(FirstTile, SecondTile);
+		}
 	}
+	UE_LOG(LogTemp, Warning, TEXT("Released"));
 }
 
 void ASTSPlayerController::MousePressedForPath(const FInputActionValue& Value)
@@ -151,6 +170,20 @@ void ASTSPlayerController::MouseDraggedForPath(const FInputActionValue& Value)
 	if (!bIsPathSelectionValid) return;
 	ABaseTile* Tile = MouseRay();
 	if (Tile != nullptr) Tile->OnTileSelectedAsPath(this);
+}
+
+void ASTSPlayerController::RelocateUnitOnTwoTile(AIslandTile* Tile1, AIslandTile* Tile2)
+{
+	ABaseUnit* Unit1 = nullptr;
+	AResourceTile* ResourceTile1 = Cast<AResourceTile>(Tile1);
+	if (ResourceTile1 != nullptr) Unit1 = ResourceTile1->GetUnit();
+
+	ABaseUnit* Unit2 = nullptr;
+	AResourceTile* ResourceTile2 = Cast<AResourceTile>(Tile2);
+	if (ResourceTile2 != nullptr) Unit2 = ResourceTile2->GetUnit();
+
+	if (Unit1 != nullptr) Unit1->LocateOnIslandTile(Tile2, false);
+	if (Unit2 != nullptr) Unit2->LocateOnIslandTile(Tile1, false);
 }
 
 void ASTSPlayerController::OnPossess(APawn* InPawn)

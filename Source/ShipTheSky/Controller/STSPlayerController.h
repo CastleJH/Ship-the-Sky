@@ -49,6 +49,11 @@ private:
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	class AShip* LockedShip;
 
+	//기타 내부적으로 쓰이는 변수들
+	UPROPERTY()
+	class AShip* PrevShip;
+	class AIslandTile* FirstTile;
+
 public:
 	UFUNCTION(BlueprintPure)
 	class ACommander* GetCommander() const { return Commander; }
@@ -88,6 +93,8 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class UInputAction> InputZoom;
 	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class UInputAction> InputMousePressedForReloc;
+	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class UInputAction> InputMouseReleased;
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class UInputAction> InputMousePressedForPath;
@@ -98,17 +105,18 @@ private:
 
 	void MoveCamera(const FInputActionValue& Value);
 	void ZoomCamera(const FInputActionValue& Value);
+	void MousePressedForeReloc(const FInputActionValue& Value);
 	void MouseReleased(const FInputActionValue& Value);
 	void MousePressedForPath(const FInputActionValue& Value);
 	void MouseDraggedForPath(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void RelocateUnitOnTwoTile(class AIslandTile* Tile1, class AIslandTile* Tile2);
 
 	virtual void OnPossess(APawn* InPawn) override;
 
 	UFUNCTION()
 	class ABaseTile* MouseRay();
-
-	UPROPERTY()
-	class AShip* PrevShip;
 public:
 	virtual void Tick(float DeltaSeconds) override;
 };

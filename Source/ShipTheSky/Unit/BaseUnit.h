@@ -33,7 +33,7 @@ protected:
 
 public:
 	//유닛에게 들어올 수 있는 명령
-	void LocateToResourceTile(class AResourceTile* ResourceTile);
+	void LocateOnIslandTile(class AIslandTile* Tile, bool bIsImmediate);
 	bool Embark(class AShip* Ship);
 	bool Disembark();
 
@@ -45,4 +45,12 @@ public:
 	void SetCurIslandTile(class AIslandTile* NewTile) { CurIslandTile = NewTile; }
 	UFUNCTION(BlueprintPure)
 	class AShip* GetCurShip() const { return CurShip; }
+
+private:
+	UPROPERTY(VisibleAnywhere)
+	TArray<class ABaseTile*> Path;
+	float MoveSpeed;
+
+	virtual void Tick(float DeltaSeconds) override;
+	void MakePath(class ABaseTile* From, class ABaseTile* To);
 };

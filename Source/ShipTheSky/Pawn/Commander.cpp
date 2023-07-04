@@ -119,7 +119,11 @@ void ACommander::FillIslandWithUnit(int32 IslandID, ABaseUnit* Unit)
 
 	if (EmptyIslandTile && Unit)
 	{
-		Unit->LocateToResourceTile(EmptyIslandTile);
+		Unit->LocateOnIslandTile(EmptyIslandTile, true);
+	}
+	else
+	{
+		Unit->LocateOnIslandTile(IslandTiles[0], true);
 	}
 }
 

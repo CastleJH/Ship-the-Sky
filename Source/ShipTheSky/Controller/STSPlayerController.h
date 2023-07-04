@@ -53,6 +53,7 @@ private:
 	UPROPERTY()
 	class AShip* PrevShip;
 	class AIslandTile* FirstTile;
+	class ABaseUnit* UnitWaitingRelocationFromUI;
 
 public:
 	UFUNCTION(BlueprintPure)
@@ -81,6 +82,8 @@ public:
 	void OnButtonStopShip();
 	UFUNCTION(BlueprintCallable)
 	void OnButtonLookTile(class ABaseTile* Tile);
+	UFUNCTION(BlueprintCallable)
+	void OnButtonLocateUnitOnTile(class ABaseUnit* Unit);
 
 private:
 	//유저 입력
@@ -105,7 +108,7 @@ private:
 
 	void MoveCamera(const FInputActionValue& Value);
 	void ZoomCamera(const FInputActionValue& Value);
-	void MousePressedForeReloc(const FInputActionValue& Value);
+	void MousePressedForReloc(const FInputActionValue& Value);
 	void MouseReleased(const FInputActionValue& Value);
 	void MousePressedForPath(const FInputActionValue& Value);
 	void MouseDraggedForPath(const FInputActionValue& Value);

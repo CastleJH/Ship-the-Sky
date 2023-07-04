@@ -73,6 +73,11 @@ void ASTSPlayerController::OnButtonLookTile(class ABaseTile* Tile)
 	PlayerCommander->MoveCommanderToTile(Tile, true);
 }
 
+void ASTSPlayerController::OnButtonLocateUnitOnTile(ABaseUnit* Unit)
+{
+	UnitWaitingRelocationFromUI = Unit;
+}
+
 void ASTSPlayerController::SetIsPathSelectionMode(bool IsPathSelectionMode)
 {
 	bIsPathSelectionMode = IsPathSelectionMode;
@@ -107,7 +112,7 @@ void ASTSPlayerController::SetupInputComponent()
 	}
 	EnhancedInputComponent->BindAction(InputMove, ETriggerEvent::Triggered, this, &ASTSPlayerController::MoveCamera);
 	EnhancedInputComponent->BindAction(InputZoom, ETriggerEvent::Triggered, this, &ASTSPlayerController::ZoomCamera);
-	EnhancedInputComponent->BindAction(InputMousePressedForReloc, ETriggerEvent::Triggered, this, &ASTSPlayerController::MousePressedForeReloc);
+	EnhancedInputComponent->BindAction(InputMousePressedForReloc, ETriggerEvent::Triggered, this, &ASTSPlayerController::MousePressedForReloc);
 	EnhancedInputComponent->BindAction(InputMouseReleased, ETriggerEvent::Triggered, this, &ASTSPlayerController::MouseReleased);
 	EnhancedInputComponent->BindAction(InputMousePressedForPath, ETriggerEvent::Triggered, this, &ASTSPlayerController::MousePressedForPath);
 	EnhancedInputComponent->BindAction(InputMouseDraggedForPath, ETriggerEvent::Triggered, this, &ASTSPlayerController::MouseDraggedForPath);
@@ -132,7 +137,7 @@ void ASTSPlayerController::ZoomCamera(const FInputActionValue& Value)
 	PlayerCommander->SpringArmComp->TargetArmLength += CameraZoomSpeed * Zoom;
 }
 
-void ASTSPlayerController::MousePressedForeReloc(const FInputActionValue& Value)
+void ASTSPlayerController::MousePressedForReloc(const FInputActionValue& Value)
 {
 	ABaseTile* Tile = MouseRay();
 	if (Tile != nullptr)
@@ -211,6 +216,7 @@ ABaseTile* ASTSPlayerController::MouseRay()
 	if (OutResult.bBlockingHit)
 	{
 		ABaseTile* ReturnTile = Cast<ABaseTile>(OutResult.GetActor());
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *ReturnTile->GetName());
 		return ReturnTile;
 	}
 	return nullptr;
@@ -243,5 +249,15 @@ void ASTSPlayerController::Tick(float DeltaSeconds)
 	if (Commander->GetTargetShip())
 	{
 		Commander->GetTargetShip()->UpdatePathUI();
+	}
+
+	if (UnitWaitingRelocationFromUI)
+	{
+		AIslandTile* IslandTile = Cast<AIslandTile>(MouseRay());
+		if (IslandTile)
+		{
+			RelocateUnitOnTwoTile(UnitWaitingRelocationFromUI->GetCurIslandTile(), IslandTile);
+		}
+		UnitWaitingRelocationFromUI = nullptr;
 	}
 }

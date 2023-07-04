@@ -107,6 +107,8 @@ private:
 	UFUNCTION()
 	class ABaseTile* MouseRay();
 
+	UPROPERTY()
+	class AShip* PrevShip;
 public:
 	virtual void Tick(float DeltaSeconds) override;
 };

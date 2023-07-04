@@ -74,6 +74,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool TryDepartShip(class AShip* Ship);
 	UFUNCTION(BlueprintCallable)
+	bool TryStopShip(class AShip* Ship);
+	UFUNCTION(BlueprintCallable)
 	void FillIslandWithUnit(int32 IslandID, class ABaseUnit* Unit);
 
 	//지휘관 관련 변수들 접근

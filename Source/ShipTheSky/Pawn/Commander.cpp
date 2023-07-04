@@ -87,6 +87,12 @@ bool ACommander::TryDepartShip(AShip* Ship)
 	return true;
 }
 
+bool ACommander::TryStopShip(AShip* Ship)
+{
+	Ship->EmptyPath();
+	return true;
+}
+
 void ACommander::FillIslandWithUnit(int32 IslandID, ABaseUnit* Unit)
 {
 	AResourceTile* EmptyIslandTile = nullptr;

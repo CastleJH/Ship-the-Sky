@@ -6,6 +6,7 @@
 #include "Tile/IslandTile.h"
 #include "MapManager.h"
 #include "Kismet/KismetMathLibrary.h" 
+#include "Controller/STSPlayerController.h"
 
 // Sets default values
 AShip::AShip()
@@ -26,6 +27,7 @@ AShip::AShip()
 	SunResistance = FMath::RandRange(0, 10);
 	LightningResistance = FMath::RandRange(0, 10);
 	MeteorResistance = FMath::RandRange(0, 10);
+	bIsBeingObserved = false;
 }
 
 void AShip::Tick(float DeltaTime)
@@ -93,20 +95,34 @@ bool AShip::RemoveUnit(class ABaseUnit* Unit)
 
 bool AShip::TryAddTileToPath(ABaseTile* Tile, bool bIsFirstPath)
 {
-	if (bIsFirstPath)
+	if (bIsFirstPath) //첫 클릭일때
 	{
 		UE_LOG(LogTemp, Warning, TEXT("CheckFirst"));
-		if (Path.Num() == 0 && Tile != CurTile) return false;
-		if (Path.Num() != 0 && Tile != Path.Last(0)) return false;
+		if (Path.Num() == 0 && Tile != CurTile) return false; //진짜 첫 클릭인데 현위치 타일을 누른게 아님
+		if (Path.Num() != 0 && Tile != Path.Last(0)) return false; //이어서 첫 클릭인데 마지막으로 드래그한 타일을 누른게 아님
 		return true;
 	}
-	else if (Path.Num() != 0 && Path.Last(0) == Tile)
+	else if (Path.Num() != 0 && Path.Last(0) == Tile) //마지막 타일과 동일한 것임
 	{
 		return false;
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Added %s"), *Tile->GetActorNameOrLabel());
+		if (Path.Num() != 0) //경로가 존재하는 상황에서 인접한 타일인지 확인
+		{
+			TArray<ABaseTile*> OutArray;
+			GetGameInstance()->GetSubsystem<UMapManager>()->GetAdjacentTiles(Path.Last(0), OutArray);
+			bool IsAdjacent = false;
+			for (auto elem : OutArray)
+			{
+				if (elem == Tile)
+				{
+					IsAdjacent = true;
+					break;
+				}
+			}
+			if (!IsAdjacent) return false;
+		}
 		Path.Add(Tile);
 		return true;
 	}
@@ -114,6 +130,7 @@ bool AShip::TryAddTileToPath(ABaseTile* Tile, bool bIsFirstPath)
 
 void AShip::EmptyPath()
 {
+	if (bIsBeingObserved) ClearPathUI();
 	Path.Empty();
 }
 
@@ -124,11 +141,18 @@ void AShip::FollowPath()
 	{
 		if (Path[0] == CurTile)
 		{
+			if (bIsBeingObserved) RemoveFrontPathUI();
 			Path.RemoveAt(0);
+			//if (bIsBeingObserved) UpdatePathUI();
 			if (Path.IsEmpty()) return;
 		}
 		bool Success = TryLocateOnTile(Path[0], false);
-		if (Success) Path.RemoveAt(0);
+		if (Success)
+		{
+			if (bIsBeingObserved) RemoveFrontPathUI();
+			Path.RemoveAt(0);
+			//if (bIsBeingObserved) UpdatePathUI();
+		}
 
 		if (!Path.IsEmpty())
 		{
@@ -138,4 +162,26 @@ void AShip::FollowPath()
 	}
 }
 
+void AShip::ClearPathUI()
+{
+	for (auto Tile : Path)
+	{
+		Tile->SetTileUI(0);
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Cleared"));
+}
 
+void AShip::UpdatePathUI()
+{
+	int32 idx = 1;
+	for (auto Tile : Path)
+	{
+		Tile->SetTileUI(idx++);
+	}
+}
+
+void AShip::RemoveFrontPathUI()
+{
+	if (Path.IsEmpty()) return;
+	Path[0]->SetTileUI(0);
+}

@@ -16,6 +16,15 @@ ABaseTile::ABaseTile()
 	StaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Tile Mesh"));
 	RootComponent = StaticMeshComp;
 	StaticMeshComp->CastShadow = false;
+
+	TileWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("Tile UI"));
+
+	TileWidgetComp->SetupAttachment(RootComponent);
+	TileWidgetComp->SetRelativeRotation(FRotator(90.0f, 180.0f, 0.0f));
+	TileWidgetComp->SetDrawSize(FVector2D(75.0f, 40.0f));
+	TileWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
+	TileWidgetComp->SetTickMode(ETickMode::Disabled);
+	TileWidgetComp->SetWidgetClass(LoadClass<UUserWidget>(nullptr, TEXT("/Game/UI/TileUI/WBP_TileUI.WBP_TileUI_C")));
 }
 
 void ABaseTile::Tick(float DeltaSeconds)
@@ -27,6 +36,21 @@ void ABaseTile::Tick(float DeltaSeconds)
 
 void ABaseTile::TimePass(int32 GameDate)
 {
+}
+
+void ABaseTile::SetTileUI(int32 Number)
+{
+	if (Number == 0)
+	{
+		TileWidgetComp->GetWidget()->SetVisibility(ESlateVisibility::Collapsed);
+		TileWidgetComp->SetTickMode(ETickMode::Disabled);
+	}
+	else
+	{
+		TileWidgetComp->SetTickMode(ETickMode::Automatic);
+		OnSetTileUI(Number);
+		TileWidgetComp->GetWidget()->SetVisibility(ESlateVisibility::Visible);
+	}
 }
 
 // Called when the game starts or when spawned

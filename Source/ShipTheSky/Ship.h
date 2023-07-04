@@ -20,6 +20,10 @@ protected:
 	TObjectPtr<UStaticMeshComponent> StaticMeshComp;
 	
 private:
+	//경로
+	UPROPERTY(VisibleAnywhere)
+	TArray<class ABaseTile*> Path;
+
 	//탑승 유닛
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TArray<class ABaseUnit*> Units;
@@ -29,7 +33,7 @@ private:
 	class ABaseTile* CurTile;
 
 	//비행선 스탯
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 Durability;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 CloudResistance;
@@ -46,12 +50,10 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 UnitCapacity;
 
-	//비행 관련 변수
-	UPROPERTY(VisibleAnywhere)
-	TArray<class ABaseTile*> Path;
 	FTimerHandle MoveTimer;
 
 public:
+
 	void Tick(float DeltaTime) override;
 
 	bool TryLocateOnTile(class ABaseTile* Tile, bool RightAfter);
@@ -104,4 +106,10 @@ public:
 
 	void FollowPath();
 
+	//경로 UI 관련
+	void ClearPathUI();
+	void UpdatePathUI();
+	void RemoveFrontPathUI();
+	UPROPERTY()
+	bool bIsBeingObserved;
 };

@@ -17,7 +17,7 @@ AResourceTile::AResourceTile()
 	ResourcesWidgetComp->SetDrawSize(FVector2D(75.0f, 40.0f));
 	ResourcesWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
 	ResourcesWidgetComp->SetTickMode(ETickMode::Automatic);
-	ResourcesWidgetComp->SetWidgetClass(LoadClass<UUserWidget>(nullptr, TEXT("/Game/UI/ResourceUI/WBP_TileResourcesUI.WBP_TileResourcesUI_C")));
+	ResourcesWidgetComp->SetWidgetClass(LoadClass<UUserWidget>(nullptr, TEXT("/Game/UI/TileUI/WBP_TileResourcesUI.WBP_TileResourcesUI_C")));
 }
 
 void AResourceTile::SetResources(float Power)

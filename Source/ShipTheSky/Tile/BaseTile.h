@@ -56,6 +56,11 @@ public:
 	UFUNCTION()
 	UStaticMeshComponent* GetStaticMeshComponent() const { return StaticMeshComp; }
 
+	//경로인 타일 표시
+	void SetTileUI(int32 Number);
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnSetTileUI(int32 Number);
+
 protected:
 	virtual void BeginPlay() override;
 };

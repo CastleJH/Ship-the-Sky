@@ -64,6 +64,7 @@ void ASTSPlayerController::OnButtonDepartShip()
 
 void ASTSPlayerController::OnButtonStopShip()
 {
+	Commander->TryStopShip(Commander->GetTargetShip());
 }
 
 void ASTSPlayerController::OnButtonLookTile(class ABaseTile* Tile)
@@ -190,5 +191,24 @@ void ASTSPlayerController::Tick(float DeltaSeconds)
 	{
 		if (Commander->GetTargetTile() != LockedShip->GetCurTile()) LockedShip->GetCurTile()->OnTileSelectedAsView(this);
 		Commander->SetActorLocation(LockedShip->GetActorLocation());
+	}
+
+	if (Commander->GetTargetShip() != PrevShip)
+	{
+		if (PrevShip)
+		{
+			PrevShip->bIsBeingObserved = false;
+			PrevShip->ClearPathUI();
+		}
+		PrevShip = Commander->GetTargetShip();
+		if (Commander->GetTargetShip())
+		{
+			Commander->GetTargetShip()->bIsBeingObserved = true;
+		}
+	}
+
+	if (Commander->GetTargetShip())
+	{
+		Commander->GetTargetShip()->UpdatePathUI();
 	}
 }

@@ -4,6 +4,16 @@
 
 #include "CoreMinimal.h"
 
+
+UENUM(BlueprintType)
+enum class EIslandTileType : uint8
+{
+	Mine = 0,
+	Forest,
+	Farm,
+	Guardian
+};
+
 UENUM(BlueprintType)
 enum class ETileType : uint8
 {

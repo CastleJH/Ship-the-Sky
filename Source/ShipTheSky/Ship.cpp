@@ -143,7 +143,6 @@ void AShip::FollowPath()
 		{
 			if (bIsBeingObserved) RemoveFrontPathUI();
 			Path.RemoveAt(0);
-			//if (bIsBeingObserved) UpdatePathUI();
 			if (Path.IsEmpty()) return;
 		}
 		bool Success = TryLocateOnTile(Path[0], false);
@@ -151,7 +150,6 @@ void AShip::FollowPath()
 		{
 			if (bIsBeingObserved) RemoveFrontPathUI();
 			Path.RemoveAt(0);
-			//if (bIsBeingObserved) UpdatePathUI();
 		}
 
 		if (!Path.IsEmpty())

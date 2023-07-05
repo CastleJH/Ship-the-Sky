@@ -11,15 +11,6 @@
  * 
  */
 
-UENUM(BlueprintType)
-enum class EIslandTileType : uint8
-{
-	Mine = 0,
-	Forest,
-	Farm,
-	Guardian
-};
-
 UCLASS()
 class SHIPTHESKY_API AIslandTile : public ABaseTile
 {

@@ -10,6 +10,7 @@
 #include "Pawn/Commander.h"
 #include "Ship.h"
 #include "Animation/UnitAnimInstance.h"
+#include "Battle/BattleComponent.h"
 
 // Sets default values
 ABaseUnit::ABaseUnit()
@@ -19,6 +20,7 @@ ABaseUnit::ABaseUnit()
 
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;
+
 	SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent0"));
 	SkeletalMeshComponent ->SetupAttachment(Root);
 	SkeletalMeshComponent->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
@@ -26,6 +28,8 @@ ABaseUnit::ABaseUnit()
 	SkeletalMeshComponent->CastShadow = false;
 
 	MoveSpeed = 500.0f;
+
+	BattleComponent = CreateDefaultSubobject<UBattleComponent>(TEXT("BattleComponent"));
 }
 
 void ABaseUnit::LocateOnIslandTile(AIslandTile* Tile, bool bIsImmediate)
@@ -193,4 +197,9 @@ void ABaseUnit::BeginPlay()
 	Super::BeginPlay();
 
 	AnimInstance = Cast<UUnitAnimInstance>(SkeletalMeshComponent->GetAnimInstance());
+
+	Efficiency = FMath::RandRange(10, 100);
+	FoodConsume = FMath::RandRange(3, 10);
+	BattleComponent->SetDamage(FMath::RandRange(10, 30));
+	BattleComponent->SetMaxHP(FMath::RandRange(50, 100), true);
 }

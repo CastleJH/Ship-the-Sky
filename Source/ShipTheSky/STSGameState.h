@@ -16,20 +16,20 @@ class SHIPTHESKY_API ASTSGameState : public AGameStateBase
 
 private:
 	UPROPERTY(VisibleAnywhere)
-	TArray<class AController*> IslandOwner;
+	TArray<class ACommander*> IslandOwner;
 	int32 GameDateInt32;
 	FString GameDateString;
 	
 public:
 	//섬 소유권 초기화
-	void ResetIslandOwner(int32 NewIslandNum, bool bPlayerOwnAllIsland);
+	void ResetIslandOwner(int32 NewIslandNum, int32 PlayerOwnAmount);
 
 	//섬 소유자 반환
 	UFUNCTION(BlueprintPure)
-	AController* GetIslandOwner(int32 IslandID) const;
+	ACommander* GetIslandOwner(int32 IslandID) const;
 	
 	//섬 소유자 설정
-	void SetIslandOwner(int32 IslandID, class AController* NewOwner);
+	void SetIslandOwner(int32 IslandID, class ACommander* NewOwner);
 
 	//게임 날짜 초기화
 	void ResetGameDate();

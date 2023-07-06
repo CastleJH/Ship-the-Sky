@@ -35,9 +35,11 @@ public:
 	UFUNCTION(BlueprintPure)
 	class AGuardianTile* GetGuardianTile() const;
 	
+	UFUNCTION(BlueprintPure)
+	class ACommander* GetIslandOwner() const;
 	//юс╫ц
 	virtual void OnTileSelectedAsView(class ASTSPlayerController* PlayerController) override;
-
+	
 protected:
 	virtual void BeginPlay() override;
 };

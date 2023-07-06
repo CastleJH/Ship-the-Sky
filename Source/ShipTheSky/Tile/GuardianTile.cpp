@@ -57,7 +57,6 @@ void AGuardianTile::BeginPlay()
 	int32 Index = FMath::RandRange(0, Guardians.Num() - 1);
 
 	AActor* Guardian = GetWorld()->SpawnActor<AActor>(Guardians[Index]);
-	Guardian->SetOwner(this);
 	Guardian->SetActorLocation(GetActorLocation());
 	FVector Direction(0.0f, 90.0f, 0.0f);
 	Guardian->SetActorRotation(Direction.Rotation());

@@ -24,6 +24,7 @@ ACommander::ACommander()
 
 void ACommander::ConstructBuilding(AResourceTile* Tile, EBuildingType Type)
 {
+	if (Tile->GetIslandOwner() != this) return;
 	UE_LOG(LogTemp, Warning, TEXT("HERE"));
 	if (Tile && !Tile->GetBuilding())
 	{

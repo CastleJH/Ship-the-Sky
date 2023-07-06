@@ -288,7 +288,7 @@ void UMapManager::GenerateMap(int32 NumCol)
 	XCoord -= XDiff;
 	YCoord -= YDiff;
 
-	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, true);
+	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, 30);
 	TempSetStartLocation();
 }
 
@@ -342,7 +342,19 @@ void UMapManager::GetAdjacentTiles(ABaseTile* Tile, TArray<class ABaseTile*>& Ou
 void UMapManager::TempSetStartLocation()
 {
 	int32 RandStartIsland = 50;
-	GetWorld()->GetGameState<ASTSGameState>()->SetIslandOwner(50, GetWorld()->GetFirstPlayerController());
-
+	GetWorld()->GetGameState<ASTSGameState>()->SetIslandOwner(50, Cast<ACommander>(GetWorld()->GetFirstPlayerController()->GetPawn()));
+	SelectAllIslandTiles();
 	Cast<APlayerCommander>(GetWorld()->GetFirstPlayerController()->GetPawn())->MoveCommanderToTile(IslandTiles[RandStartIsland][0], true);
+}
+
+void UMapManager::SelectAllIslandTiles()
+{
+	ASTSPlayerController* Controller = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
+	for (auto elem : IslandTiles)
+	{
+		for (auto Tile : elem)
+		{
+			Tile->OnTileSelectedAsView(Controller);
+		}
+	}
 }

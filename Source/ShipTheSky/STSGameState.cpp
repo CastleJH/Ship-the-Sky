@@ -3,14 +3,22 @@
 
 #include "STSGameState.h"
 #include "MapManager.h"
+#include "Pawn/Commander.h"
 
-void ASTSGameState::ResetIslandOwner(int32 NewIslandNum, bool bPlayerOwnAllIsland)
+void ASTSGameState::ResetIslandOwner(int32 NewIslandNum, int32 PlayerOwnAmount)
 {
-	if (bPlayerOwnAllIsland) IslandOwner.Init(GetWorld()->GetFirstPlayerController(), NewIslandNum);
-	else IslandOwner.Init(nullptr, NewIslandNum);
+	IslandOwner.Init(nullptr, NewIslandNum);
+	for (int32 i = 0; i < PlayerOwnAmount; i++)
+	{
+		if (IslandOwner.IsValidIndex(i))
+		{
+			IslandOwner[i] = Cast<ACommander>(GetWorld()->GetFirstPlayerController()->GetPawn());
+		}
+	}
+
 }
 
-AController* ASTSGameState::GetIslandOwner(int32 IslandID) const
+ACommander* ASTSGameState::GetIslandOwner(int32 IslandID) const
 {
 	if (IslandOwner.IsValidIndex(IslandID))
 	{
@@ -23,7 +31,7 @@ AController* ASTSGameState::GetIslandOwner(int32 IslandID) const
 	}
 }
 
-void ASTSGameState::SetIslandOwner(int32 IslandID, AController* NewOwner)
+void ASTSGameState::SetIslandOwner(int32 IslandID, ACommander* NewOwner)
 {
 	if (IslandOwner.IsValidIndex(IslandID))
 	{

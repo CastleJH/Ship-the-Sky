@@ -22,7 +22,8 @@ protected:
 	TObjectPtr<USceneComponent> Root;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Skeletal Mesh Component", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
-	UPROPERTY(VisibleAnywhere, Category = "Unit")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Battle Component", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UBattleComponent> BattleComponent;
 	
 	//유닛 관련 변수
 	EUnitType UnitType;
@@ -30,6 +31,12 @@ protected:
 	class AIslandTile* CurIslandTile;
 	UPROPERTY(VisibleAnywhere, Category = "Unit")
 	class AShip* CurShip;
+
+	//스탯 변수
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	int32 FoodConsume;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	int32 Efficiency;
 
 	//애니메이션 관련 변수
 	UPROPERTY()

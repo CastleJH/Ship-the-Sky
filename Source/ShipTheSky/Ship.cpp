@@ -7,6 +7,7 @@
 #include "MapManager.h"
 #include "Kismet/KismetMathLibrary.h" 
 #include "Controller/STSPlayerController.h"
+#include "Pawn/Commander.h"
 
 // Sets default values
 AShip::AShip()
@@ -39,6 +40,10 @@ void AShip::Tick(float DeltaTime)
 
 bool AShip::TryLocateOnTile(ABaseTile* Tile, bool RightAfter)
 {
+	AIslandTile* IslandTile = Cast<AIslandTile>(Tile);
+	ACommander* IslandOwner = Cast<ACommander>(GetOwner());
+	if (IslandTile && IslandTile->GetIslandOwner() != IslandOwner) return false;
+
 	if (Tile == nullptr) return false;
 	if (Tile->GetShip() != nullptr) return false;
 
@@ -95,6 +100,9 @@ bool AShip::RemoveUnit(class ABaseUnit* Unit)
 
 bool AShip::TryAddTileToPath(ABaseTile* Tile, bool bIsFirstPath)
 {
+	AIslandTile* IslandTile = Cast<AIslandTile>(Tile);
+	ACommander* IslandOwner = Cast<ACommander>(GetOwner());
+	if (IslandTile && IslandTile->GetIslandOwner() != IslandOwner) return false;
 	if (bIsFirstPath) //첫 클릭일때
 	{
 		UE_LOG(LogTemp, Warning, TEXT("CheckFirst"));

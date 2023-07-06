@@ -7,6 +7,7 @@
 #include "Components/WidgetComponent.h"
 #include "Widget/IslandResourceUI.h"
 #include "MapManager.h"
+#include "STSGameState.h"
 
 AIslandTile::AIslandTile()
 {
@@ -37,4 +38,9 @@ void AIslandTile::OnTileSelectedAsView(ASTSPlayerController* PlayerController)
 AGuardianTile* AIslandTile::GetGuardianTile() const
 {
 	return GetGameInstance()->GetSubsystem<UMapManager>()->GetGuardianTile(IslandID);
+}
+
+ACommander* AIslandTile::GetIslandOwner() const
+{
+	return GetWorld()->GetGameState<ASTSGameState>()->GetIslandOwner(IslandID);
 }

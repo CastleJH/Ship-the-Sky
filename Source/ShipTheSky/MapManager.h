@@ -40,6 +40,7 @@ public:
 
 private:
 	void TempSetStartLocation();
+	void SelectAllIslandTiles();
 
 private:
 	TSubclassOf<class AIslandTile> MineTileClass;

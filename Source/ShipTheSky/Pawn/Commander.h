@@ -42,6 +42,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Commander")
 	TSubclassOf<class ABaseUnit> WarriorClass;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Commander")
+	FLinearColor OutlineColor;
+
 protected:
 	//지휘관이 작업 중인 타겟들
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Commander", meta = (AllowPrivateAccess = "true"))

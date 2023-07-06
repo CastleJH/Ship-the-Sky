@@ -13,6 +13,7 @@ UCLASS()
 class SHIPTHESKY_API AGuardianTile : public AIslandTile
 {
 	GENERATED_BODY()
+	
 public:
 	AGuardianTile();
 	
@@ -24,10 +25,18 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TArray<TSubclassOf<AActor>> Guardians;
+
+	//¼öÈ£ÀÚ
+	class AGuardian* Guardian;
+
 public:
 	void AddUnitOnThisIsland(class ABaseUnit* Unit);
 	void RemoveUnitFromThisIsland(class ABaseUnit* Unit);
+	UFUNCTION(BlueprintPure)
+	class AGuardian* GetGuardian() const { return Guardian; }
 
+	virtual void TimePass(int32 GameDate) override;
+	void SpawnGuardian(int32 Index);
 protected:
 	virtual void BeginPlay() override;
 };

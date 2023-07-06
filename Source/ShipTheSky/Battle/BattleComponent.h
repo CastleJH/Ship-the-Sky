@@ -22,11 +22,11 @@ protected:
 
 private:
 	//½ºÅÈ º¯¼ö
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float MaxHP;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float CurrentHP;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float Damage;
 
 public:
@@ -40,4 +40,7 @@ public:
 	void SetMaxHP(float NewMaxHP, bool Recover);
 	void SetDamage(float NewDamage) { Damage = NewDamage; }
 	void TakeDamage(float Amount);
+	void RecoverHP();
+
+	bool IsAlive() { return CurrentHP != 0; }
 };

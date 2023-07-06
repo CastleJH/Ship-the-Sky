@@ -3,6 +3,12 @@
 
 #include "Guardian/Guardian.h"
 #include "Battle/BattleComponent.h"
+#include "Tile/BaseTile.h"
+#include "Tile/GuardianTile.h"
+#include "Pawn/Commander.h"
+#include "MapManager.h"
+#include "Ship.h"
+#include "Kismet/KismetMathLibrary.h" 
 
 // Sets default values
 AGuardian::AGuardian()
@@ -15,6 +21,7 @@ AGuardian::AGuardian()
 
 	SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent0"));
 	SkeletalMeshComponent->SetupAttachment(Root);
+	SkeletalMeshComponent->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 
 	BattleComponent = CreateDefaultSubobject<UBattleComponent>(TEXT("BattleComponent"));
 }
@@ -28,9 +35,30 @@ void AGuardian::BeginPlay()
 	BattleComponent->SetMaxHP(FMath::RandRange(50, 100), true);
 }
 
-// Called every frame
-void AGuardian::Tick(float DeltaTime)
+bool AGuardian::CheckEnemyShipAdjacentAndAttack()
 {
-	Super::Tick(DeltaTime);
+	EnemyShips.Empty();
+	if (!CurTile) return false;
+	ACommander* OwningCommander = CurTile->GetIslandOwner();
+	for (auto AdjTile : AdjTiles)
+	{
+		if (AdjTile->GetShip() && Cast<ACommander>(AdjTile->GetShip()->GetOwner()) != OwningCommander)
+		{
+			EnemyShips.Add(AdjTile->GetShip());
+			UE_LOG(LogTemp, Warning, TEXT("%s"), *GetName());
+		}
+	}
+	if (EnemyShips.Num() == 0) RecoveryCount++;
+	else RecoveryCount = 0;
+	return EnemyShips.Num() != 0;
+}
 
+void AGuardian::AttackEnemyShip()
+{
+}
+
+void AGuardian::SetGuardianTile(AGuardianTile* NewTile)
+{
+	GetGameInstance()->GetSubsystem<UMapManager>()->GetAdjacentTiles(NewTile, AdjTiles);
+	CurTile = NewTile;
 }

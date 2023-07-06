@@ -21,6 +21,8 @@ APlayerCommander::APlayerCommander()
 
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComp->SetupAttachment(SpringArmComp);
+
+	OutlineColorIndex = 0;
 }
 
 void APlayerCommander::MoveCommanderToTile(ABaseTile* Tile, bool bSelectTileToo)

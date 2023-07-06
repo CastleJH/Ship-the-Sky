@@ -127,4 +127,9 @@ private:
 	class ABaseTile* MouseRay();
 public:
 	virtual void Tick(float DeltaSeconds) override;
+
+//나중에 다른 곳으로 옮겨
+public:
+	UPROPERTY(EditDefaultsOnly, Category = "Class")
+	TArray<TSubclassOf<class AGuardian>> GuardianClass;
 };

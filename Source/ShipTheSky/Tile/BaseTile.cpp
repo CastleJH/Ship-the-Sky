@@ -68,17 +68,24 @@ void ABaseTile::OnTileSelectedAsView(ASTSPlayerController* PlayerController)
 	if (PlayerController->GetIsPathSelectionMode() == false)
 	{
 		//พ๊ วั มู ม๖ฟ๖
+		StaticMeshComp->SetRenderCustomDepth(false);
+		StaticMeshComp->CustomDepthStencilValue = 8;
 		StaticMeshComp->SetRenderCustomDepth(true);
-		
 
 		ABaseTile* CurrentTargetTile = PlayerController->GetCommander()->GetTargetTile();
 
 		if (CurrentTargetTile != nullptr)
 		{
-			if (Cast<AIslandTile>(CurrentTargetTile) && GetWorld()->GetGameState<ASTSGameState>()->GetIslandOwner(Cast<AIslandTile>(CurrentTargetTile)->GetIslandID()) == PlayerController->GetCommander()) CurrentTargetTile->GetStaticMeshComponent()->SetRenderCustomDepth(true);
+			AIslandTile* IslandTile = Cast<AIslandTile>(CurrentTargetTile);
+			ACommander* IslandOwner = nullptr;
+			if (IslandTile) IslandOwner = GetWorld()->GetGameState<ASTSGameState>()->GetIslandOwner(IslandTile->GetIslandID());
+			if (IslandOwner != nullptr)
+			{
+				CurrentTargetTile->GetStaticMeshComponent()->SetRenderCustomDepth(false);
+				CurrentTargetTile->GetStaticMeshComponent()->CustomDepthStencilValue = IslandOwner->OutlineColorIndex;
+				CurrentTargetTile->GetStaticMeshComponent()->SetRenderCustomDepth(true);
+			}
 			else CurrentTargetTile->GetStaticMeshComponent()->SetRenderCustomDepth(false);
-			//CurrentTargetTile->GetStaticMeshComponent()->SetRenderCustomDepth(false);
-			CurrentTargetTile->GetStaticMeshComponent()->CustomDepthStencilValue = FMath::RandRange(0, 2);
 			CurrentTargetTile->SetActorTickEnabled(false);
 			if (CurrentTargetTile == this) PlayerController->GetCommander()->SetTargetTile(nullptr);
 			else

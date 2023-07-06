@@ -5,6 +5,7 @@
 #include "Controller/STSPlayerController.h"
 #include "Pawn/Commander.h"
 #include "Unit/BaseUnit.h"
+#include "Guardian/Guardian.h"
 
 AGuardianTile::AGuardianTile()
 {
@@ -50,14 +51,21 @@ void AGuardianTile::RemoveUnitFromThisIsland(ABaseUnit* Unit)
 	}
 }
 
+void AGuardianTile::TimePass(int32 GameDate)
+{
+	if (Guardian) Guardian->CheckEnemyShipAdjacentAndAttack();
+}
+
+void AGuardianTile::SpawnGuardian(int32 Index)
+{
+	FTransform Loc(GetActorLocation());
+	Guardian = GetWorld()->SpawnActorDeferred<AGuardian>(Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController())->GuardianClass[Index], Loc);
+	Guardian->SetGuardianTile(this);
+	Guardian->SetActorRotation(FRotator(0.0f, 180.0f, 0.0f));
+	Guardian->FinishSpawning(Loc);
+}
+
 void AGuardianTile::BeginPlay()
 {
 	Super::BeginPlay();
-
-	int32 Index = FMath::RandRange(0, Guardians.Num() - 1);
-
-	AActor* Guardian = GetWorld()->SpawnActor<AActor>(Guardians[Index]);
-	Guardian->SetActorLocation(GetActorLocation());
-	FVector Direction(0.0f, 90.0f, 0.0f);
-	Guardian->SetActorRotation(Direction.Rotation());
 }

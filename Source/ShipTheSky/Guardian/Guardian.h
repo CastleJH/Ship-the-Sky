@@ -26,13 +26,29 @@ protected:
 	//애니메이션 관련 변수
 	UPROPERTY()
 	class UUnitAnimInstance* AnimInstance;
-	
+	UPROPERTY()
+	class AGuardianTile* CurTile;
+
+private:
+	UPROPERTY()
+	TArray<class AShip*> EnemyShips;
+	UPROPERTY()
+	TArray<class ABaseTile*> AdjTiles;
+	int32 RecoveryCount;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+public:
+	bool CheckEnemyShipAdjacentAndAttack();
 
+private:
+	void AttackEnemyShip();
+
+public:
+	UFUNCTION()
+	class AGuardianTile* GetGuardianTile() const { return CurTile; }
+	UFUNCTION()
+	void SetGuardianTile(class AGuardianTile* NewTile);
 };

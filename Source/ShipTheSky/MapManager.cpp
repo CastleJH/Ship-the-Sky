@@ -287,7 +287,18 @@ void UMapManager::GenerateMap(int32 NumCol)
 	}
 	XCoord -= XDiff;
 	YCoord -= YDiff;
-
+	for (auto Row : IslandTiles)
+	{
+		if (Row.IsValidIndex(0))
+		{
+			AGuardianTile* GuardianTile = Cast<AGuardianTile>(Row[0]);
+			if (GuardianTile)
+			{
+				ASTSPlayerController* Controller = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
+				GuardianTile->SpawnGuardian(FMath::RandRange(0, Controller->GuardianClass.Num() - 1));
+			}
+		}
+	}
 	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, 30);
 	TempSetStartLocation();
 }

@@ -8,6 +8,8 @@
 #include "Kismet/KismetMathLibrary.h" 
 #include "Controller/STSPlayerController.h"
 #include "Pawn/Commander.h"
+#include "STSGameState.h"
+#include "Tile/GuardianTile.h"
 
 // Sets default values
 AShip::AShip()

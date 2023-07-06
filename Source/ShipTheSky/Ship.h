@@ -96,6 +96,9 @@ public:
 	int32 GetUnitCapacity() const { return UnitCapacity; }
 	void SetUnitCapacity(int32 NewUnitCapacity) { UnitCapacity = NewUnitCapacity; }
 
+	UPROPERTY()
+	TArray<class AGuardian*> TargetGuardians;
+
 	//비행 관련
 	bool AddUnit(class ABaseUnit* Unit);
 	bool RemoveUnit(class ABaseUnit* Unit);

@@ -43,7 +43,7 @@ public:
 	TSubclassOf<class ABaseUnit> WarriorClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Commander")
-	FLinearColor OutlineColor;
+	int32 OutlineColorIndex;
 
 protected:
 	//지휘관이 작업 중인 타겟들

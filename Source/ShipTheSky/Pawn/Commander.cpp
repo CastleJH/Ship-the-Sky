@@ -20,6 +20,8 @@ ACommander::ACommander()
 	Resources.Init(0, (int32)EResourceType::None);
 	TargetIslandTile = nullptr;
 	TargetTile = nullptr;
+
+	OutlineColorIndex = 1;
 }
 
 void ACommander::ConstructBuilding(AResourceTile* Tile, EBuildingType Type)

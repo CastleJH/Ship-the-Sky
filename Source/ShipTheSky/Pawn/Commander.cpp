@@ -49,7 +49,7 @@ void ACommander::ConstructBuilding(AResourceTile* Tile, EBuildingType Type)
 		}
 		if (Building)
 		{
-			Building->SetOwner(this);
+			Building->SetOwnerCommander(this);
 			Tile->SetBuilding(Building);
 			Building->SetCurTile(Tile);
 		}

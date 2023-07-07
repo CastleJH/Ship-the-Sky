@@ -95,7 +95,7 @@ void AResourceTile::GiveResourceToUnit()
 	if (UnitOnThisTile != nullptr)
 	{
 		if ((uint8)UnitOnThisTile->GetUnitType() != (uint8)GetIslandType()) return;
-		ACommander* OwnerCommander = Cast<ACommander>(UnitOnThisTile->GetOwner());
+		ACommander* OwnerCommander = Cast<ACommander>(UnitOnThisTile->GetOwnerCommander());
 		if (OwnerCommander != nullptr)
 		{
 			for (auto Resource : Resources)

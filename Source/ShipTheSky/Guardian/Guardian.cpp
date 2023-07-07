@@ -3,12 +3,7 @@
 
 #include "Guardian/Guardian.h"
 #include "Battle/BattleComponent.h"
-#include "Tile/BaseTile.h"
-#include "Tile/GuardianTile.h"
-#include "Pawn/Commander.h"
-#include "MapManager.h"
-#include "Ship.h"
-#include "Kismet/KismetMathLibrary.h" 
+#include "Components/WidgetComponent.h"
 
 // Sets default values
 AGuardian::AGuardian()
@@ -24,6 +19,15 @@ AGuardian::AGuardian()
 	SkeletalMeshComponent->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 
 	BattleComponent = CreateDefaultSubobject<UBattleComponent>(TEXT("BattleComponent"));
+
+	WidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("Tile UI"));
+
+	WidgetComp->SetupAttachment(RootComponent);
+	WidgetComp->SetRelativeLocation(FVector(0.0f, 0.0f, 600.0f));
+	WidgetComp->SetDrawSize(FVector2D(100.0f, 10.0f));
+	WidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
+	WidgetComp->SetTickMode(ETickMode::Automatic);
+	WidgetComp->SetWidgetClass(LoadClass<UUserWidget>(nullptr, TEXT("/Game/UI/GuardianUI/WBP_GuardianHPBar.WBP_GuardianHPBar_C")));
 }
 
 // Called when the game starts or when spawned
@@ -32,33 +36,5 @@ void AGuardian::BeginPlay()
 	Super::BeginPlay();
 	
 	BattleComponent->SetDamage(FMath::RandRange(10, 30));
-	BattleComponent->SetMaxHP(FMath::RandRange(50, 100), true);
-}
-
-bool AGuardian::CheckEnemyShipAdjacentAndAttack()
-{
-	EnemyShips.Empty();
-	if (!CurTile) return false;
-	ACommander* OwningCommander = CurTile->GetIslandOwner();
-	for (auto AdjTile : AdjTiles)
-	{
-		if (AdjTile->GetShip() && Cast<ACommander>(AdjTile->GetShip()->GetOwner()) != OwningCommander)
-		{
-			EnemyShips.Add(AdjTile->GetShip());
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *GetName());
-		}
-	}
-	if (EnemyShips.Num() == 0) RecoveryCount++;
-	else RecoveryCount = 0;
-	return EnemyShips.Num() != 0;
-}
-
-void AGuardian::AttackEnemyShip()
-{
-}
-
-void AGuardian::SetGuardianTile(AGuardianTile* NewTile)
-{
-	GetGameInstance()->GetSubsystem<UMapManager>()->GetAdjacentTiles(NewTile, AdjTiles);
-	CurTile = NewTile;
+	BattleComponent->SetMaxHP(FMath::RandRange(500, 1000), true);
 }

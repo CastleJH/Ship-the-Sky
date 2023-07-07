@@ -28,6 +28,15 @@ protected:
 	//건물의 작업 관련 변수
 	int32 Progress;
 
+	UPROPERTY(VisibleAnywhere)
+	class ACommander* OwnerCommander;
+
+public:
+	UFUNCTION()
+	void SetOwnerCommander(class ACommander* NewCommnader) { OwnerCommander = NewCommnader; }
+	UFUNCTION(BlueprintPure)
+	class ACommander* GetOwnerCommander() const { return OwnerCommander; }
+
 public:
 	//건물 관련 변수 접근
 	UFUNCTION(BlueprintPure)

@@ -30,12 +30,14 @@ void UBattleComponent::SetMaxHP(float NewMaxHP, bool Recover)
 	CurrentHP = FMath::Clamp(CurrentHP, 0, MaxHP);
 }
 
-void UBattleComponent::TakeDamage(float Amount)
+float UBattleComponent::TakeDamage(float Amount)
 {
+	float Taken = FMath::Min(Amount, CurrentHP);
 	CurrentHP = FMath::Clamp(CurrentHP - Amount, 0, CurrentHP);
+	return Taken;
 }
 
-void UBattleComponent::RecoverHP()
+void UBattleComponent::RecoverHP(float Amount)
 {
-	CurrentHP = MaxHP;
+	CurrentHP = FMath::Clamp(CurrentHP + Amount, 0, MaxHP);
 }

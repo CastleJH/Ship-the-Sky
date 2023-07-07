@@ -15,40 +15,23 @@ public:
 	// Sets default values for this actor's properties
 	AGuardian();
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Battle Component", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UBattleComponent> BattleComponent;
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Root", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USceneComponent> Root;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Skeletal Mesh Component", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Battle Component", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UBattleComponent> BattleComponent;
+	UPROPERTY(VisibleAnywhere, Category = "Widget", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UWidgetComponent> WidgetComp;
 	
 	//애니메이션 관련 변수
 	UPROPERTY()
 	class UUnitAnimInstance* AnimInstance;
-	UPROPERTY()
-	class AGuardianTile* CurTile;
-
-private:
-	UPROPERTY()
-	TArray<class AShip*> EnemyShips;
-	UPROPERTY()
-	TArray<class ABaseTile*> AdjTiles;
-	int32 RecoveryCount;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:
-	bool CheckEnemyShipAdjacentAndAttack();
-
-private:
-	void AttackEnemyShip();
-
-public:
-	UFUNCTION()
-	class AGuardianTile* GetGuardianTile() const { return CurTile; }
-	UFUNCTION()
-	void SetGuardianTile(class AGuardianTile* NewTile);
 };

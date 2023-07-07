@@ -296,6 +296,16 @@ void UMapManager::GenerateMap(int32 NumCol)
 			{
 				ASTSPlayerController* Controller = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
 				GuardianTile->SpawnGuardian(FMath::RandRange(0, Controller->GuardianClass.Num() - 1));
+				TArray<ABaseTile*> InTile;
+				GetAdjacentTiles(GuardianTile, InTile);
+				GuardianTile->SetAdjTiles(InTile);
+				TArray<AResourceTile*> ResourceInTile;
+				for (auto Elem : InTile)
+				{
+					AResourceTile* ResourceTile = Cast<AResourceTile>(Elem);
+					if (ResourceTile) ResourceInTile.Add(ResourceTile);
+				}
+				GuardianTile->SetAdjResourceTiles(ResourceInTile);
 			}
 		}
 	}

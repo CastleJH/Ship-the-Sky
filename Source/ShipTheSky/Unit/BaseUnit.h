@@ -17,14 +17,16 @@ public:
 	// Sets default values for this actor's properties
 	ABaseUnit();
 
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Battle Component", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UBattleComponent> BattleComponent;
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Root", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USceneComponent> Root;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Skeletal Mesh Component", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Battle Component", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UBattleComponent> BattleComponent;
-	
+
 	//유닛 관련 변수
 	EUnitType UnitType;
 	UPROPERTY(VisibleAnywhere, Category = "Unit")
@@ -42,6 +44,10 @@ protected:
 	UPROPERTY()
 	class UUnitAnimInstance* AnimInstance;
 
+	//소유자
+	UPROPERTY(VisibleAnywhere)
+	class ACommander* OwnerCommander;
+
 public:
 	//유닛에게 들어올 수 있는 명령
 	void LocateOnIslandTile(class AIslandTile* Tile, bool bIsImmediate);
@@ -57,6 +63,15 @@ public:
 	UFUNCTION(BlueprintPure)
 	class AShip* GetCurShip() const { return CurShip; }
 
+	//전투 관련
+	float GetAttacked(float Damage);
+	void DestroyUnit();
+
+	//소유자
+	UFUNCTION()
+	void SetOwnerCommander(class ACommander* NewCommnader) { OwnerCommander = NewCommnader; }
+	UFUNCTION(BlueprintPure)
+	class ACommander* GetOwnerCommander() const { return OwnerCommander; }
 private:
 	UPROPERTY(VisibleAnywhere)
 	TArray<class ABaseTile*> Path;

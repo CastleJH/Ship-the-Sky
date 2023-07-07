@@ -106,7 +106,6 @@ void ABarracks::FinishUnitCreation()
 {
 	if (!WaitingUnitArray.IsEmpty())
 	{
-		ACommander* OwnerCommander = Cast<ACommander>(GetOwner());
 		EUnitType NewUnitType = WaitingUnitArray[0];
 		WaitingUnitArray.RemoveAt(0);
 		ABaseUnit* CreatedUnit = CreateUnit(NewUnitType);
@@ -117,39 +116,29 @@ void ABarracks::FinishUnitCreation()
 
 ABaseUnit* ABarracks::CreateUnit(EUnitType Type)
 {
-	ACommander* Commander = nullptr;
-	if (GetOwner() == nullptr)
+	if (OwnerCommander == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("No Owner of Barracks"));
 		return nullptr;
-	}
-	else
-	{
-		Commander = Cast<ACommander>(GetOwner());
-		if (Commander == nullptr)
-		{
-			UE_LOG(LogTemp, Error, TEXT("No Owner of Barracks"));
-			return nullptr;
-		}
 	}
 
 	ABaseUnit* Unit = nullptr;
 	switch (Type)
 	{
 	case EUnitType::Woodcutter:
-		Unit = GetWorld()->SpawnActor<ABaseUnit>(Commander->WoodcutterClass);
+		Unit = GetWorld()->SpawnActor<ABaseUnit>(OwnerCommander->WoodcutterClass);
 		break;
 	case EUnitType::Miner:
-		Unit = GetWorld()->SpawnActor<ABaseUnit>(Commander->MinerClass);
+		Unit = GetWorld()->SpawnActor<ABaseUnit>(OwnerCommander->MinerClass);
 		break;
 	case EUnitType::Farmer:
-		Unit = GetWorld()->SpawnActor<ABaseUnit>(Commander->FarmerClass);
+		Unit = GetWorld()->SpawnActor<ABaseUnit>(OwnerCommander->FarmerClass);
 		break;
 	case EUnitType::Warrior:
-		Unit = GetWorld()->SpawnActor<ABaseUnit>(Commander->WarriorClass);
+		Unit = GetWorld()->SpawnActor<ABaseUnit>(OwnerCommander->WarriorClass);
 		break;
 	}
-	Unit->SetOwner(GetOwner());
+	Unit->SetOwnerCommander(OwnerCommander);
 	Unit->SetActorHiddenInGame(true);
 
 	if (CurTile == nullptr)
@@ -158,6 +147,6 @@ ABaseUnit* ABarracks::CreateUnit(EUnitType Type)
 		return nullptr;
 	}
 	CurTile->GetGuardianTile()->AddUnitOnThisIsland(Unit);
-	Commander->FillIslandWithUnit(CurTile->GetIslandID(), Unit);
+	OwnerCommander->FillIslandWithUnit(CurTile->GetIslandID(), Unit);
 	return Unit;
 }

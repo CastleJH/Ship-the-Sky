@@ -10,6 +10,8 @@
 #include "Pawn/Commander.h"
 #include "STSGameState.h"
 #include "Tile/GuardianTile.h"
+#include "Unit/BaseUnit.h"
+#include "Battle/BattleComponent.h"
 
 // Sets default values
 AShip::AShip()
@@ -43,8 +45,7 @@ void AShip::Tick(float DeltaTime)
 bool AShip::TryLocateOnTile(ABaseTile* Tile, bool RightAfter)
 {
 	AIslandTile* IslandTile = Cast<AIslandTile>(Tile);
-	ACommander* IslandOwner = Cast<ACommander>(GetOwner());
-	if (IslandTile && IslandTile->GetIslandOwner() != IslandOwner) return false;
+	if (IslandTile && IslandTile->GetIslandOwner() != OwnerCommander) return false;
 
 	if (Tile == nullptr) return false;
 	if (Tile->GetShip() != nullptr) return false;
@@ -103,8 +104,7 @@ bool AShip::RemoveUnit(class ABaseUnit* Unit)
 bool AShip::TryAddTileToPath(ABaseTile* Tile, bool bIsFirstPath)
 {
 	AIslandTile* IslandTile = Cast<AIslandTile>(Tile);
-	ACommander* IslandOwner = Cast<ACommander>(GetOwner());
-	if (IslandTile && IslandTile->GetIslandOwner() != IslandOwner) return false;
+	if (IslandTile && IslandTile->GetIslandOwner() != OwnerCommander) return false;
 	if (bIsFirstPath) //첫 클릭일때
 	{
 		UE_LOG(LogTemp, Warning, TEXT("CheckFirst"));
@@ -192,4 +192,68 @@ void AShip::RemoveFrontPathUI()
 {
 	if (Path.IsEmpty()) return;
 	Path[0]->SetTileUI(0);
+}
+
+void AShip::GetAttacked(float Damage)
+{
+	if (!CanShipAttack())
+	{
+		DestroyShip();
+	}
+	else
+	{
+		check(Units.Num() != 0);
+		ABaseUnit* Target = nullptr;
+		//전사부터
+		while (Damage != 0)
+		{
+			Target = nullptr;
+			for (int32 Idx = Units.Num() - 1; Idx >= 0; Idx--)
+			{
+				ABaseUnit* Unit = Units[Idx];
+				if (Unit->GetUnitType() == EUnitType::Warrior)
+				{
+					if (Target == nullptr || Target->BattleComponent->GetCurHP() < Unit->BattleComponent->GetCurHP())
+					{
+						Target = Unit;
+					}
+				}
+			}
+			if (Target)
+			{
+				Damage -= Target->GetAttacked(Damage);
+				if (!Target->BattleComponent->IsAlive()) Target->DestroyUnit();
+			}
+			else break;
+		}
+
+		//HP부터
+		while (Damage != 0 && !Units.IsEmpty())
+		{
+			Target = Units.Last();
+			for (int32 Idx = Units.Num() - 2; Idx >= 0; Idx--)
+			{
+				ABaseUnit* Unit = Units[Idx];
+				if (Target->BattleComponent->GetCurHP() < Unit->BattleComponent->GetCurHP())
+				{
+					Target = Unit;
+				}
+			}
+			Damage -= Target->GetAttacked(Damage);
+			if (!Target->BattleComponent->IsAlive()) Target->DestroyUnit();
+		}
+	}
+}
+
+float AShip::Attack()
+{
+	float Damage = 0.0f;
+	for (auto Unit : Units) Damage += Unit->BattleComponent->GetDamage();
+	return Damage;
+}
+
+void AShip::DestroyShip()
+{
+	CurTile->SetShip(nullptr);
+	Destroy();
 }

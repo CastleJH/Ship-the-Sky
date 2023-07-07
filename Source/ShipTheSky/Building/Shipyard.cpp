@@ -80,7 +80,6 @@ bool AShipyard::FinishShipCreation()
 {
 	if (!WaitingShipArray.IsEmpty())
 	{
-		ACommander* OwnerCommander = Cast<ACommander>(GetOwner());
 		bool CreationSuccess = CreateShip(WaitingShipArray[0]);
 		if (!CreationSuccess)
 		{
@@ -101,24 +100,14 @@ bool AShipyard::CreateShip(FString ShipName)
 {
 	if (CurTile->GetShip() != nullptr) return false;
 
-	ACommander* Commander = nullptr;
-	if (GetOwner() == nullptr)
+	if (OwnerCommander == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("No Owner of Barracks"));
 		return false;
 	}
-	else
-	{
-		Commander = Cast<ACommander>(GetOwner());
-		if (Commander == nullptr)
-		{
-			UE_LOG(LogTemp, Error, TEXT("No Owner of Barracks"));
-			return false;
-		}
-	}
 
-	AShip* Ship = GetWorld()->SpawnActor<AShip>(Commander->ShipClass);
-	Ship->SetOwner(GetOwner());
+	AShip* Ship = GetWorld()->SpawnActor<AShip>(OwnerCommander->ShipClass);
+	Ship->SetOwnerCommander(OwnerCommander);
 	Ship->SetActorHiddenInGame(true);
 
 	if (CurTile == nullptr)

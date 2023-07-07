@@ -55,6 +55,29 @@ void ABaseTile::SetTileUI(int32 Number)
 	}
 }
 
+void ABaseTile::SetOutline()
+{
+	ACommander* PlayerCommander = Cast<ACommander>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	if (PlayerCommander->GetTargetTile() == this)
+	{
+		StaticMeshComp->SetRenderCustomDepth(false);
+		StaticMeshComp->CustomDepthStencilValue = 8;
+		StaticMeshComp->SetRenderCustomDepth(true);
+	}
+	else if (TileType == ETileType::Island)
+	{
+		 ACommander* IslandOwner = GetWorld()->GetGameState<ASTSGameState>()->GetIslandOwner(Cast<AIslandTile>(this)->GetIslandID());
+		 if (IslandOwner)
+		 {
+			 StaticMeshComp->SetRenderCustomDepth(false);
+			 StaticMeshComp->CustomDepthStencilValue = IslandOwner->OutlineColorIndex;
+			 StaticMeshComp->SetRenderCustomDepth(true);
+		 }
+		 else StaticMeshComp->SetRenderCustomDepth(false);
+	}
+	else StaticMeshComp->SetRenderCustomDepth(false);
+}
+
 // Called when the game starts or when spawned
 void ABaseTile::BeginPlay()
 {
@@ -67,25 +90,13 @@ void ABaseTile::OnTileSelectedAsView(ASTSPlayerController* PlayerController)
 {
 	if (PlayerController->GetIsPathSelectionMode() == false)
 	{
-		//พ๊ วั มู ม๖ฟ๖
-		StaticMeshComp->SetRenderCustomDepth(false);
-		StaticMeshComp->CustomDepthStencilValue = 8;
-		StaticMeshComp->SetRenderCustomDepth(true);
 
 		ABaseTile* CurrentTargetTile = PlayerController->GetCommander()->GetTargetTile();
-
 		if (CurrentTargetTile != nullptr)
 		{
 			AIslandTile* IslandTile = Cast<AIslandTile>(CurrentTargetTile);
 			ACommander* IslandOwner = nullptr;
 			if (IslandTile) IslandOwner = GetWorld()->GetGameState<ASTSGameState>()->GetIslandOwner(IslandTile->GetIslandID());
-			if (IslandOwner != nullptr)
-			{
-				CurrentTargetTile->GetStaticMeshComponent()->SetRenderCustomDepth(false);
-				CurrentTargetTile->GetStaticMeshComponent()->CustomDepthStencilValue = IslandOwner->OutlineColorIndex;
-				CurrentTargetTile->GetStaticMeshComponent()->SetRenderCustomDepth(true);
-			}
-			else CurrentTargetTile->GetStaticMeshComponent()->SetRenderCustomDepth(false);
 			CurrentTargetTile->SetActorTickEnabled(false);
 			if (CurrentTargetTile == this) PlayerController->GetCommander()->SetTargetTile(nullptr);
 			else
@@ -93,6 +104,7 @@ void ABaseTile::OnTileSelectedAsView(ASTSPlayerController* PlayerController)
 				PlayerController->GetCommander()->SetTargetTile(this);
 				SetActorTickEnabled(true);
 			}
+			CurrentTargetTile->SetOutline();
 		}
 		else
 		{
@@ -100,6 +112,7 @@ void ABaseTile::OnTileSelectedAsView(ASTSPlayerController* PlayerController)
 			SetActorTickEnabled(true);
 		}
 	}
+	SetOutline();
 }
 
 bool ABaseTile::OnTileFirstSelectedAsPath(ASTSPlayerController* PlayerController)

@@ -61,6 +61,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnSetTileUI(int32 Number);
 
+	//섬의 테두리 설정
+	void SetOutline();
+
 protected:
 	virtual void BeginPlay() override;
 };

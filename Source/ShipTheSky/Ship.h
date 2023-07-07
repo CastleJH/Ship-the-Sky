@@ -51,6 +51,8 @@ private:
 	int32 UnitCapacity;
 
 	FTimerHandle MoveTimer;
+	UPROPERTY(VisibleAnywhere)
+	class ACommander* OwnerCommander;
 
 public:
 
@@ -99,6 +101,11 @@ public:
 	UPROPERTY()
 	TArray<class AGuardian*> TargetGuardians;
 
+	UFUNCTION()
+	void SetOwnerCommander(class ACommander* NewCommnader) { OwnerCommander = NewCommnader; }
+	UFUNCTION(BlueprintPure)
+	class ACommander* GetOwnerCommander() const { return OwnerCommander; }
+
 	//비행 관련
 	bool AddUnit(class ABaseUnit* Unit);
 	bool RemoveUnit(class ABaseUnit* Unit);
@@ -115,4 +122,10 @@ public:
 	void RemoveFrontPathUI();
 	UPROPERTY()
 	bool bIsBeingObserved;
+
+	//전투 관련
+	void GetAttacked(float Damage);
+	float Attack();
+	bool CanShipAttack() { return Units.Num() != 0; }
+	void DestroyShip();
 };

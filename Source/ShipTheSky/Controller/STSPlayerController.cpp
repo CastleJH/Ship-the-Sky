@@ -19,6 +19,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Building/Portal.h"
 
 ASTSPlayerController::ASTSPlayerController()
 {
@@ -26,7 +27,7 @@ ASTSPlayerController::ASTSPlayerController()
 
 	CameraMovementSpeed = 125.0f;
 	CameraZoomSpeed = 400.0f;
-	bIsPathSelectionMode = false;
+	UserInputMode = EUserInputMode::View;
 	bIsPathSelectionValid = false;
 	bIsUnitRelocationMode = false;
 }
@@ -35,6 +36,39 @@ bool ASTSPlayerController::OnButtonCreateUnitPressed(EUnitType Type)
 {
 	if (Commander->GetTargetIslandTile() == nullptr) return false;
 	return Commander->TryCreateUnit(Cast<ABarracks>(Commander->GetTargetResoureTile()->GetBuilding()), Type);
+}
+
+void ASTSPlayerController::SetToViewMode()
+{
+	UserInputMode = EUserInputMode::View;
+	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->ClearAllMappings();
+		Subsystem->AddMappingContext(ViewTileMode, 0);
+	}
+}
+
+void ASTSPlayerController::SetToPathSelectionMode()
+{
+	UserInputMode = EUserInputMode::PathSelection;
+	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->ClearAllMappings();
+		Subsystem->AddMappingContext(PathSelectionMode, 0);
+	}
+}
+
+void ASTSPlayerController::SetToPortalSelectionMode()
+{
+	UserInputMode = EUserInputMode::PortalSelecton;
+	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->ClearAllMappings();
+		Subsystem->AddMappingContext(PortalSelectionMode, 0);
+	}
 }
 
 bool ASTSPlayerController::OnButtonCreateShipPressed()
@@ -61,7 +95,7 @@ void ASTSPlayerController::OnButtonUnitDisembark(ABaseUnit* Unit)
 void ASTSPlayerController::OnButtonDepartShip()
 {
 	Commander->TryDepartShip(Commander->GetTargetShip());
-	SetIsPathSelectionMode(false);
+	SetToViewMode();
 }
 
 void ASTSPlayerController::OnButtonStopShip()
@@ -80,26 +114,15 @@ void ASTSPlayerController::OnButtonLocateUnitOnTile(ABaseUnit* Unit)
 	UnitWaitingRelocationFromUI = Unit;
 }
 
-void ASTSPlayerController::SetIsPathSelectionMode(bool IsPathSelectionMode)
+void ASTSPlayerController::OnButtonStartPortal()
 {
-	bIsPathSelectionMode = IsPathSelectionMode;
-	UInputMappingContext* NewMappingContext = PathSelectionMode;
-	if (bIsPathSelectionMode)
-	{
-		NewMappingContext = PathSelectionMode;
-	}
-	else
-	{
-		NewMappingContext = TileSelectionMode;
-	}
+	LockedShip = nullptr;
+	SetToPortalSelectionMode();
+}
 
-
-	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
-	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
-	{
-		Subsystem->ClearAllMappings();
-		Subsystem->AddMappingContext(NewMappingContext, 0);
-	}
+void ASTSPlayerController::OnButtonCancelPortal()
+{
+	SetToViewMode();
 }
 
 void ASTSPlayerController::SetupInputComponent()
@@ -118,11 +141,12 @@ void ASTSPlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(InputMouseReleased, ETriggerEvent::Triggered, this, &ASTSPlayerController::MouseReleased);
 	EnhancedInputComponent->BindAction(InputMousePressedForPath, ETriggerEvent::Triggered, this, &ASTSPlayerController::MousePressedForPath);
 	EnhancedInputComponent->BindAction(InputMouseDraggedForPath, ETriggerEvent::Triggered, this, &ASTSPlayerController::MouseDraggedForPath);
+	EnhancedInputComponent->BindAction(InputMouseReleasedForPortal, ETriggerEvent::Triggered, this, &ASTSPlayerController::MouseReleasedForPortal);
 
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		Subsystem->ClearAllMappings();
-		UInputMappingContext* NewMappingContext = TileSelectionMode;
+		UInputMappingContext* NewMappingContext = ViewTileMode;
 		Subsystem->AddMappingContext(NewMappingContext, 0);
 	}
 }
@@ -187,6 +211,23 @@ void ASTSPlayerController::MouseDraggedForPath(const FInputActionValue& Value)
 	if (!bIsPathSelectionValid) return;
 	ABaseTile* Tile = MouseRay();
 	if (Tile != nullptr) Tile->OnTileSelectedAsPath(this);
+}
+
+void ASTSPlayerController::MouseReleasedForPortal(const FInputActionValue& Value)
+{
+	ABaseTile* Tile = MouseRay();
+	if (Tile && Commander->GetTargetResoureTile() && Commander->GetTargetResoureTile()->GetBuilding() && Commander->GetTargetResoureTile()->GetBuilding()->GetBuildingType() == EBuildingType::Portal)
+	{
+		AResourceTile* ResourceTile = Cast<AResourceTile>(Tile);
+		if (ResourceTile->GetBuilding() && ResourceTile->GetBuilding()->GetBuildingType() == EBuildingType::Portal)
+		{
+			if (Cast<APortal>(Commander->GetTargetResoureTile()->GetBuilding())->SendShipToTile(Tile))
+			{
+				SetToViewMode();
+			}
+		}
+	}
+	else SetToViewMode();
 }
 
 void ASTSPlayerController::RelocateUnitOnTwoTile(AIslandTile* Tile1, AIslandTile* Tile2)

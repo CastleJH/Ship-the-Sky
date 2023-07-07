@@ -20,21 +20,6 @@ void AIslandTile::BeginPlay()
 	SetActorScale3D(FVector(1.0f, 1.0f, 1.0f));
 }
 
-void AIslandTile::OnTileSelectedAsView(ASTSPlayerController* PlayerController)
-{
-	Super::OnTileSelectedAsView(PlayerController);
-
-	if (PlayerController->GetIsPathSelectionMode())
-	{
-
-	}
-	else
-	{
-
-	}
-	
-}
-
 AGuardianTile* AIslandTile::GetGuardianTile() const
 {
 	return GetGameInstance()->GetSubsystem<UMapManager>()->GetGuardianTile(IslandID);

@@ -194,6 +194,12 @@ void AShip::RemoveFrontPathUI()
 	Path[0]->SetTileUI(0);
 }
 
+void AShip::Teleport(ABaseTile* Tile)
+{
+	EmptyPath();
+	TryLocateOnTile(Tile, true);
+}
+
 void AShip::GetAttacked(float Damage)
 {
 	if (!CanShipAttack())

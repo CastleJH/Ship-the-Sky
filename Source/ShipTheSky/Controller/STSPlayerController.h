@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "InputActionValue.h"
+#include "Enums.h"
 #include "STSPlayerController.generated.h"
 
 /**
@@ -42,7 +43,8 @@ private:
 	//유저 입력 관련 변수들
 	float CameraMovementSpeed;
 	float CameraZoomSpeed;
-	bool bIsPathSelectionMode;
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	EUserInputMode UserInputMode;
 	bool bIsPathSelectionValid;
 	bool bIsUnitRelocationMode;
 
@@ -62,11 +64,16 @@ public:
 	UFUNCTION(BlueprintPure)
 	class ACommander* GetCommander() const { return Commander; }
 
-	//경로 선택 모드
+	//인풋 변경
 	UFUNCTION(BlueprintCallable)
-	void SetIsPathSelectionMode(bool IsPathSelectionMode);
-	UFUNCTION(BlueprintPure)
-	bool GetIsPathSelectionMode() const { return bIsPathSelectionMode; }	
+	void SetToViewMode();
+	UFUNCTION(BlueprintCallable)
+	void SetToPathSelectionMode();
+	UFUNCTION(BlueprintCallable)
+	void SetToPortalSelectionMode();
+
+	//인풋 모드 확인
+	EUserInputMode GetUserInputMode() const { return UserInputMode; }
 
 	//UI 버튼 눌릴 때
 	UFUNCTION(BlueprintCallable)
@@ -87,13 +94,19 @@ public:
 	void OnButtonLookTile(class ABaseTile* Tile);
 	UFUNCTION(BlueprintCallable)
 	void OnButtonLocateUnitOnTile(class ABaseUnit* Unit);
+	UFUNCTION(BlueprintCallable)
+	void OnButtonStartPortal();
+	UFUNCTION(BlueprintCallable)
+	void OnButtonCancelPortal();
 
 private:
 	//유저 입력
 	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<class UInputMappingContext> TileSelectionMode;
+	TObjectPtr<class UInputMappingContext> ViewTileMode;
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class UInputMappingContext> PathSelectionMode;
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class UInputMappingContext> PortalSelectionMode;
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class UInputAction> InputMove;
 	UPROPERTY(EditDefaultsOnly)
@@ -106,6 +119,8 @@ private:
 	TObjectPtr<class UInputAction> InputMousePressedForPath;
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class UInputAction> InputMouseDraggedForPath;
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class UInputAction> InputMouseReleasedForPortal;
 
 	virtual void SetupInputComponent() override;
 
@@ -115,6 +130,7 @@ private:
 	void MouseReleased(const FInputActionValue& Value);
 	void MousePressedForPath(const FInputActionValue& Value);
 	void MouseDraggedForPath(const FInputActionValue& Value);
+	void MouseReleasedForPortal(const FInputActionValue& Value);
 
 	UFUNCTION()
 	void RelocateUnitOnTwoTile(class AIslandTile* Tile1, class AIslandTile* Tile2);

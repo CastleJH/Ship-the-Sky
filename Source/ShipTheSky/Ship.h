@@ -32,6 +32,10 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Unit")
 	class ABaseTile* CurTile;
 
+	//비행선 식별
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	FString ShipName;
+
 	//비행선 스탯
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 Durability;
@@ -63,6 +67,11 @@ public:
 	void InitializeStatWithResources(int32 WoodCloud, int32 WoodStorm, int32 WoodSun, int32 WoodLightning, int32 WoodMeteor);
 
 	//비행선 관련 변수 접근
+	UFUNCTION(BlueprintPure)
+	FString GetShipName() const { return ShipName; }
+	UFUNCTION(BlueprintPure)
+	void SetShipName(FString& NewName) { ShipName = NewName; }
+
 	UFUNCTION(BlueprintPure)
 	class ABaseTile* GetCurTile() const { return CurTile; }
 
@@ -115,6 +124,8 @@ public:
 	void EmptyPath();
 
 	void FollowPath();
+
+	void Teleport(class ABaseTile* Tile);
 
 	//경로 UI 관련
 	void ClearPathUI();

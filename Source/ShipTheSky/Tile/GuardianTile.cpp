@@ -17,19 +17,6 @@ AGuardianTile::AGuardianTile()
 	IslandType = EIslandTileType::Guardian;
 }
 
-void AGuardianTile::OnTileSelectedAsView(class ASTSPlayerController* PlayerController)
-{
-	Super::OnTileSelectedAsView(PlayerController);
-	if (PlayerController->GetIsPathSelectionMode())
-	{
-
-	}
-	else
-	{
-		if (PlayerController->GetCommander()->GetTargetIslandTile() == nullptr) return;
-	}
-}
-
 void AGuardianTile::AddUnitOnThisIsland(ABaseUnit* Unit)
 {
 	if (UnitsOnThisIsland.Contains(Unit)) return;

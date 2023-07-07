@@ -54,7 +54,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Commander", meta = (AllowPrivateAccess = "true"))
 	class AResourceTile* TargetResourceTile;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Commander", meta = (AllowPrivateAccess = "true"))
-	class AResourceTile* TargetGuardianTile;
+	class AGuardianTile* TargetGuardianTile;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Commander", meta = (AllowPrivateAccess = "true"))
 	class AShip* TargetShip;
 
@@ -91,7 +91,7 @@ public:
 	UFUNCTION(BlueprintPure)
 	class AResourceTile* GetTargetResoureTile() const { return TargetResourceTile; }
 	UFUNCTION(BlueprintPure)
-	class AResourceTile* GetTargetGuardianTile() const { return TargetGuardianTile; }
+	class AGuardianTile* GetTargetGuardianTile() const { return TargetGuardianTile; }
 	UFUNCTION(BlueprintCallable)
 	void SetTargetShip(class AShip* Ship) { TargetShip = Ship; }
 	UFUNCTION(BlueprintPure)

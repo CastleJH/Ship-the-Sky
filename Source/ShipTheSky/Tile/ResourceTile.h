@@ -23,9 +23,9 @@ protected:
 
 private:
 	//타일 관련 변수(타일 위에 있는 것)
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	class ABaseBuilding* BuildingOnThisTile = nullptr;
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	class ABaseUnit* UnitOnThisTile = nullptr;
 
 public:
@@ -45,9 +45,6 @@ public:
 
 	//타일 효과적용
 	virtual void TimePass(int32 GameDate) override;
-
-	//임시
-	virtual void OnTileSelectedAsView(class ASTSPlayerController* PlayerController) override;
 
 	//타일 자원 UI 설정
 	void UpdateTileResourcesUI();

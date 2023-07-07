@@ -109,6 +109,7 @@ bool AShipyard::CreateShip(FString ShipName)
 	AShip* Ship = GetWorld()->SpawnActor<AShip>(OwnerCommander->ShipClass);
 	Ship->SetOwnerCommander(OwnerCommander);
 	Ship->SetActorHiddenInGame(true);
+	Ship->SetShipName(WaitingShipArray[0]);
 
 	if (CurTile == nullptr)
 	{

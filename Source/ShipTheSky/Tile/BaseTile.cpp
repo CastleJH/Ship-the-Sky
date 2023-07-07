@@ -88,7 +88,7 @@ void ABaseTile::BeginPlay()
 
 void ABaseTile::OnTileSelectedAsView(ASTSPlayerController* PlayerController)
 {
-	if (PlayerController->GetIsPathSelectionMode() == false)
+	if (PlayerController->GetUserInputMode() == EUserInputMode::View)
 	{
 
 		ABaseTile* CurrentTargetTile = PlayerController->GetCommander()->GetTargetTile();
@@ -117,7 +117,7 @@ void ABaseTile::OnTileSelectedAsView(ASTSPlayerController* PlayerController)
 
 bool ABaseTile::OnTileFirstSelectedAsPath(ASTSPlayerController* PlayerController)
 {
-	if (PlayerController->GetIsPathSelectionMode())
+	if (PlayerController->GetUserInputMode() == EUserInputMode::PathSelection)
 	{
 		if (PlayerController->GetCommander()->GetTargetShip() == nullptr)
 		{
@@ -131,7 +131,7 @@ bool ABaseTile::OnTileFirstSelectedAsPath(ASTSPlayerController* PlayerController
 
 void ABaseTile::OnTileSelectedAsPath(ASTSPlayerController* PlayerController)
 {
-	if (PlayerController->GetIsPathSelectionMode())
+	if (PlayerController->GetUserInputMode() == EUserInputMode::PathSelection)
 	{
 		if (PlayerController->GetCommander()->GetTargetShip() == nullptr)
 		{

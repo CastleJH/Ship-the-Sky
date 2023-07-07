@@ -66,19 +66,6 @@ void AResourceTile::TimePass(int32 GameDate)
 	GiveProgressToBuilding();
 }
 
-void AResourceTile::OnTileSelectedAsView(class ASTSPlayerController* PlayerController)
-{
-	Super::OnTileSelectedAsView(PlayerController);
-	if (PlayerController->GetIsPathSelectionMode())
-	{
-
-	}
-	else
-	{
-
-	}
-}
-
 void AResourceTile::UpdateTileResourcesUI()
 {
 	OnUpdateTileResourcesUI();

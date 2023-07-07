@@ -6,6 +6,14 @@
 
 
 UENUM(BlueprintType)
+enum class EUserInputMode : uint8
+{
+	View = 0,
+	PathSelection,
+	PortalSelecton
+};
+
+UENUM(BlueprintType)
 enum class EIslandTileType : uint8
 {
 	Mine = 0,

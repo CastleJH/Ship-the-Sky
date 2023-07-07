@@ -46,6 +46,9 @@ void ACommander::ConstructBuilding(AResourceTile* Tile, EBuildingType Type)
 		case EBuildingType::Shipyard:
 			Building = GetWorld()->SpawnActor<ABaseBuilding>(ShipyardClass, Tile->GetActorLocation(), Direction.Rotation());
 			break;
+		case EBuildingType::Portal:
+			Building = GetWorld()->SpawnActor<ABaseBuilding>(PortalClass, Tile->GetActorLocation(), Direction.Rotation());
+			break;
 		}
 		if (Building)
 		{
@@ -135,5 +138,5 @@ void ACommander::SetTargetTile(ABaseTile* NewTile)
 	TargetTile = NewTile;
 	TargetIslandTile = Cast<AIslandTile>(NewTile);
 	TargetResourceTile = Cast<AResourceTile>(NewTile);
-	TargetGuardianTile = Cast<AResourceTile>(NewTile);
+	TargetGuardianTile = Cast<AGuardianTile>(NewTile);
 }

@@ -140,6 +140,7 @@ bool AShip::TryAddTileToPath(ABaseTile* Tile, bool bIsFirstPath)
 
 void AShip::EmptyPath()
 {
+	GetWorld()->GetTimerManager().ClearTimer(MoveTimer);
 	if (bIsBeingObserved) ClearPathUI();
 	Path.Empty();
 }
@@ -204,7 +205,7 @@ void AShip::GetAttacked(float Damage)
 {
 	if (!CanShipAttack())
 	{
-		DestroyShip();
+		OwnerCommander->DestroyShipFromGame(this);
 	}
 	else
 	{
@@ -228,7 +229,11 @@ void AShip::GetAttacked(float Damage)
 			if (Target)
 			{
 				Damage -= Target->GetAttacked(Damage);
-				if (!Target->BattleComponent->IsAlive()) Target->DestroyUnit();
+				if (!Target->BattleComponent->IsAlive())
+				{
+					check(Target->GetOwnerCommander() == OwnerCommander);
+					Target->GetOwnerCommander()->DestroyUnitFromGame(Target);
+				}
 			}
 			else break;
 		}
@@ -246,7 +251,11 @@ void AShip::GetAttacked(float Damage)
 				}
 			}
 			Damage -= Target->GetAttacked(Damage);
-			if (!Target->BattleComponent->IsAlive()) Target->DestroyUnit();
+			if (!Target->BattleComponent->IsAlive())
+			{
+				check(Target->GetOwnerCommander() == OwnerCommander);
+				Target->GetOwnerCommander()->DestroyUnitFromGame(Target);
+			}
 		}
 	}
 }
@@ -256,10 +265,4 @@ float AShip::Attack()
 	float Damage = 0.0f;
 	for (auto Unit : Units) Damage += Unit->BattleComponent->GetDamage();
 	return Damage;
-}
-
-void AShip::DestroyShip()
-{
-	CurTile->SetShip(nullptr);
-	Destroy();
 }

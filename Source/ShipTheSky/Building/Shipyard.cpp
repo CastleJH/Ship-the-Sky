@@ -3,7 +3,7 @@
 
 #include "Building/Shipyard.h"
 #include "Ship.h"
-#include "Tile/IslandTile.h"
+#include "Tile/ResourceTile.h"
 #include "Pawn/Commander.h"
 
 AShipyard::AShipyard()
@@ -106,8 +106,7 @@ bool AShipyard::CreateShip(FString ShipName)
 		return false;
 	}
 
-	AShip* Ship = GetWorld()->SpawnActor<AShip>(OwnerCommander->ShipClass);
-	Ship->SetOwnerCommander(OwnerCommander);
+	AShip* Ship = CurTile->GetIslandOwner()->SpawnShipToGame();
 	Ship->SetActorHiddenInGame(true);
 	Ship->SetShipName(WaitingShipArray[0]);
 

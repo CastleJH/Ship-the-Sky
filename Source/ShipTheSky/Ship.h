@@ -138,5 +138,4 @@ public:
 	void GetAttacked(float Damage);
 	float Attack();
 	bool CanShipAttack() { return Units.Num() != 0; }
-	void DestroyShip();
 };

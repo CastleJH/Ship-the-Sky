@@ -128,7 +128,7 @@ void AGuardianTile::GetAttackedByShips()
 			Damage -= Target->GetAttacked(Damage);
 			if (!Target->BattleComponent->IsAlive())
 			{
-				Target->DestroyUnit();
+				GetIslandOwner()->DestroyUnitFromGame(Target);
 				TryFillIsland();
 			}
 		}
@@ -152,7 +152,7 @@ void AGuardianTile::GetAttackedByShips()
 			Damage -= Target->GetAttacked(Damage);
 			if (!Target->BattleComponent->IsAlive())
 			{
-				Target->DestroyUnit();
+				GetIslandOwner()->DestroyUnitFromGame(Target);
 				TryFillIsland();
 			}
 		}

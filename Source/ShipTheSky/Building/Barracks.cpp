@@ -4,6 +4,7 @@
 #include "Building/Barracks.h"
 #include "Unit/BaseUnit.h"
 #include "Tile/IslandTile.h"
+#include "Tile/ResourceTile.h"
 #include "Tile/GuardianTile.h"
 #include "Pawn/Commander.h"
 #include "STSGameState.h"
@@ -122,23 +123,7 @@ ABaseUnit* ABarracks::CreateUnit(EUnitType Type)
 		return nullptr;
 	}
 
-	ABaseUnit* Unit = nullptr;
-	switch (Type)
-	{
-	case EUnitType::Woodcutter:
-		Unit = GetWorld()->SpawnActor<ABaseUnit>(OwnerCommander->WoodcutterClass);
-		break;
-	case EUnitType::Miner:
-		Unit = GetWorld()->SpawnActor<ABaseUnit>(OwnerCommander->MinerClass);
-		break;
-	case EUnitType::Farmer:
-		Unit = GetWorld()->SpawnActor<ABaseUnit>(OwnerCommander->FarmerClass);
-		break;
-	case EUnitType::Warrior:
-		Unit = GetWorld()->SpawnActor<ABaseUnit>(OwnerCommander->WarriorClass);
-		break;
-	}
-	Unit->SetOwnerCommander(OwnerCommander);
+	ABaseUnit* Unit = OwnerCommander->SpawnUnitToGame(Type);
 	Unit->SetActorHiddenInGame(true);
 
 	if (CurTile == nullptr)

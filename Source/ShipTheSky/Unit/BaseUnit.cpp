@@ -128,16 +128,6 @@ float ABaseUnit::GetAttacked(float Damage)
 	return BattleComponent->TakeDamage(Damage);
 }
 
-void ABaseUnit::DestroyUnit()
-{
-	CurShip->RemoveUnit(this);
-	if (CurIslandTile && CurIslandTile->GetIslandType() != EIslandTileType::Guardian)
-	{
-		Cast<AResourceTile>(CurIslandTile)->SetUnit(nullptr);
-	}
-	Destroy();
-}
-
 void ABaseUnit::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);

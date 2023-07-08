@@ -65,7 +65,6 @@ public:
 
 	//전투 관련
 	float GetAttacked(float Damage);
-	void DestroyUnit();
 
 	//소유자
 	UFUNCTION()

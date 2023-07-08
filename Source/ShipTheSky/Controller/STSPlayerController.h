@@ -43,7 +43,7 @@ private:
 	//유저 입력 관련 변수들
 	float CameraMovementSpeed;
 	float CameraZoomSpeed;
-	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EUserInputMode UserInputMode;
 	bool bIsPathSelectionValid;
 	bool bIsUnitRelocationMode;

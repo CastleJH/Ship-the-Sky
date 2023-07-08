@@ -10,6 +10,7 @@
 #include "Building/Shipyard.h"
 #include "Ship.h"
 #include "MapManager.h"
+#include "Building/BaseBuilding.h"
 
 // Sets default values
 ACommander::ACommander()
@@ -38,24 +39,9 @@ void ACommander::ConstructBuilding(AResourceTile* Tile, EBuildingType Type)
 			return;
 		}
 		FVector Direction = MainTile->GetActorLocation() - Tile->GetActorLocation();
-		switch (Type)
-		{
-		case EBuildingType::Barracks:
-			Building = GetWorld()->SpawnActor<ABaseBuilding>(BarracksClass, Tile->GetActorLocation(), Direction.Rotation());
-			break;
-		case EBuildingType::Shipyard:
-			Building = GetWorld()->SpawnActor<ABaseBuilding>(ShipyardClass, Tile->GetActorLocation(), Direction.Rotation());
-			break;
-		case EBuildingType::Portal:
-			Building = GetWorld()->SpawnActor<ABaseBuilding>(PortalClass, Tile->GetActorLocation(), Direction.Rotation());
-			break;
-		}
-		if (Building)
-		{
-			Building->SetOwnerCommander(this);
-			Tile->SetBuilding(Building);
-			Building->SetCurTile(Tile);
-		}
+		Building = SpawnBuildingToGame(Type, Tile->GetActorLocation(), Direction.Rotation());
+		Tile->SetBuilding(Building);
+		Building->SetCurTile(Tile);
 	}
 }
 
@@ -139,4 +125,95 @@ void ACommander::SetTargetTile(ABaseTile* NewTile)
 	TargetIslandTile = Cast<AIslandTile>(NewTile);
 	TargetResourceTile = Cast<AResourceTile>(NewTile);
 	TargetGuardianTile = Cast<AGuardianTile>(NewTile);
+}
+
+ABaseUnit* ACommander::SpawnUnitToGame(EUnitType Type)
+{
+	TSubclassOf<ABaseUnit> UnitClass;
+	switch (Type)
+	{
+	case EUnitType::Miner:
+		UnitClass = MinerClass;
+		break;
+	case EUnitType::Woodcutter:
+		UnitClass = WoodcutterClass;
+		break;
+	case EUnitType::Farmer:
+		UnitClass = FarmerClass;
+		break;
+	case EUnitType::Warrior:
+		UnitClass = WarriorClass;
+		break;
+	default:
+		UE_LOG(LogTemp, Error, TEXT("Wrong Type"));
+		break;
+	}
+	ABaseUnit* Unit = GetWorld()->SpawnActor<ABaseUnit>(UnitClass);
+	Unit->SetOwnerCommander(this);
+	Units.Add(Unit);
+	return Unit;
+}
+
+void ACommander::DestroyUnitFromGame(ABaseUnit* Unit)
+{
+	if (Unit->GetCurShip()) Unit->GetCurShip()->RemoveUnit(Unit);
+	if (Unit->GetCurIslandTile())
+	{
+		Unit->GetCurIslandTile()->GetGuardianTile()->RemoveUnitFromThisIsland(Unit);
+		if (Unit->GetCurIslandTile()->GetIslandType() != EIslandTileType::Guardian)
+		{
+			Cast<AResourceTile>(Unit->GetCurIslandTile())->SetUnit(nullptr);
+		}
+	}
+	Units.Remove(Unit);
+	Unit->Destroy();
+}
+
+ABaseBuilding* ACommander::SpawnBuildingToGame(EBuildingType Type, FVector Location, FRotator Rotation)
+{
+	TSubclassOf<ABaseBuilding> BuildingClass;
+	switch (Type)
+	{
+	case EBuildingType::Barracks:
+		BuildingClass = BarracksClass;
+		break;
+	case EBuildingType::Shipyard:
+		BuildingClass = ShipyardClass;
+		break;
+	case EBuildingType::Portal:
+		BuildingClass = PortalClass;
+		break;
+	case EBuildingType::Sanctuary:
+		BuildingClass = SanctuaryClass;
+		break;
+	}
+	ABaseBuilding* Building = GetWorld()->SpawnActor<ABaseBuilding>(BuildingClass, Location, Rotation);
+	Building->SetOwnerCommander(this);
+	Buildings.Add(Building);
+	return Building;
+}
+
+void ACommander::DestroyBuildingFromGame(ABaseBuilding* Building)
+{
+	if (Building->GetCurTile())
+	{
+		Building->GetCurTile()->SetBuilding(nullptr);
+	}
+	Buildings.Remove(Building);
+	Building->Destroy();
+}
+
+AShip* ACommander::SpawnShipToGame()
+{
+	AShip* Ship = GetWorld()->SpawnActor<AShip>(ShipClass);
+	Ship->SetOwnerCommander(this);
+	Ships.Add(Ship);
+	return Ship;
+}
+
+void ACommander::DestroyShipFromGame(AShip* Ship)
+{
+	Ship->GetCurTile()->SetShip(nullptr);
+	Ships.Remove(Ship);
+	Ship->Destroy();
 }

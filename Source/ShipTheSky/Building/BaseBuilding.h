@@ -23,7 +23,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Building")
 	EBuildingType BuildingType;
 	UPROPERTY(VisibleAnywhere, Category = "Building")
-	class AIslandTile* CurTile;
+	class AResourceTile* CurTile;
 
 	//건물의 작업 관련 변수
 	int32 Progress;
@@ -41,8 +41,8 @@ public:
 	//건물 관련 변수 접근
 	UFUNCTION(BlueprintPure)
 	EBuildingType GetBuildingType() const { return BuildingType; }
-	class AIslandTile* GetCurTile() const { return CurTile; }
-	void SetCurTile(class AIslandTile* NewTile) { CurTile = NewTile; };
+	class AResourceTile* GetCurTile() const { return CurTile; }
+	void SetCurTile(class AResourceTile* NewTile) { CurTile = NewTile; };
 
 	//작업 진행
 	virtual void IncreaseProgress() { Progress++; }

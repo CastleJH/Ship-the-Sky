@@ -96,6 +96,8 @@ void ABaseTile::OnTileSelectedAsView(ASTSPlayerController* PlayerController)
 		{
 			AIslandTile* IslandTile = Cast<AIslandTile>(CurrentTargetTile);
 			ACommander* IslandOwner = nullptr;
+			PlayerController->GetCommander()->SetTargetShip(nullptr);
+
 			if (IslandTile) IslandOwner = GetWorld()->GetGameState<ASTSGameState>()->GetIslandOwner(IslandTile->GetIslandID());
 			CurrentTargetTile->SetActorTickEnabled(false);
 			if (CurrentTargetTile == this) PlayerController->GetCommander()->SetTargetTile(nullptr);

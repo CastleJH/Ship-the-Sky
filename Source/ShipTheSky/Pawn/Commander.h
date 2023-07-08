@@ -62,6 +62,14 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TArray<int32> Resources;
 
+	//지휘관 소유 유닛/건물/비행선
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<class ABaseUnit*> Units;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<class ABaseBuilding*> Buildings;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<class AShip*> Ships;
+
 public:
 	//지휘관이 내릴 수 있는 명령
 	UFUNCTION(BlueprintCallable)
@@ -99,4 +107,18 @@ public:
 	void SetResource(int32 Amount, EResourceType Type) { Resources[(int32)Type] = Amount; }
 	UFUNCTION(BlueprintPure)
 	int32 GetResource(EResourceType Type) const { return Resources[(int32)Type]; }
+
+	//유닛/건물/비행선 생성/제거
+	UFUNCTION()
+	class ABaseUnit* SpawnUnitToGame(enum EUnitType Type);
+	UFUNCTION()
+	void DestroyUnitFromGame(class ABaseUnit* Unit);
+	UFUNCTION()
+	class ABaseBuilding* SpawnBuildingToGame(enum EBuildingType Type, FVector Location, FRotator Rotation);
+	UFUNCTION()
+	void DestroyBuildingFromGame(class ABaseBuilding* Building);
+	UFUNCTION()
+	class AShip* SpawnShipToGame();
+	UFUNCTION()
+	void DestroyShipFromGame(class AShip* Ship);
 };

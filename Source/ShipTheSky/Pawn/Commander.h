@@ -60,7 +60,7 @@ protected:
 
 	//지휘관 자원 관련
 	UPROPERTY(VisibleAnywhere)
-	TArray<int32> Resources;
+	TArray<float> Resources;
 	UPROPERTY(VisibleAnywhere)
 	int32 UnitCreationCost;
 	UPROPERTY(VisibleAnywhere)
@@ -123,22 +123,22 @@ public:
 
 	//자원 관련 변수
 	UFUNCTION(BlueprintCallable)
-	int32 GetUnitCreationCost() { return UnitCreationCost; }
+	float GetUnitCreationCost() { return UnitCreationCost; }
 	UFUNCTION(BlueprintCallable)
 	void DecreaseUnitCreationCost() { UnitCreationCost -= 10; }
 	UFUNCTION(BlueprintCallable)
 	void IncreaseUnitCreationCost() { UnitCreationCost += 10; }
 	UFUNCTION(BlueprintCallable)
-	int32 GetShipCreationCost() { return ShipCreationCost; }
+	float GetShipCreationCost() { return ShipCreationCost; }
 	UFUNCTION(BlueprintCallable)
 	void DecreaseShipCreationCost() { ShipCreationCost -= 50; }
 	UFUNCTION(BlueprintCallable)
 	void IncreaseShipCreationCost() { ShipCreationCost += 50; }
 	UFUNCTION(BlueprintCallable)
-	int32 GetBuildingCreationCost(enum EBuildingType Type);
+	float GetBuildingCreationCost(enum EBuildingType Type);
 	UFUNCTION(BlueprintPure)
 	class AShip* GetTargetShip() const { return TargetShip; }
-	void SetResource(int32 Amount, EResourceType Type) { Resources[(int32)Type] = Amount; }
+	void SetResource(float Amount, EResourceType Type);
 	UFUNCTION(BlueprintPure)
-	int32 GetResource(EResourceType Type) const { return Resources[(int32)Type]; }
+	float GetResource(EResourceType Type) const { return Resources[(int32)Type]; }
 };

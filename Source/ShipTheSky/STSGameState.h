@@ -20,6 +20,7 @@ private:
 	int32 GameDateInt32;
 	FString GameDateString;
 	
+
 public:
 	//섬 소유권 초기화
 	void ResetIslandOwner(int32 NewIslandNum, int32 PlayerOwnAmount);

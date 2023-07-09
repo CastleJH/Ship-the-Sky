@@ -290,7 +290,12 @@ void ACommander::DestroyShipFromGame(AShip* Ship)
 	Ship->Destroy();
 }
 
-int32 ACommander::GetBuildingCreationCost(EBuildingType Type)
+void ACommander::SetResource(float Amount, EResourceType Type)
+{
+	Resources[(int32)Type] = FMath::Clamp(Amount, 0, 99999);
+}
+
+float ACommander::GetBuildingCreationCost(EBuildingType Type)
 {
 	switch (Type)
 	{

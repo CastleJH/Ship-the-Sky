@@ -204,7 +204,7 @@ void ABaseUnit::BeginPlay()
 	AnimInstance = Cast<UUnitAnimInstance>(SkeletalMeshComponent->GetAnimInstance());
 
 	Efficiency = FMath::RandRange(10, 100);
-	FoodConsume = FMath::RandRange(3, 10);
+	FoodConsume = FMath::RandRange(3, 10) / 10.0f;
 	BattleComponent->SetDamage(FMath::RandRange(10, 30));
 	BattleComponent->SetMaxHP(FMath::RandRange(50, 100), true);
 }

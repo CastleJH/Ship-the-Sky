@@ -45,6 +45,8 @@ void AGuardianTile::RemoveUnitFromThisIsland(ABaseUnit* Unit)
 
 void AGuardianTile::TimePass(int32 GameDate)
 {
+	Super::TimePass(GameDate);
+
 	if (CheckEnemyShipAdjacent())
 	{
 		RecoveryCount = 0;

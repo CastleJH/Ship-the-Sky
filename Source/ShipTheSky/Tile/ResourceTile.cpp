@@ -64,6 +64,10 @@ void AResourceTile::TimePass(int32 GameDate)
 	//나중에 1은 더 크게!! GameDate % 30 == 29로.
 	if (GameDate % 1 == 0) GiveResourceToUnit();
 	GiveProgressToBuilding();
+	if (UnitOnThisTile)
+	{
+		UnitOnThisTile->GetOwnerCommander()->SetResource(UnitOnThisTile->GetOwnerCommander()->GetResource(EResourceType::Food) - UnitOnThisTile->GetFoodConsume(), EResourceType::Food);
+	}
 }
 
 void AResourceTile::UpdateTileResourcesUI()

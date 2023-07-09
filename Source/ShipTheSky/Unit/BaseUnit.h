@@ -36,9 +36,9 @@ protected:
 
 	//스탯 변수
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	int32 FoodConsume;
+	float FoodConsume;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	int32 Efficiency;
+	float Efficiency;
 
 	//애니메이션 관련 변수
 	UPROPERTY()
@@ -62,7 +62,9 @@ public:
 	void SetCurIslandTile(class AIslandTile* NewTile) { CurIslandTile = NewTile; }
 	UFUNCTION(BlueprintPure)
 	class AShip* GetCurShip() const { return CurShip; }
-
+	UFUNCTION(BlueprintPure)
+	float GetFoodConsume() { return FoodConsume; }
+	
 	//전투 관련
 	float GetAttacked(float Damage);
 
@@ -71,6 +73,7 @@ public:
 	void SetOwnerCommander(class ACommander* NewCommnader) { OwnerCommander = NewCommnader; }
 	UFUNCTION(BlueprintPure)
 	class ACommander* GetOwnerCommander() const { return OwnerCommander; }
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	TArray<class ABaseTile*> Path;

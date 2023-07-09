@@ -17,6 +17,8 @@ class SHIPTHESKY_API AShipyard : public ABaseBuilding
 public:
 	AShipyard();
 
+	const int32 MaxWaitingShip = 10;
+
 private:
 	//대기중인 비행선들
 	TArray<FString> WaitingShipArray;
@@ -24,7 +26,6 @@ private:
 	//비행선 생성 관련 변수
 	int32 TimeNeed;
 	bool bIsCreatingShip;
-	int32 MaxWaitingShip = 10;
 
 public:
 	//비행선 생성

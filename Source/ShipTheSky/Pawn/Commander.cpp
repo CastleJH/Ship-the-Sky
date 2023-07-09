@@ -24,10 +24,32 @@ ACommander::ACommander()
 	TargetTile = nullptr;
 
 	OutlineColorIndex = 1;
+
+	for (int32 Idx = 0; Idx < (int32)EResourceType::None; Idx++)
+		Resources[Idx] = 5000;
+
+	UnitCreationCost = 50;
+	ShipCreationCost = 100;
 }
 
 bool ACommander::TryConstructBuilding(AResourceTile* Tile, EBuildingType Type)
 {
+	switch (Type)
+	{
+	case EBuildingType::Barracks:
+	case EBuildingType::Shipyard:
+		for (int32 Res = (int32)EResourceType::WoodCloud; Res != (int32)EResourceType::WoodLightning; Res++)
+		{
+			if (Resources[Res] < GetBuildingCreationCost(Type)) return false;
+		}
+		break;
+	case EBuildingType::Portal:
+		if (Resources[(int32)EResourceType::WoodLightning] < GetBuildingCreationCost(Type)) return false;
+		break;
+	case EBuildingType::Sanctuary:
+		if (Resources[(int32)EResourceType::WoodMeteor] < GetBuildingCreationCost(Type)) return false;
+		break;
+	}
 	if (Tile->GetIslandOwner() != this) return false;
 	UE_LOG(LogTemp, Warning, TEXT("HERE"));
 	if (Tile && !Tile->GetBuilding())
@@ -43,8 +65,27 @@ bool ACommander::TryConstructBuilding(AResourceTile* Tile, EBuildingType Type)
 		Building = SpawnBuildingToGame(Type, Tile->GetActorLocation(), Direction.Rotation());
 		Tile->SetBuilding(Building);
 		Building->SetCurTile(Tile);
+
+		switch (Type)
+		{
+		case EBuildingType::Barracks:
+		case EBuildingType::Shipyard:
+			for (int32 Res = (int32)EResourceType::WoodCloud; Res != (int32)EResourceType::WoodLightning; Res++)
+			{
+				Resources[Res] -= GetBuildingCreationCost(Type);
+			}
+			break;
+		case EBuildingType::Portal:
+			Resources[(int32)EResourceType::WoodLightning] -= GetBuildingCreationCost(Type);
+			break;
+		case EBuildingType::Sanctuary:
+			Resources[(int32)EResourceType::WoodMeteor] -= GetBuildingCreationCost(Type);
+			break;
+		}
+
+		return true;
 	}
-	return true;
+	return false;
 }
 
 bool ACommander::TryCreateUnit(ABarracks* Barracks, EUnitType Type)
@@ -52,26 +93,33 @@ bool ACommander::TryCreateUnit(ABarracks* Barracks, EUnitType Type)
 	int32 FoodConsume = GetUnitCreationCost();
 	if (GetResource(EResourceType::Food) < FoodConsume) return false;
 	if (Barracks == nullptr) return false;
-	if (Barracks->AddUnitCreationToArray(Type)) SetResource(GetResource(EResourceType::Food) - FoodConsume, EResourceType::Food);
-	return true;
+	if (Barracks->AddUnitCreationToArray(Type))
+	{
+		SetResource(GetResource(EResourceType::Food) - FoodConsume, EResourceType::Food);
+		IncreaseUnitCreationCost();
+		return true;
+	}
+	return false;
 }
 
 bool ACommander::TryCreateShip(AShipyard* Shipyard)
 {
 	int32 WoodConsume = GetShipCreationCost();
-	for (int32 Type = (int32)EResourceType::WoodCloud; Type != (int32)EResourceType::WoodMeteor; Type++)
+	for (int32 Type = (int32)EResourceType::WoodCloud; Type != (int32)EResourceType::Food; Type++)
 	{
 		if (Resources[Type] < WoodConsume) return false;
 	}
 	if (Shipyard == nullptr) return false;
 	if (Shipyard->AddShipCreationToArray())
 	{
-		for (int32 Type = (int32)EResourceType::WoodCloud; Type != (int32)EResourceType::WoodMeteor; Type++)
+		for (int32 Type = (int32)EResourceType::WoodCloud; Type != (int32)EResourceType::Food; Type++)
 		{
 			Resources[Type] -= WoodConsume;
 		}
+		IncreaseShipCreationCost();
+		return true;
 	}
-	return true;
+	return false;
 }
 
 bool ACommander::TryEmbarkUnit(AShip* Ship, ABaseUnit* Unit)
@@ -177,6 +225,7 @@ void ACommander::DestroyUnitFromGame(ABaseUnit* Unit)
 		Unit->GetCurIslandTile()->GetGuardianTile()->RemoveUnitFromThisIsland(Unit);
 	}
 	Units.Remove(Unit);
+	DecreaseUnitCreationCost();
 	Unit->Destroy();
 }
 
@@ -210,6 +259,16 @@ void ACommander::DestroyBuildingFromGame(ABaseBuilding* Building)
 	{
 		Building->GetCurTile()->SetBuilding(nullptr);
 	}
+	if (Building->GetBuildingType() == EBuildingType::Barracks)
+	{
+		ABarracks* Barracks = Cast<ABarracks>(Building);
+		for (int32 Count = 0; Count < Barracks->MaxWaitingUnit; Count++) Barracks->CancelWaitingUnitByIndex(0);
+	}
+	else if (Building->GetBuildingType() == EBuildingType::Shipyard)
+	{
+		AShipyard* Shipyard = Cast<AShipyard>(Building);
+		for (int32 Count = 0; Count < Shipyard->MaxWaitingShip; Count++) Shipyard->CancelWaitingShipByIndex(0);
+	}
 	Buildings.Remove(Building);
 	Building->Destroy();
 }
@@ -227,5 +286,23 @@ void ACommander::DestroyShipFromGame(AShip* Ship)
 	if (TargetShip == Ship) TargetShip = nullptr;
 	Ship->GetCurTile()->SetShip(nullptr);
 	Ships.Remove(Ship);
+	DecreaseShipCreationCost();
 	Ship->Destroy();
+}
+
+int32 ACommander::GetBuildingCreationCost(EBuildingType Type)
+{
+	switch (Type)
+	{
+	case EBuildingType::Barracks:
+		return 100;
+	case EBuildingType::Shipyard:
+		return 100;
+	case EBuildingType::Portal:
+		return 500;
+	case EBuildingType::Sanctuary:
+		return 200;
+	default:
+		return 0;
+	}
 }

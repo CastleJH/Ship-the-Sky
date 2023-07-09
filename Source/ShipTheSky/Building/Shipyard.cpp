@@ -45,6 +45,11 @@ void AShipyard::CancelWaitingShipByIndex(int32 Index)
 		if (Index == 0) ResetProgress();
 		WaitingShipArray.RemoveAt(Index);
 		if (WaitingShipArray.IsEmpty()) bIsCreatingShip = false;
+		OwnerCommander->DecreaseShipCreationCost();
+		for (int32 Type = (int32)EResourceType::WoodCloud; Type != (int32)EResourceType::Food; Type++)
+		{
+			OwnerCommander->SetResource(OwnerCommander->GetResource(StaticCast<EResourceType>(Type)) + OwnerCommander->GetShipCreationCost(), StaticCast<EResourceType>(Type));
+		}
 	}
 }
 

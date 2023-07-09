@@ -47,6 +47,8 @@ void ABarracks::CancelWaitingUnitByIndex(int32 Index)
 		if (Index == 0) ResetProgress();
 		WaitingUnitArray.RemoveAt(Index);
 		if (WaitingUnitArray.IsEmpty()) bIsCreatingUnit = false;
+		OwnerCommander->DecreaseUnitCreationCost();
+		OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::Food) + OwnerCommander->GetUnitCreationCost(), EResourceType::Food);
 	}
 }
 

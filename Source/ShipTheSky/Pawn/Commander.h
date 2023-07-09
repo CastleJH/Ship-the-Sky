@@ -58,9 +58,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Commander", meta = (AllowPrivateAccess = "true"))
 	class AShip* TargetShip;
 
-	//지휘관이 보유한 자원
+	//지휘관 자원 관련
 	UPROPERTY(VisibleAnywhere)
 	TArray<int32> Resources;
+	UPROPERTY(VisibleAnywhere)
+	int32 UnitCreationCost;
+	UPROPERTY(VisibleAnywhere)
+	int32 ShipCreationCost;
 
 	//지휘관 소유 유닛/건물/비행선
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -119,9 +123,19 @@ public:
 
 	//자원 관련 변수
 	UFUNCTION(BlueprintCallable)
-	int32 GetUnitCreationCost() { return Units.Num() * 10 + 50; }
+	int32 GetUnitCreationCost() { return UnitCreationCost; }
 	UFUNCTION(BlueprintCallable)
-	int32 GetShipCreationCost() { return Ships.Num() * 10 + 500; }
+	void DecreaseUnitCreationCost() { UnitCreationCost -= 10; }
+	UFUNCTION(BlueprintCallable)
+	void IncreaseUnitCreationCost() { UnitCreationCost += 10; }
+	UFUNCTION(BlueprintCallable)
+	int32 GetShipCreationCost() { return ShipCreationCost; }
+	UFUNCTION(BlueprintCallable)
+	void DecreaseShipCreationCost() { ShipCreationCost -= 50; }
+	UFUNCTION(BlueprintCallable)
+	void IncreaseShipCreationCost() { ShipCreationCost += 50; }
+	UFUNCTION(BlueprintCallable)
+	int32 GetBuildingCreationCost(enum EBuildingType Type);
 	UFUNCTION(BlueprintPure)
 	class AShip* GetTargetShip() const { return TargetShip; }
 	void SetResource(int32 Amount, EResourceType Type) { Resources[(int32)Type] = Amount; }

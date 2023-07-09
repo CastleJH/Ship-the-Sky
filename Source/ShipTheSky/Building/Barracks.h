@@ -16,6 +16,7 @@ class SHIPTHESKY_API ABarracks : public ABaseBuilding
 	
 public:
 	ABarracks();
+	const int32 MaxWaitingUnit = 10;
 
 private:
 	//대기중인 유닛들
@@ -24,7 +25,6 @@ private:
 	//유닛 생성 관련 변수
 	int32 TimeNeed;
 	bool bIsCreatingUnit;
-	int32 MaxWaitingUnit = 10;
 
 public:
 	//유닛 생성

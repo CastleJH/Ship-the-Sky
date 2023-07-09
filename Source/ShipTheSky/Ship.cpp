@@ -195,6 +195,14 @@ void AShip::RemoveFrontPathUI()
 	Path[0]->SetTileUI(0);
 }
 
+void AShip::RemoveAllUnitsFromGame()
+{
+	for (int32 Idx = Units.Num() - 1; Idx >= 0; Idx--)
+	{
+		OwnerCommander->DestroyUnitFromGame(Units[Idx]);
+	}
+}
+
 void AShip::Teleport(ABaseTile* Tile)
 {
 	EmptyPath();

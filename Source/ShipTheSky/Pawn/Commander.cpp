@@ -160,10 +160,6 @@ void ACommander::DestroyUnitFromGame(ABaseUnit* Unit)
 	if (Unit->GetCurIslandTile())
 	{
 		Unit->GetCurIslandTile()->GetGuardianTile()->RemoveUnitFromThisIsland(Unit);
-		if (Unit->GetCurIslandTile()->GetIslandType() != EIslandTileType::Guardian)
-		{
-			Cast<AResourceTile>(Unit->GetCurIslandTile())->SetUnit(nullptr);
-		}
 	}
 	Units.Remove(Unit);
 	Unit->Destroy();
@@ -213,6 +209,7 @@ AShip* ACommander::SpawnShipToGame()
 
 void ACommander::DestroyShipFromGame(AShip* Ship)
 {
+	if (TargetShip == Ship) TargetShip = nullptr;
 	Ship->GetCurTile()->SetShip(nullptr);
 	Ships.Remove(Ship);
 	Ship->Destroy();

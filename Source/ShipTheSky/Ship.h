@@ -122,9 +122,7 @@ public:
 	bool TryAddTileToPath(class ABaseTile* Tile, bool bIsFirstPath);
 	UFUNCTION(BlueprintCallable)
 	void EmptyPath();
-
 	void FollowPath();
-
 	void Teleport(class ABaseTile* Tile);
 
 	//경로 UI 관련
@@ -138,4 +136,7 @@ public:
 	void GetAttacked(float Damage);
 	float Attack();
 	bool CanShipAttack() { return Units.Num() != 0; }
+
+	//제거 관련
+	void RemoveAllUnitsFromGame();
 };

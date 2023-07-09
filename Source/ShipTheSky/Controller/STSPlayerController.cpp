@@ -30,6 +30,8 @@ ASTSPlayerController::ASTSPlayerController()
 	UserInputMode = EUserInputMode::View;
 	bIsPathSelectionValid = false;
 	bIsUnitRelocationMode = false;
+
+	RemovingShipTarget = nullptr;
 }
 
 bool ASTSPlayerController::OnButtonCreateUnitPressed(EUnitType Type)
@@ -123,6 +125,29 @@ void ASTSPlayerController::OnButtonStartPortal()
 void ASTSPlayerController::OnButtonCancelPortal()
 {
 	SetToViewMode();
+}
+
+void ASTSPlayerController::OnButtonRemoveBuilding()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Remove Building"));
+	Commander->DestroyBuildingFromGame(Commander->GetTargetResoureTile()->GetBuilding());
+}
+
+void ASTSPlayerController::OnButtonRemoveShip()
+{
+	if (RemovingShipTarget)
+	{
+		RemovingShipTarget->RemoveAllUnitsFromGame();
+		Commander->DestroyShipFromGame(RemovingShipTarget);
+	}
+}
+
+void ASTSPlayerController::OnButtonRemoveUnit()
+{
+	if (RemovingUnitTarget)
+	{
+		Commander->DestroyUnitFromGame(RemovingUnitTarget);
+	}
 }
 
 void ASTSPlayerController::SetupInputComponent()

@@ -59,6 +59,10 @@ private:
 	class AIslandTile* FirstTile;
 	UPROPERTY()
 	class ABaseUnit* UnitWaitingRelocationFromUI;
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	class AShip* RemovingShipTarget;
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	class ABaseUnit* RemovingUnitTarget;
 
 public:
 	UFUNCTION(BlueprintPure)
@@ -98,6 +102,12 @@ public:
 	void OnButtonStartPortal();
 	UFUNCTION(BlueprintCallable)
 	void OnButtonCancelPortal();
+	UFUNCTION(BlueprintCallable)
+	void OnButtonRemoveBuilding();
+	UFUNCTION(BlueprintCallable)
+	void OnButtonRemoveShip();
+	UFUNCTION(BlueprintCallable)
+	void OnButtonRemoveUnit();
 
 private:
 	//유저 입력

@@ -81,7 +81,7 @@ bool ASTSPlayerController::OnButtonCreateShipPressed()
 
 void ASTSPlayerController::OnButtonConstructBuildingPressed(EBuildingType Type)
 {
-	Commander->ConstructBuilding(Cast<AResourceTile>(Commander->GetTargetIslandTile()), Type);
+	Commander->TryConstructBuilding(Cast<AResourceTile>(Commander->GetTargetIslandTile()), Type);
 }
 
 void ASTSPlayerController::OnButtonUnitEmbark(ABaseUnit* Unit)

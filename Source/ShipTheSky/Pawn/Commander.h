@@ -73,7 +73,7 @@ protected:
 public:
 	//지휘관이 내릴 수 있는 명령
 	UFUNCTION(BlueprintCallable)
-	void ConstructBuilding(class AResourceTile* Tile, enum EBuildingType Type);
+	bool TryConstructBuilding(class AResourceTile* Tile, enum EBuildingType Type);
 	UFUNCTION(BlueprintCallable)
 	bool TryCreateUnit(class ABarracks* Barracks, enum EUnitType Type);
 	UFUNCTION(BlueprintCallable)
@@ -102,11 +102,6 @@ public:
 	class AGuardianTile* GetTargetGuardianTile() const { return TargetGuardianTile; }
 	UFUNCTION(BlueprintCallable)
 	void SetTargetShip(class AShip* Ship) { TargetShip = Ship; }
-	UFUNCTION(BlueprintPure)
-	class AShip* GetTargetShip() const { return TargetShip; }
-	void SetResource(int32 Amount, EResourceType Type) { Resources[(int32)Type] = Amount; }
-	UFUNCTION(BlueprintPure)
-	int32 GetResource(EResourceType Type) const { return Resources[(int32)Type]; }
 
 	//유닛/건물/비행선 생성/제거
 	UFUNCTION()
@@ -121,4 +116,15 @@ public:
 	class AShip* SpawnShipToGame();
 	UFUNCTION()
 	void DestroyShipFromGame(class AShip* Ship);
+
+	//자원 관련 변수
+	UFUNCTION(BlueprintCallable)
+	int32 GetUnitCreationCost() { return Units.Num() * 10 + 50; }
+	UFUNCTION(BlueprintCallable)
+	int32 GetShipCreationCost() { return Ships.Num() * 10 + 500; }
+	UFUNCTION(BlueprintPure)
+	class AShip* GetTargetShip() const { return TargetShip; }
+	void SetResource(int32 Amount, EResourceType Type) { Resources[(int32)Type] = Amount; }
+	UFUNCTION(BlueprintPure)
+	int32 GetResource(EResourceType Type) const { return Resources[(int32)Type]; }
 };

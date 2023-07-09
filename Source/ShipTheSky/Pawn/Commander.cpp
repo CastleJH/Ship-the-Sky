@@ -11,6 +11,7 @@
 #include "Ship.h"
 #include "MapManager.h"
 #include "Building/BaseBuilding.h"
+#include "Enums.h"
 
 // Sets default values
 ACommander::ACommander()
@@ -25,9 +26,9 @@ ACommander::ACommander()
 	OutlineColorIndex = 1;
 }
 
-void ACommander::ConstructBuilding(AResourceTile* Tile, EBuildingType Type)
+bool ACommander::TryConstructBuilding(AResourceTile* Tile, EBuildingType Type)
 {
-	if (Tile->GetIslandOwner() != this) return;
+	if (Tile->GetIslandOwner() != this) return false;
 	UE_LOG(LogTemp, Warning, TEXT("HERE"));
 	if (Tile && !Tile->GetBuilding())
 	{
@@ -36,26 +37,40 @@ void ACommander::ConstructBuilding(AResourceTile* Tile, EBuildingType Type)
 		if (MainTile == nullptr)
 		{
 			UE_LOG(LogTemp, Error, TEXT("Nullptr Island"));
-			return;
+			return false;
 		}
 		FVector Direction = MainTile->GetActorLocation() - Tile->GetActorLocation();
 		Building = SpawnBuildingToGame(Type, Tile->GetActorLocation(), Direction.Rotation());
 		Tile->SetBuilding(Building);
 		Building->SetCurTile(Tile);
 	}
+	return true;
 }
 
 bool ACommander::TryCreateUnit(ABarracks* Barracks, EUnitType Type)
 {
+	int32 FoodConsume = GetUnitCreationCost();
+	if (GetResource(EResourceType::Food) < FoodConsume) return false;
 	if (Barracks == nullptr) return false;
-	Barracks->AddUnitCreationToArray(Type);
+	if (Barracks->AddUnitCreationToArray(Type)) SetResource(GetResource(EResourceType::Food) - FoodConsume, EResourceType::Food);
 	return true;
 }
 
 bool ACommander::TryCreateShip(AShipyard* Shipyard)
 {
+	int32 WoodConsume = GetShipCreationCost();
+	for (int32 Type = (int32)EResourceType::WoodCloud; Type != (int32)EResourceType::WoodMeteor; Type++)
+	{
+		if (Resources[Type] < WoodConsume) return false;
+	}
 	if (Shipyard == nullptr) return false;
-	Shipyard->AddShipCreationToArray();
+	if (Shipyard->AddShipCreationToArray())
+	{
+		for (int32 Type = (int32)EResourceType::WoodCloud; Type != (int32)EResourceType::WoodMeteor; Type++)
+		{
+			Resources[Type] -= WoodConsume;
+		}
+	}
 	return true;
 }
 

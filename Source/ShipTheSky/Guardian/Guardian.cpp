@@ -34,7 +34,5 @@ AGuardian::AGuardian()
 void AGuardian::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	BattleComponent->SetDamage(FMath::RandRange(10, 30));
-	BattleComponent->SetMaxHP(FMath::RandRange(500, 1000), true);
+	BattleComponent->SetMaxHP(BattleComponent->GetMaxHP(), true);
 }

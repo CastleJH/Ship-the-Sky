@@ -20,7 +20,7 @@ AResourceTile::AResourceTile()
 	ResourcesWidgetComp->SetWidgetClass(LoadClass<UUserWidget>(nullptr, TEXT("/Game/UI/TileUI/WBP_TileResourcesUI.WBP_TileResourcesUI_C")));
 }
 
-void AResourceTile::SetResources(float Power)
+void AResourceTile::SetResources(float ResourcePower)
 {
 	bool Selected[11] = { false };
 	int32 NumToSelect = 0;
@@ -61,6 +61,8 @@ void AResourceTile::SetResources(float Power)
 
 void AResourceTile::TimePass(int32 GameDate)
 {
+	Super::TimePass(GameDate);
+
 	//나중에 1은 더 크게!! GameDate % 30 == 29로.
 	if (GameDate % 1 == 0) GiveResourceToUnit();
 	GiveProgressToBuilding();

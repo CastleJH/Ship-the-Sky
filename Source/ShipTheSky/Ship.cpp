@@ -24,7 +24,8 @@ AShip::AShip()
 	StaticMeshComp->CastShadow = false;
 
 	Durability = 100;
-	FlightPower = 3;
+	OriginalFlightPower = 5;
+	ModifiedFlightPower = OriginalFlightPower;
 	UnitCapacity = 4;
 
 	CloudResistance = 0;
@@ -60,25 +61,20 @@ bool AShip::TryLocateOnTile(ABaseTile* Tile, bool RightAfter)
 	if (CurTile != nullptr) CurTile->SetShip(nullptr);
 
 	if (RightAfter) SetActorLocation(Tile->GetActorLocation() + FVector(0.0f, 0.0f, 250.0f));
+	else SetDurability(Durability - 1);
 	CurTile = Tile;
 	Tile->SetShip(this);
 	SetActorHiddenInGame(false);
 	return true;
 }
 
-void AShip::InitializeStatWithResources(int32 WoodCloud, int32 WoodStorm, int32 WoodSun, int32 WoodLightning, int32 WoodMeteor)
+void AShip::SetDurability(int32 NewDurability)
 {
-	Durability = 100;
-
-	CloudResistance = WoodCloud;
-	StormResistance = WoodStorm;
-	SunResistance = WoodSun;
-	LightningResistance = WoodLightning;
-	MeteorResistance = WoodMeteor;
-
-	FlightPower = 5;
-
-	UnitCapacity = 4;
+	Durability = FMath::Clamp(Durability - 1, 0, 99999);
+	if (Durability == 0)
+	{
+		SetModifiedFlightPower(GetOriginalFlightPower() * 2);
+	}
 }
 
 bool AShip::AddUnit(ABaseUnit* Unit)
@@ -173,7 +169,7 @@ void AShip::FollowPath()
 		if (!Path.IsEmpty())
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Next"));
-			GetWorld()->GetTimerManager().SetTimer(MoveTimer, this, &AShip::FollowPath, FlightPower, false, FlightPower);
+			GetWorld()->GetTimerManager().SetTimer(MoveTimer, this, &AShip::FollowPath, ModifiedFlightPower, false, ModifiedFlightPower);
 		}
 	}
 }
@@ -215,6 +211,22 @@ void AShip::RemoveAllUnitsFromGame()
 	for (int32 Idx = Units.Num() - 1; Idx >= 0; Idx--)
 	{
 		OwnerCommander->DestroyUnitFromGame(Units[Idx]);
+	}
+}
+
+void AShip::ConsumeFoodForUnits(float Multiply)
+{
+	for (auto Unit : Units)
+	{
+		OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::Food) - Unit->GetFoodConsume() * Multiply, EResourceType::Food);
+	}
+}
+
+void AShip::DecreaseHPForUnits(float Amount)
+{
+	for (auto Unit : Units)
+	{
+		if (Unit->BattleComponent->GetCurHP() > Amount + 1.0f) Unit->BattleComponent->TakeDamage(Amount);
 	}
 }
 

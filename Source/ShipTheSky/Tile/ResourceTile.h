@@ -41,7 +41,7 @@ public:
 	void SetUnit(class ABaseUnit* NewUnit) { UnitOnThisTile = NewUnit; }
 	UFUNCTION(BlueprintPure)
 	class ABaseUnit* GetUnit() const { return UnitOnThisTile; }
-	void SetResources(float Power);
+	void SetResources(float ResourcePower);
 
 	//타일 효과적용
 	virtual void TimePass(int32 GameDate) override;

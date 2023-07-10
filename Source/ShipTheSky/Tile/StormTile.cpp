@@ -2,8 +2,27 @@
 
 
 #include "Tile/StormTile.h"
+#include "Ship.h"
 
 AStormTile::AStormTile()
 {
 	TileType = ETileType::Storm;
+}
+
+void AStormTile::TimePass(int32 GameDate)
+{
+	Super::TimePass(GameDate);
+
+	if (ShipOnThisTile)
+	{
+		if (ShipOnThisTile->GetDurability() == 0)
+		{
+			ShipOnThisTile->SetModifiedFlightPower(ShipOnThisTile->GetOriginalFlightPower() * 2);
+		}
+		else
+		{
+			ShipOnThisTile->SetModifiedFlightPower(ShipOnThisTile->GetOriginalFlightPower());
+		}
+		ShipOnThisTile->SetDurability(ShipOnThisTile->GetDurability() - GetResistanceAdjustedTilePower(ShipOnThisTile->GetStormResistance()));
+	}
 }

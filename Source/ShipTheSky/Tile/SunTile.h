@@ -16,4 +16,6 @@ class SHIPTHESKY_API ASunTile : public ABaseTile
 
 public:
 	ASunTile();
+
+	virtual void TimePass(int32 GameDate) override;
 };

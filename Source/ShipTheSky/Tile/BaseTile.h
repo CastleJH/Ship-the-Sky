@@ -25,6 +25,8 @@ protected:
 	//타일 속성 관련 변수
 	UPROPERTY(VisibleAnywhere, Category = "Tile")
 	ETileType TileType;
+	UPROPERTY(VisibleAnywhere)
+	float TilePower;
 	UPROPERTY()
 	class AShip* ShipOnThisTile = nullptr;
 	int32 Row;
@@ -45,6 +47,9 @@ public:
 	int32 GetRow() const { return Row; }
 	void SetCol(int32 NewCol) { Col = NewCol; }
 	int32 GetCol() const { return Col; }
+	void SetTilePower(float NewTilePower) { TilePower = NewTilePower; }
+	UFUNCTION(BlueprintPure)
+	float GetTilePower() { return TilePower; }
 
 	//임시
 	UFUNCTION(BlueprintCallable)
@@ -66,4 +71,6 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+	float GetResistanceAdjustedTilePower(int32 Resistance);
 };

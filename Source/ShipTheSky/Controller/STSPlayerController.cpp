@@ -319,7 +319,7 @@ void ASTSPlayerController::Tick(float DeltaSeconds)
 	if (LockedShip != nullptr)
 	{
 		if (Commander->GetTargetTile() != LockedShip->GetCurTile()) LockedShip->GetCurTile()->OnTileSelectedAsView(this);
-		Commander->SetActorLocation(LockedShip->GetActorLocation());
+		if (UserInputMode == EUserInputMode::View) Commander->SetActorLocation(LockedShip->GetActorLocation());
 	}
 
 	if (Commander->GetTargetShip() != PrevShip)

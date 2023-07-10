@@ -27,6 +27,8 @@ ABaseTile::ABaseTile()
 	TileWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
 	TileWidgetComp->SetTickMode(ETickMode::Disabled);
 	TileWidgetComp->SetWidgetClass(LoadClass<UUserWidget>(nullptr, TEXT("/Game/UI/TileUI/WBP_TileUI.WBP_TileUI_C")));
+
+	TilePower = 1.0f;
 }
 
 void ABaseTile::Tick(float DeltaSeconds)
@@ -38,6 +40,10 @@ void ABaseTile::Tick(float DeltaSeconds)
 
 void ABaseTile::TimePass(int32 GameDate)
 {
+	if (ShipOnThisTile)
+	{
+		ShipOnThisTile->ConsumeFoodForUnits(1.0f);
+	}
 }
 
 void ABaseTile::SetTileUI(int32 Number)
@@ -142,4 +148,9 @@ void ABaseTile::OnTileSelectedAsPath(ASTSPlayerController* PlayerController)
 		}
 		PlayerController->GetCommander()->GetTargetShip()->TryAddTileToPath(this, false);
 	}
+}
+
+float ABaseTile::GetResistanceAdjustedTilePower(int32 Resistance)
+{
+	return TilePower * 100.0f / (float)(100 + Resistance);
 }

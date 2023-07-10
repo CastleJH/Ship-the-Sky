@@ -2,8 +2,31 @@
 
 
 #include "Tile/MeteorTile.h"
+#include "Ship.h"
 
 AMeteorTile::AMeteorTile()
 {
 	TileType = ETileType::Meteor;
+}
+
+void AMeteorTile::TimePass(int32 GameDate)
+{
+	Super::TimePass(GameDate);
+
+	if (ShipOnThisTile)
+	{
+		if (ShipOnThisTile->GetDurability() == 0)
+		{
+			ShipOnThisTile->SetModifiedFlightPower(ShipOnThisTile->GetOriginalFlightPower() * 2);
+		}
+		else
+		{
+			ShipOnThisTile->SetModifiedFlightPower(ShipOnThisTile->GetOriginalFlightPower());
+		}
+		if (FMath::RandRange(0.0f, 1.0f) < GetResistanceAdjustedTilePower(ShipOnThisTile->GetMeteorResistance()) * 0.01f)
+		{
+			ShipOnThisTile->GetAttacked(99999999.0f);
+			ShipOnThisTile->GetAttacked(1.0f);
+		}
+	}
 }

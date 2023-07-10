@@ -50,7 +50,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 MeteorResistance;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	int32 FlightPower;
+	float OriginalFlightPower;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	float ModifiedFlightPower;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 UnitCapacity;
 
@@ -64,8 +66,6 @@ public:
 
 	bool TryLocateOnTile(class ABaseTile* Tile, bool RightAfter);
 
-	void InitializeStatWithResources(int32 WoodCloud, int32 WoodStorm, int32 WoodSun, int32 WoodLightning, int32 WoodMeteor);
-
 	//비행선 관련 변수 접근
 	UFUNCTION(BlueprintPure)
 	FString GetShipName() const { return ShipName; }
@@ -77,7 +77,7 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	int32 GetDurability() const { return Durability; }
-	void SetDurability(int32 NewDurability) { Durability = NewDurability; }
+	void SetDurability(int32 NewDurability);
 
 	UFUNCTION(BlueprintPure)
 	int32 GetCloudResistance() const { return CloudResistance; }
@@ -100,8 +100,11 @@ public:
 	void SetMeteorResistance(int32 NewMeteorResistance) { MeteorResistance = NewMeteorResistance; }
 
 	UFUNCTION(BlueprintPure)
-	int32 GetFlightPower() const { return FlightPower; }
-	void SetFlightPower(int32 NewFlightPower) { FlightPower = NewFlightPower; }
+	float GetOriginalFlightPower() const { return OriginalFlightPower; }
+	UFUNCTION(BlueprintPure)
+	float GetModifiedFlightPower() const { return ModifiedFlightPower; }
+	void SetOriginalFlightPower(float NewFlightPower) { OriginalFlightPower = NewFlightPower; }
+	void SetModifiedFlightPower(float NewFlightPower) { ModifiedFlightPower = NewFlightPower; }
 
 	UFUNCTION(BlueprintPure)
 	int32 GetUnitCapacity() const { return UnitCapacity; }
@@ -143,4 +146,8 @@ public:
 
 	//제거 관련
 	void RemoveAllUnitsFromGame();
+
+	//타일 관련
+	void ConsumeFoodForUnits(float Multiply);
+	void DecreaseHPForUnits(float Amount);
 };

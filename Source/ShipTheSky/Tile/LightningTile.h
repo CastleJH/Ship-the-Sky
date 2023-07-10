@@ -16,4 +16,6 @@ class SHIPTHESKY_API ALightningTile : public ABaseTile
 	
 public:
 	ALightningTile();
+
+	virtual void TimePass(int32 GameDate) override;
 };

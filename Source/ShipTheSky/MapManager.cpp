@@ -195,7 +195,7 @@ void UMapManager::GenerateMap(int32 NumCol)
 						return;
 					}
 					IslandTile->SetIslandID(GuardianTileID);
-					MapRow[0] = IslandTile;
+					MapRow[CurC] = IslandTile;
 					IslandTile->SetRow(CurR);
 					IslandTile->SetCol(CurC);
 				}
@@ -311,10 +311,25 @@ void UMapManager::GenerateMap(int32 NumCol)
 	}
 	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, 30);
 	TempSetStartLocation();
+	for (auto Tiles : Map)
+	{
+		for (auto Tile : Tiles)
+		{
+			if (Tile)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("%s"), *Tile->GetName());
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("nullptr"));
+			}
+		}
+	}
 }
 
 void UMapManager::TimePassesToAllTile(int32 GameDate)
 {
+	/*
 	for (auto Island : IslandTiles)
 	{
 		for (auto Tile : Island)
@@ -322,6 +337,16 @@ void UMapManager::TimePassesToAllTile(int32 GameDate)
 			if (Tile) Tile->TimePass(GameDate);
 		}
 	}
+	*/
+	
+	for (auto Tiles : Map)
+	{
+		for (auto Tile : Tiles)
+		{
+			Tile->TimePass(GameDate);
+		}
+	}
+	
 }
 
 void UMapManager::GetSameIslandTiles(int32 IslandID, TArray<class AIslandTile*>& OutArray) const

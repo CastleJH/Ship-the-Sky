@@ -62,8 +62,12 @@ public:
 	void SetCurIslandTile(class AIslandTile* NewTile) { CurIslandTile = NewTile; }
 	UFUNCTION(BlueprintPure)
 	class AShip* GetCurShip() const { return CurShip; }
+
+	//스탯 관련
 	UFUNCTION(BlueprintPure)
 	float GetFoodConsume() { return FoodConsume; }
+	UFUNCTION(BlueprintPure)
+	float GetEfficiency() { return Efficiency; }
 	
 	//전투 관련
 	float GetAttacked(float Damage);

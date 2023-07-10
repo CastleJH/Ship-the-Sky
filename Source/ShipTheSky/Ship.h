@@ -125,17 +125,21 @@ public:
 	void FollowPath();
 	void Teleport(class ABaseTile* Tile);
 
-	//경로 UI 관련
+	//경로 UI/비행선 UI 관련
 	void ClearPathUI();
 	void UpdatePathUI();
 	void RemoveFrontPathUI();
 	UPROPERTY()
 	bool bIsBeingObserved;
+	UFUNCTION(BlueprintCallable)
+	FString GetStatusString();
 
 	//전투 관련
 	void GetAttacked(float Damage);
 	float Attack();
 	bool CanShipAttack() { return Units.Num() != 0; }
+	float LastAttackedSecond = 0.0f;
+	bool bIsAttackedRecently = false;
 
 	//제거 관련
 	void RemoveAllUnitsFromGame();

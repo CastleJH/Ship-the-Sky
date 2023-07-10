@@ -93,7 +93,7 @@ void AResourceTile::GiveResourceToUnit()
 			{
 				if (Resource.Key >= (uint8)EResourceType::None) continue;
 				OwnerCommander->SetResource(
-					OwnerCommander->GetResource(StaticCast<EResourceType>(Resource.Key)) + Resource.Value,
+					OwnerCommander->GetResource(StaticCast<EResourceType>(Resource.Key)) + Resource.Value * (1.0f + UnitOnThisTile->GetEfficiency() * 0.01f),
 					StaticCast<EResourceType>(Resource.Key));
 			}
 		}

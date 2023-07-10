@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Ship.h"
@@ -27,11 +27,11 @@ AShip::AShip()
 	FlightPower = 3;
 	UnitCapacity = 4;
 
-	CloudResistance = FMath::RandRange(0, 10);
-	StormResistance = FMath::RandRange(0, 10);
-	SunResistance = FMath::RandRange(0, 10);
-	LightningResistance = FMath::RandRange(0, 10);
-	MeteorResistance = FMath::RandRange(0, 10);
+	CloudResistance = 0;
+	StormResistance = 0;
+	SunResistance = 0;
+	LightningResistance = 0;
+	MeteorResistance = 0;
 	bIsBeingObserved = false;
 }
 
@@ -40,6 +40,13 @@ void AShip::Tick(float DeltaTime)
 	FVector LerpedPosition = FMath::Lerp(GetActorLocation(), CurTile->GetActorLocation() + FVector(0.0f, 0.0f, 250.0f), 0.05f);
 
 	SetActorLocation(LerpedPosition);
+
+	if (bIsAttackedRecently)
+	{
+		LastAttackedSecond += DeltaTime;
+		if (LastAttackedSecond >= 3.0f) bIsAttackedRecently = false;
+	}
+	else LastAttackedSecond = 0.0f;
 }
 
 bool AShip::TryLocateOnTile(ABaseTile* Tile, bool RightAfter)
@@ -105,20 +112,20 @@ bool AShip::TryAddTileToPath(ABaseTile* Tile, bool bIsFirstPath)
 {
 	AIslandTile* IslandTile = Cast<AIslandTile>(Tile);
 	if (IslandTile && IslandTile->GetIslandOwner() != OwnerCommander) return false;
-	if (bIsFirstPath) //Ã¹ Å¬¸¯ÀÏ¶§
+	if (bIsFirstPath) //ì²« í´ë¦­ì¼ë•Œ
 	{
 		UE_LOG(LogTemp, Warning, TEXT("CheckFirst"));
-		if (Path.Num() == 0 && Tile != CurTile) return false; //ÁøÂ¥ Ã¹ Å¬¸¯ÀÎµ¥ ÇöÀ§Ä¡ Å¸ÀÏÀ» ´©¸¥°Ô ¾Æ´Ô
-		if (Path.Num() != 0 && Tile != Path.Last(0)) return false; //ÀÌ¾î¼­ Ã¹ Å¬¸¯ÀÎµ¥ ¸¶Áö¸·À¸·Î µå·¡±×ÇÑ Å¸ÀÏÀ» ´©¸¥°Ô ¾Æ´Ô
+		if (Path.Num() == 0 && Tile != CurTile) return false; //ì§„ì§œ ì²« í´ë¦­ì¸ë° í˜„ìœ„ì¹˜ íƒ€ì¼ì„ ëˆ„ë¥¸ê²Œ ì•„ë‹˜
+		if (Path.Num() != 0 && Tile != Path.Last(0)) return false; //ì´ì–´ì„œ ì²« í´ë¦­ì¸ë° ë§ˆì§€ë§‰ìœ¼ë¡œ ë“œë˜ê·¸í•œ íƒ€ì¼ì„ ëˆ„ë¥¸ê²Œ ì•„ë‹˜
 		return true;
 	}
-	else if (Path.Num() != 0 && Path.Last(0) == Tile) //¸¶Áö¸· Å¸ÀÏ°ú µ¿ÀÏÇÑ °ÍÀÓ
+	else if (Path.Num() != 0 && Path.Last(0) == Tile) //ë§ˆì§€ë§‰ íƒ€ì¼ê³¼ ë™ì¼í•œ ê²ƒì„
 	{
 		return false;
 	}
 	else
 	{
-		if (Path.Num() != 0) //°æ·Î°¡ Á¸ÀçÇÏ´Â »óÈ²¿¡¼­ ÀÎÁ¢ÇÑ Å¸ÀÏÀÎÁö È®ÀÎ
+		if (Path.Num() != 0) //ê²½ë¡œê°€ ì¡´ì¬í•˜ëŠ” ìƒí™©ì—ì„œ ì¸ì ‘í•œ íƒ€ì¼ì¸ì§€ í™•ì¸
 		{
 			TArray<ABaseTile*> OutArray;
 			GetGameInstance()->GetSubsystem<UMapManager>()->GetAdjacentTiles(Path.Last(0), OutArray);
@@ -195,6 +202,14 @@ void AShip::RemoveFrontPathUI()
 	Path[0]->SetTileUI(0);
 }
 
+FString AShip::GetStatusString()
+{
+	if (bIsAttackedRecently) return FString(TEXT("ì „íˆ¬ ì¤‘!"));
+	if (Path.Num() != 0) return FString(TEXT("ì´ë™ ì¤‘..."));
+	if (CurTile->GetTileType() != ETileType::Island) return FString(TEXT("í•˜ëŠ˜ íƒ€ì¼ì— ì •ì§€í•¨"));
+	return FString(TEXT("ì„¬ì— ì •ë°•í•¨"));
+}
+
 void AShip::RemoveAllUnitsFromGame()
 {
 	for (int32 Idx = Units.Num() - 1; Idx >= 0; Idx--)
@@ -219,7 +234,7 @@ void AShip::GetAttacked(float Damage)
 	{
 		check(Units.Num() != 0);
 		ABaseUnit* Target = nullptr;
-		//Àü»çºÎÅÍ
+		//ì „ì‚¬ë¶€í„°
 		while (Damage != 0)
 		{
 			Target = nullptr;
@@ -246,7 +261,7 @@ void AShip::GetAttacked(float Damage)
 			else break;
 		}
 
-		//HPºÎÅÍ
+		//HPë¶€í„°
 		while (Damage != 0 && !Units.IsEmpty())
 		{
 			Target = Units.Last();
@@ -265,6 +280,7 @@ void AShip::GetAttacked(float Damage)
 				Target->GetOwnerCommander()->DestroyUnitFromGame(Target);
 			}
 		}
+		bIsAttackedRecently = true;
 	}
 }
 

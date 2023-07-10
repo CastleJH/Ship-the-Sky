@@ -125,6 +125,7 @@ bool ABaseUnit::Disembark()
 
 float ABaseUnit::GetAttacked(float Damage)
 {
+	if (UnitType == EUnitType::Warrior) Damage = Damage * 100.0f / (100.0f + Efficiency);
 	return BattleComponent->TakeDamage(Damage);
 }
 
@@ -202,9 +203,4 @@ void ABaseUnit::BeginPlay()
 	Super::BeginPlay();
 
 	AnimInstance = Cast<UUnitAnimInstance>(SkeletalMeshComponent->GetAnimInstance());
-
-	Efficiency = FMath::RandRange(10, 100);
-	FoodConsume = FMath::RandRange(3, 10) / 10.0f;
-	BattleComponent->SetDamage(FMath::RandRange(10, 30));
-	BattleComponent->SetMaxHP(FMath::RandRange(50, 100), true);
 }

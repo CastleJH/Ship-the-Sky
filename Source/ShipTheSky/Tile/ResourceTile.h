@@ -31,7 +31,7 @@ private:
 public:
 	//타일 관련 변수(자원)
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	TMap<uint8, int32> Resources;
+	TMap<uint8, float> Resources;
 
 public:
 	//타일 관련 변수 접근

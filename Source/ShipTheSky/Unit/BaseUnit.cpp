@@ -30,6 +30,12 @@ ABaseUnit::ABaseUnit()
 	MoveSpeed = 500.0f;
 
 	BattleComponent = CreateDefaultSubobject<UBattleComponent>(TEXT("BattleComponent"));
+
+	HPLevel = 1;
+	FoodConsumeLevel = 1;
+	AttackLevel = 1;
+	EfficiencyLevel = 1;
+	AllUpLevel = 1;
 }
 
 void ABaseUnit::LocateOnIslandTile(AIslandTile* Tile, bool bIsImmediate)
@@ -121,6 +127,59 @@ bool ABaseUnit::Disembark()
 		}
 	}
 	return false;
+}
+
+bool ABaseUnit::UpgradeHP()
+{
+	if (OwnerCommander->GetResource(EResourceType::StoneCloud) < GetHPUpgradeCost()) return false;
+
+	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::StoneCloud) - GetHPUpgradeCost(), EResourceType::StoneCloud);
+	HPLevel++;
+	BattleComponent->SetMaxHP(BattleComponent->GetMaxHP() + 10, false);
+	return true;
+}
+
+bool ABaseUnit::UpgradeFoodConsume()
+{
+	if (OwnerCommander->GetResource(EResourceType::StoneSun) < GetFoodConsumeUpgradeCost()) return false;
+
+	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::StoneSun) - GetFoodConsumeUpgradeCost(), EResourceType::StoneSun);
+	FoodConsumeLevel++;
+	FoodConsume *= 0.95f;
+	return true;
+}
+
+bool ABaseUnit::UpgradeAttack()
+{
+	if (OwnerCommander->GetResource(EResourceType::StoneStorm) < GetAttackUpgradeCost()) return false;
+
+	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::StoneStorm) - GetAttackUpgradeCost(), EResourceType::StoneStorm);
+	AttackLevel++;
+	BattleComponent->SetDamage(BattleComponent->GetDamage() + 1);
+	return true;
+}
+
+bool ABaseUnit::UpgradeEfficiency()
+{
+	if (OwnerCommander->GetResource(EResourceType::StoneLightning) < GetEfficiencyUpgradeCost()) return false;
+
+	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::StoneLightning) - GetEfficiencyUpgradeCost(), EResourceType::StoneLightning);
+	EfficiencyLevel++;
+	Efficiency += 1.0f;
+	return true;
+}
+
+bool ABaseUnit::UpgradeAll()
+{
+	if (OwnerCommander->GetResource(EResourceType::StoneMeteor) < GetAllUpgradeCost()) return false;
+
+	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::StoneMeteor) - GetAllUpgradeCost(), EResourceType::StoneMeteor);
+	AllUpLevel++;
+	BattleComponent->SetDamage(BattleComponent->GetDamage() + 0.5f);
+	BattleComponent->SetMaxHP(BattleComponent->GetMaxHP() + 5, false);
+	Efficiency += 0.5f;
+	FoodConsume *= 0.975f;
+	return true;
 }
 
 float ABaseUnit::GetAttacked(float Damage)

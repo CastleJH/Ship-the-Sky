@@ -23,7 +23,7 @@ protected:
 	TObjectPtr<class UWidgetComponent> TileWidgetComp;
 
 	//鸥老 加己 包访 函荐
-	UPROPERTY(VisibleAnywhere, Category = "Tile")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tile")
 	ETileType TileType;
 	UPROPERTY(VisibleAnywhere)
 	float TilePower;

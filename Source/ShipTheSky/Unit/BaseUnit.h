@@ -39,6 +39,11 @@ protected:
 	float FoodConsume;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float Efficiency;
+	int32 HPLevel;
+	int32 FoodConsumeLevel;
+	int32 AttackLevel;
+	int32 EfficiencyLevel;
+	int32 AllUpLevel;
 
 	//애니메이션 관련 변수
 	UPROPERTY()
@@ -68,6 +73,26 @@ public:
 	float GetFoodConsume() { return FoodConsume; }
 	UFUNCTION(BlueprintPure)
 	float GetEfficiency() { return Efficiency; }
+	UFUNCTION(BlueprintCallable)
+	bool UpgradeHP();
+	UFUNCTION(BlueprintPure)
+	int32 GetHPUpgradeCost() const { return HPLevel * 10; }
+	UFUNCTION(BlueprintCallable)
+	bool UpgradeFoodConsume();
+	UFUNCTION(BlueprintPure)
+	int32 GetFoodConsumeUpgradeCost() const { return FoodConsumeLevel * 10; }
+	UFUNCTION(BlueprintCallable)
+	bool UpgradeAttack();
+	UFUNCTION(BlueprintPure)
+	int32 GetAttackUpgradeCost() const { return AttackLevel * 10; }
+	UFUNCTION(BlueprintCallable)
+	bool UpgradeEfficiency();
+	UFUNCTION(BlueprintPure)
+	int32 GetEfficiencyUpgradeCost() const { return EfficiencyLevel * 10; }
+	UFUNCTION(BlueprintCallable)
+	bool UpgradeAll();
+	UFUNCTION(BlueprintPure)
+	int32 GetAllUpgradeCost() const { return AllUpLevel * 10; }
 	
 	//전투 관련
 	float GetAttacked(float Damage);

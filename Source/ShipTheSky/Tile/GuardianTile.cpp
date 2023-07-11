@@ -65,6 +65,7 @@ void AGuardianTile::SpawnGuardian(int32 Index)
 	FTransform Loc(GetActorLocation());
 	Guardian = GetWorld()->SpawnActorDeferred<AGuardian>(Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController())->GuardianClass[Index], Loc);
 	Guardian->SetActorRotation(FRotator(0.0f, 180.0f, 0.0f));
+	Guardian->Tile = this;
 	Guardian->FinishSpawning(Loc);
 }
 
@@ -165,6 +166,15 @@ void AGuardianTile::GetAttackedByShips()
 	if (Damage != 0)
 	{
 		GetWorld()->GetGameState<ASTSGameState>()->SetIslandOwner(GetIslandID(), GetNewOwner());
+		for (auto Tile : AdjResourceTiles)
+		{
+			if (Tile->GetShip()) Tile->GetShip()->GetAttacked(9999999.0f);
+		}
+		for (auto Unit : UnitsOnThisIsland)
+		{
+			Unit->GetOwnerCommander()->DestroyUnitFromGame(Unit);
+		}
+		Guardian->ResetLevelAndPower();
 		SetOutline();
 		for (auto Tile : AdjResourceTiles) Tile->SetOutline();
 	}
@@ -204,7 +214,11 @@ void AGuardianTile::RecoverFriendly()
 		if (Tile->GetUnit())
 		{
 			Tile->GetUnit()->BattleComponent->RecoverHP(Tile->GetUnit()->BattleComponent->GetMaxHP() * 0.1f);
-		}			
+		}	
+		if (Tile->GetShip())
+		{
+			Tile->GetShip()->RecoverDurability((int)((float)Tile->GetShip()->GetMaxDurability() * 0.05f));
+		}
 	}
 	Guardian->BattleComponent->RecoverHP(Guardian->BattleComponent->GetMaxHP() * 0.05f);
 }

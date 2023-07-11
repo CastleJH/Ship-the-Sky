@@ -17,6 +17,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Battle Component", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UBattleComponent> BattleComponent;
+	class AGuardianTile* Tile;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Root", meta = (AllowPrivateAccess = "true"))
@@ -30,8 +31,50 @@ protected:
 	UPROPERTY()
 	class UUnitAnimInstance* AnimInstance;
 
+	//½ºÅÈ °ü·Ã º¯¼ö
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	int32 ScorePower;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32 ScorePowerUpgradeDelta;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32 HPUpgradeDelta;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32 AttackUpgradeDelta;
+	int32 HPCloudLevel;
+	int32 HPSunLevel;
+	int32 AttackStormLevel;
+	int32 AttackLightningLevel;
+	int32 ScorePowerLevel;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+public:
+	//½ºÅÈ °ü·Ã
+	UFUNCTION(BlueprintPure)
+	int32 GetScorePower() { return ScorePower; }
+	UFUNCTION(BlueprintCallable)
+	bool UpgradeHPWithCloud();
+	UFUNCTION(BlueprintPure)
+	int32 GetHPUpgradeCostWithCloud() const { return HPCloudLevel * 10; }
+	UFUNCTION(BlueprintCallable)
+	bool UpgradeHPWithSun();
+	UFUNCTION(BlueprintPure)
+	int32 GetHPUpgradeCostWithSun() const { return HPSunLevel * 10; }
+	UFUNCTION(BlueprintCallable)
+	bool UpgradeAttackWithStorm();
+	UFUNCTION(BlueprintPure)
+	int32 GetAttackUpgradeCostWithStorm() const { return AttackStormLevel * 10; }
+	UFUNCTION(BlueprintCallable)
+	bool UpgradeAttackWithLightning();
+	UFUNCTION(BlueprintPure)
+	int32 GetAttackUpgradeCostWithLightning() const { return AttackLightningLevel * 10; }
+	UFUNCTION(BlueprintCallable)
+	bool UpgradeScorePower();
+	UFUNCTION(BlueprintPure)
+	int32 GetScorePowerUpgradeCost() const { return ScorePowerLevel * 10; }
+	void ResetLevelAndPower();
+	UFUNCTION(BlueprintPure)
+	bool IsReinforcementPanelVisible() const;
 };

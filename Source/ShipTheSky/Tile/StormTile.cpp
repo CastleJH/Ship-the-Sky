@@ -15,7 +15,7 @@ void AStormTile::TimePass(int32 GameDate)
 
 	if (ShipOnThisTile)
 	{
-		if (ShipOnThisTile->GetDurability() == 0)
+		if (ShipOnThisTile->GetCurDurability() == 0)
 		{
 			ShipOnThisTile->SetModifiedFlightPower(ShipOnThisTile->GetOriginalFlightPower() * 2);
 		}
@@ -23,6 +23,6 @@ void AStormTile::TimePass(int32 GameDate)
 		{
 			ShipOnThisTile->SetModifiedFlightPower(ShipOnThisTile->GetOriginalFlightPower());
 		}
-		ShipOnThisTile->SetDurability(ShipOnThisTile->GetDurability() - GetResistanceAdjustedTilePower(ShipOnThisTile->GetStormResistance()));
+		ShipOnThisTile->SetCurDurability(ShipOnThisTile->GetCurDurability() - GetResistanceAdjustedTilePower(ShipOnThisTile->GetStormResistance()));
 	}
 }

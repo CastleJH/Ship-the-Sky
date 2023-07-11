@@ -23,7 +23,8 @@ AShip::AShip()
 	RootComponent = StaticMeshComp;
 	StaticMeshComp->CastShadow = false;
 
-	Durability = 100;
+	MaxDurability = 100;
+	CurDurability = 100;
 	OriginalFlightPower = 5;
 	ModifiedFlightPower = OriginalFlightPower;
 	UnitCapacity = 4;
@@ -34,6 +35,21 @@ AShip::AShip()
 	LightningResistance = 0;
 	MeteorResistance = 0;
 	bIsBeingObserved = false;
+
+
+	DurabilityStormLevel = 1;
+	DurabilityLightningLevel = 1;
+	FlightPowerCloudLevel = 1;
+	FlightPowerSunLevel = 1;
+	CloudLevel = 1;
+	StormLevel = 1;
+	SunLevel = 1;
+	LightningLevel = 1;
+	MeteorLevel = 1;
+
+	ResistanceDelta = 1;
+	DurabilityDelta = 10;
+	FlightPowerDelta = 0.95f;
 }
 
 void AShip::Tick(float DeltaTime)
@@ -61,17 +77,22 @@ bool AShip::TryLocateOnTile(ABaseTile* Tile, bool RightAfter)
 	if (CurTile != nullptr) CurTile->SetShip(nullptr);
 
 	if (RightAfter) SetActorLocation(Tile->GetActorLocation() + FVector(0.0f, 0.0f, 250.0f));
-	else SetDurability(Durability - 1);
+	else SetCurDurability(CurDurability - 1);
 	CurTile = Tile;
 	Tile->SetShip(this);
 	SetActorHiddenInGame(false);
 	return true;
 }
 
-void AShip::SetDurability(int32 NewDurability)
+void AShip::SetMaxDurability(int32 NewDurability)
 {
-	Durability = FMath::Clamp(Durability - 1, 0, 99999);
-	if (Durability == 0)
+	MaxDurability = NewDurability;
+}
+
+void AShip::SetCurDurability(int32 NewDurability)
+{
+	CurDurability = FMath::Clamp(CurDurability - 1, 0, MaxDurability);
+	if (CurDurability == 0)
 	{
 		SetModifiedFlightPower(GetOriginalFlightPower() * 2);
 	}
@@ -301,4 +322,121 @@ float AShip::Attack()
 	float Damage = 0.0f;
 	for (auto Unit : Units) Damage += Unit->BattleComponent->GetDamage();
 	return Damage;
+}
+ 
+ bool AShip::UpgradeResistance(enum ETileType Type)
+{
+	 switch (Type)
+	 {
+	 case ETileType::Cloud:
+		 if (OwnerCommander->GetResource(EResourceType::WoodCloud) < GetResistanceUpgradeCost(Type)) return false;
+		 OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::WoodCloud) - GetResistanceUpgradeCost(Type), EResourceType::WoodCloud);
+		 CloudLevel++;
+		 CloudResistance += ResistanceDelta;
+		 return true;
+	 case ETileType::Storm:
+		 if (OwnerCommander->GetResource(EResourceType::WoodStorm) < GetResistanceUpgradeCost(Type)) return false;
+		 OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::WoodStorm) - GetResistanceUpgradeCost(Type), EResourceType::WoodStorm);
+		 StormLevel++;
+		 StormResistance += ResistanceDelta;
+		 return true;
+	 case ETileType::Sun:
+		 if (OwnerCommander->GetResource(EResourceType::WoodSun) < GetResistanceUpgradeCost(Type)) return false;
+		 OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::WoodSun) - GetResistanceUpgradeCost(Type), EResourceType::WoodSun);
+		 SunLevel++;
+		 SunResistance += ResistanceDelta;
+		 return true;
+	 case ETileType::Lightning:
+		 if (OwnerCommander->GetResource(EResourceType::WoodLightning) < GetResistanceUpgradeCost(Type)) return false;
+		 OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::WoodLightning) - GetResistanceUpgradeCost(Type), EResourceType::WoodLightning);
+		 LightningLevel++;
+		 LightningResistance += ResistanceDelta;
+		 return true;
+	 case ETileType::Meteor:
+		 if (OwnerCommander->GetResource(EResourceType::WoodMeteor) < GetResistanceUpgradeCost(Type)) return false;
+		 OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::WoodMeteor) - GetResistanceUpgradeCost(Type), EResourceType::WoodMeteor);
+		 MeteorLevel++;
+		 MeteorResistance += ResistanceDelta;
+		 return true;
+	 }
+	 return false;
+}
+
+int32 AShip::GetResistanceUpgradeCost(enum ETileType Type) const
+{
+	switch (Type)
+	{
+	case ETileType::Cloud:
+		return CloudLevel * 10;
+		break;
+	case ETileType::Storm:
+		return StormLevel * 10;
+		break;
+	case ETileType::Sun:
+		return SunLevel * 10;
+		break;
+	case ETileType::Lightning:
+		return LightningLevel * 10;
+		break;
+	case ETileType::Meteor:
+		return MeteorLevel * 10;
+	default:
+		return 0;
+	}
+}
+
+bool AShip::UpgradeFlightPowerWithCloud()
+{
+	if (OwnerCommander->GetResource(EResourceType::WoodCloud) < GetFlightPowerUpgradeCostWithCloud()) return false;
+	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::WoodCloud) - GetFlightPowerUpgradeCostWithCloud(), EResourceType::WoodCloud);
+	FlightPowerCloudLevel++;
+	OriginalFlightPower *= FlightPowerDelta;
+	return true;
+}
+
+bool AShip::UpgradeFlightPowerWithSun()
+{
+	if (OwnerCommander->GetResource(EResourceType::WoodSun) < GetFlightPowerUpgradeCostWithSun()) return false;
+	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::WoodSun) - GetFlightPowerUpgradeCostWithSun(), EResourceType::WoodSun);
+	FlightPowerSunLevel++;
+	OriginalFlightPower *= FlightPowerDelta;
+	return true;
+}
+
+bool AShip::UpgradeDurabilityWithStorm()
+{
+	if (OwnerCommander->GetResource(EResourceType::WoodStorm) < GetDurabilityUpgradeCostWithStorm()) return false;
+	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::WoodStorm) - GetDurabilityUpgradeCostWithStorm(), EResourceType::WoodStorm);
+	DurabilityStormLevel++;
+	MaxDurability += DurabilityDelta;
+	return true;
+}
+
+bool AShip::UpgradeDurabilityWithLightning()
+{
+	if (OwnerCommander->GetResource(EResourceType::WoodLightning) < GetDurabilityUpgradeCostWithLightning()) return false;
+	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::WoodLightning) - GetDurabilityUpgradeCostWithLightning(), EResourceType::WoodLightning);
+	DurabilityLightningLevel++;
+	MaxDurability += DurabilityDelta;
+	return true;
+}
+
+bool AShip::UpgradeCapacity()
+{
+	if (UnitCapacity == 6) return false;
+	if (OwnerCommander->GetResource(EResourceType::WoodMeteor) < GetDurabilityUpgradeCostWithLightning()) return false;
+	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::WoodMeteor) - GetDurabilityUpgradeCostWithLightning(), EResourceType::WoodMeteor);
+	UnitCapacity++;
+	return true;
+}
+
+void AShip::RecoverDurability(int32 Amount)
+{
+	SetCurDurability(GetCurDurability() + Amount);
+}
+
+int32 AShip::GetCapacityUpgradeCost() const
+{
+	if (UnitCapacity == 6) return 0;
+	return (UnitCapacity - 3) * 100;
 }

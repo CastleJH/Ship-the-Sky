@@ -38,7 +38,9 @@ private:
 
 	//비행선 스탯
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	int32 Durability;
+	int32 MaxDurability;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	int32 CurDurability;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 CloudResistance;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -55,6 +57,20 @@ private:
 	float ModifiedFlightPower;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 UnitCapacity;
+
+	//업그레이드 관련
+	int32 DurabilityStormLevel;
+	int32 DurabilityLightningLevel;
+	int32 FlightPowerCloudLevel;
+	int32 FlightPowerSunLevel;
+	int32 CloudLevel;
+	int32 StormLevel;
+	int32 SunLevel;
+	int32 LightningLevel;
+	int32 MeteorLevel;
+	int32 ResistanceDelta;
+	int32 DurabilityDelta;
+	float FlightPowerDelta;
 
 	FTimerHandle MoveTimer;
 	UPROPERTY(VisibleAnywhere)
@@ -76,8 +92,11 @@ public:
 	class ABaseTile* GetCurTile() const { return CurTile; }
 
 	UFUNCTION(BlueprintPure)
-	int32 GetDurability() const { return Durability; }
-	void SetDurability(int32 NewDurability);
+	int32 GetMaxDurability() const { return MaxDurability; }
+	void SetMaxDurability(int32 NewDurability);
+	UFUNCTION(BlueprintPure)
+	int32 GetCurDurability() const { return CurDurability; }
+	void SetCurDurability(int32 NewDurability);
 
 	UFUNCTION(BlueprintPure)
 	int32 GetCloudResistance() const { return CloudResistance; }
@@ -150,4 +169,33 @@ public:
 	//타일 관련
 	void ConsumeFoodForUnits(float Multiply);
 	void DecreaseHPForUnits(float Amount);
+
+	//업그레이드 관련
+	UFUNCTION(BlueprintCallable)
+	bool UpgradeResistance(enum ETileType Type);
+	UFUNCTION(BlueprintPure)
+	int32 GetResistanceUpgradeCost(enum ETileType Type) const;
+	UFUNCTION(BlueprintCallable)
+	bool UpgradeFlightPowerWithCloud();
+	UFUNCTION(BlueprintPure)
+	int32 GetFlightPowerUpgradeCostWithCloud() const { return FlightPowerCloudLevel * 10; }
+	UFUNCTION(BlueprintCallable)
+	bool UpgradeFlightPowerWithSun();
+	UFUNCTION(BlueprintPure)
+	int32 GetFlightPowerUpgradeCostWithSun() const { return FlightPowerSunLevel * 10; }
+	UFUNCTION(BlueprintCallable)
+	bool UpgradeDurabilityWithStorm();
+	UFUNCTION(BlueprintPure)
+	int32 GetDurabilityUpgradeCostWithStorm() const { return DurabilityStormLevel * 10; }
+	UFUNCTION(BlueprintCallable)
+	bool UpgradeDurabilityWithLightning();
+	UFUNCTION(BlueprintPure)
+	int32 GetDurabilityUpgradeCostWithLightning() const { return DurabilityLightningLevel * 10; }
+	UFUNCTION(BlueprintCallable)
+	bool UpgradeCapacity();
+	UFUNCTION(BlueprintPure)
+	int32 GetCapacityUpgradeCost() const;
+
+	void RecoverDurability(int32 Amount);
+
 };

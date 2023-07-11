@@ -15,7 +15,7 @@ void ACloudTile::TimePass(int32 GameDate)
 
 	if (ShipOnThisTile)
 	{
-		if (ShipOnThisTile->GetDurability() == 0)
+		if (ShipOnThisTile->GetCurDurability() == 0)
 		{
 			ShipOnThisTile->SetModifiedFlightPower(ShipOnThisTile->GetOriginalFlightPower() * 2 + GetResistanceAdjustedTilePower(ShipOnThisTile->GetCloudResistance()));
 		}

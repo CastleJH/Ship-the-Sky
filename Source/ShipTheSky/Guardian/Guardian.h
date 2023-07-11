@@ -57,23 +57,23 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool UpgradeHPWithCloud();
 	UFUNCTION(BlueprintPure)
-	int32 GetHPUpgradeCostWithCloud() const { return HPCloudLevel * 10; }
+	int32 GetHPUpgradeCostWithCloud() const { return HPCloudLevel * 50; }
 	UFUNCTION(BlueprintCallable)
 	bool UpgradeHPWithSun();
 	UFUNCTION(BlueprintPure)
-	int32 GetHPUpgradeCostWithSun() const { return HPSunLevel * 10; }
+	int32 GetHPUpgradeCostWithSun() const { return HPSunLevel * 50; }
 	UFUNCTION(BlueprintCallable)
 	bool UpgradeAttackWithStorm();
 	UFUNCTION(BlueprintPure)
-	int32 GetAttackUpgradeCostWithStorm() const { return AttackStormLevel * 10; }
+	int32 GetAttackUpgradeCostWithStorm() const { return AttackStormLevel * 50; }
 	UFUNCTION(BlueprintCallable)
 	bool UpgradeAttackWithLightning();
 	UFUNCTION(BlueprintPure)
-	int32 GetAttackUpgradeCostWithLightning() const { return AttackLightningLevel * 10; }
+	int32 GetAttackUpgradeCostWithLightning() const { return AttackLightningLevel * 50; }
 	UFUNCTION(BlueprintCallable)
 	bool UpgradeScorePower();
 	UFUNCTION(BlueprintPure)
-	int32 GetScorePowerUpgradeCost() const { return ScorePowerLevel * 10; }
+	int32 GetScorePowerUpgradeCost() const { return ScorePowerLevel * 50; }
 	void ResetLevelAndPower();
 	UFUNCTION(BlueprintPure)
 	bool IsReinforcementPanelVisible() const;

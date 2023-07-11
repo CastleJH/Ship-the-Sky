@@ -203,10 +203,10 @@ void ASTSPlayerController::MouseReleased(const FInputActionValue& Value)
 	ABaseTile* Tile = MouseRay();
 	if (Tile != nullptr)
 	{
-		Tile->OnTileSelectedAsView(this);
-		LockedShip = nullptr;
-
 		AIslandTile* SecondTile = Cast<AIslandTile>(Tile);
+
+		if (!SecondTile || SecondTile == FirstTile) Tile->OnTileSelectedAsView(this);
+		LockedShip = nullptr;
 
 		if (bIsUnitRelocationMode)
 		{

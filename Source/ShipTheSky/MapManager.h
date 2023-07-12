@@ -39,7 +39,7 @@ public:
 	void GetAdjacentTiles(class ABaseTile* Tile, TArray<class ABaseTile*>& OutArray) const;
 
 private:
-	void TempSetStartLocation();
+	void SetStartLocation();
 	void SelectAllIslandTiles();
 
 private:

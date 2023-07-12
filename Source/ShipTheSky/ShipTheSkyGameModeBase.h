@@ -13,8 +13,4 @@ UCLASS()
 class SHIPTHESKY_API AShipTheSkyGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
-public:
-	virtual void StartPlay();
-	
 };

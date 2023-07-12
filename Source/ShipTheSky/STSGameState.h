@@ -19,7 +19,10 @@ private:
 	TArray<class ACommander*> IslandOwner;
 	int32 GameDateInt32;
 	FString GameDateString;
-	
+
+public:
+	UPROPERTY(VisibleAnywhere)
+	TArray<class ACommander*> Commanders;
 
 public:
 	//섬 소유권 초기화

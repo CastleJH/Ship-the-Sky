@@ -309,8 +309,8 @@ void UMapManager::GenerateMap(int32 NumCol)
 			}
 		}
 	}
-	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, 30);
-	TempSetStartLocation();
+	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, 0);
+	SetStartLocation();
 	for (auto Tiles : Map)
 	{
 		for (auto Tile : Tiles)
@@ -385,12 +385,17 @@ void UMapManager::GetAdjacentTiles(ABaseTile* Tile, TArray<class ABaseTile*>& Ou
 	}
 }
 
-void UMapManager::TempSetStartLocation()
+void UMapManager::SetStartLocation()
 {
-	int32 RandStartIsland = 50;
-	GetWorld()->GetGameState<ASTSGameState>()->SetIslandOwner(50, Cast<ACommander>(GetWorld()->GetFirstPlayerController()->GetPawn()));
+	ASTSGameState* GameState = GetWorld()->GetGameState<ASTSGameState>();
+	int32 IslandID = 10;
+	for (auto Commander : GameState->Commanders)
+	{
+		GameState->SetIslandOwner(IslandID, Commander);
+		IslandID += 10;
+	}
 	SelectAllIslandTiles();
-	Cast<APlayerCommander>(GetWorld()->GetFirstPlayerController()->GetPawn())->MoveCommanderToTile(IslandTiles[RandStartIsland][0], true);
+	Cast<APlayerCommander>(GetWorld()->GetFirstPlayerController()->GetPawn())->MoveCommanderToTile(IslandTiles[10][0], true);
 }
 
 void UMapManager::SelectAllIslandTiles()

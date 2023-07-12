@@ -79,8 +79,48 @@ void UMapManager::GenerateMap(int32 NumCol)
 			}
 	}
 
-	//섬 생성
+	//시작섬 생성
+
 	NewIslandID = 0;
+
+	int32 CommanderCount = GetWorld()->GetGameState<ASTSGameState>()->Commanders.Num();
+	for (auto Commander : GetWorld()->GetGameState<ASTSGameState>()->Commanders)
+	{
+		if (!MapData.IsValidIndex(Commander->StartRow) || !MapData[Commander->StartRow].IsValidIndex(Commander->StartCol))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Wrong Start Island Index"));
+			return;
+		}
+		if (MapData[Commander->StartRow][Commander->StartCol] == ETileType::Island)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Same Start Island Index"));
+			return;
+		}
+		IslandID[Commander->StartRow][Commander->StartCol] = NewIslandID + 10000;
+		MapData[Commander->StartRow][Commander->StartCol] = ETileType::Island;
+		NewIslandID++;
+		TArray<AIslandTile*> SameIslands;
+		IslandTiles.Add(SameIslands);
+
+		int32 IslandTileNum = 0;
+		for (int32 Near = 0; Near < 6; Near++)
+		{
+			if (Near == Commander->EmptyStartIndex) continue;
+			NewR = Commander->StartRow + RowOffset[Near];
+			NewC = Commander->StartCol + ColOffset[Commander->StartRow % 2][Near];
+
+			if (!MapData.IsValidIndex(NewR) || !MapData[NewR].IsValidIndex(NewC))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Start Island Index is too far from center."));
+				return;
+			}
+			IslandID[NewR][NewC] = NewIslandID;
+			MapData[NewR][NewC] = ETileType::Island;
+		}
+	}
+
+
+	//섬 생성
 	for (int32 Col = 0; Col < NumCol; Col++)
 	{
 		int32 IterIsland = 2;
@@ -156,18 +196,21 @@ void UMapManager::GenerateMap(int32 NumCol)
 		}
 	}
 
-	//수호자 타일 먼저 스폰
+	//수호자 타일과 시작 섬 먼저 스폰
 	float Offs = 500.f;
 	float XCoord = 0.0f, YCoord = 0.0f;
 	float XDiff = Offs * 0.25f + Offs / FMath::Sqrt(3.0f);
 	float YDiff = Offs;
 	CurR = 0;
 	Map.SetNum(MapData.Num());
-	for (auto Row : MapData)
+	for (int32 Ridx = 0; Ridx < Map.Num(); Ridx++)
 	{
 		TArray<ABaseTile*> MapRow;
-		MapRow.SetNum(Row.Num());
-
+		MapRow.SetNum(NumCol);
+		Map[Ridx] = MapRow;
+	}
+	for (auto Row : MapData)
+	{
 		YCoord = (CurR & 1) ? -Offs * 0.5f : 0.0f;
 		CurC = 0;
 
@@ -195,15 +238,70 @@ void UMapManager::GenerateMap(int32 NumCol)
 						return;
 					}
 					IslandTile->SetIslandID(GuardianTileID);
-					MapRow[CurC] = IslandTile;
+					Map[CurR][CurC] = IslandTile;
 					IslandTile->SetRow(CurR);
 					IslandTile->SetCol(CurC);
+
+					//시작 섬인경우
+					if (GuardianTileID < GetWorld()->GetGameState<ASTSGameState>()->Commanders.Num())
+					{
+						int32 GenNum = 0;
+						for (int32 Near = 0; Near < 6; Near++)
+						{
+							if (Near == GetWorld()->GetGameState<ASTSGameState>()->Commanders[GuardianTileID]->EmptyStartIndex) continue;
+							NewR = GetWorld()->GetGameState<ASTSGameState>()->Commanders[GuardianTileID]->StartRow + RowOffset[Near];
+							NewC = GetWorld()->GetGameState<ASTSGameState>()->Commanders[GuardianTileID]->StartCol + ColOffset[GetWorld()->GetGameState<ASTSGameState>()->Commanders[GuardianTileID]->StartRow % 2][Near];
+
+							if (!MapData.IsValidIndex(NewR) || !MapData[NewR].IsValidIndex(NewC))
+							{
+								UE_LOG(LogTemp, Warning, TEXT("Wrong Island"));
+								return;
+							}
+							FVector StartLocation(XCoord + (float)RowOffset[Near] * XDiff, YCoord + (float)ColOffset[NewR % 2][Near] * YDiff + ((NewR & 1) ? Offs * 0.5f : 0.0f), 60.0f);
+							TMap<uint8, float> StartResources;
+							switch (GenNum)
+							{
+							case 0:
+								IslandTile = GetWorld()->SpawnActor<AIslandTile>(MineTileClass, StartLocation, FRotator::ZeroRotator);
+								StartResources.Add(0, 5);
+								StartResources.Add(1, 5);
+								StartResources.Add(2, 5);
+								break;
+							case 1:
+								IslandTile = GetWorld()->SpawnActor<AIslandTile>(MineTileClass, StartLocation, FRotator::ZeroRotator);
+								StartResources.Add(3, 5);
+								StartResources.Add(4, 5);
+								break;
+							case 2:
+								IslandTile = GetWorld()->SpawnActor<AIslandTile>(ForestTileClass, StartLocation, FRotator::ZeroRotator);
+								StartResources.Add(5, 5);
+								StartResources.Add(6, 5);
+								StartResources.Add(7, 5);
+								break;
+							case 3:
+								IslandTile = GetWorld()->SpawnActor<AIslandTile>(ForestTileClass, StartLocation, FRotator::ZeroRotator);
+								StartResources.Add(8, 5);
+								StartResources.Add(9, 5);
+								break;
+							case 4:
+								IslandTile = GetWorld()->SpawnActor<AIslandTile>(FarmTileClass, StartLocation, FRotator::ZeroRotator);
+								StartResources.Add(10, 5);
+								break;
+							}
+							IslandTile->SetIslandID(GuardianTileID);
+							Cast<AResourceTile>(IslandTile)->SetResources(StartResources);
+							Map[NewR][NewC] = IslandTile;
+							IslandTile->SetRow(NewR);
+							IslandTile->SetCol(NewC);
+							IslandTiles[GuardianTileID].Add(IslandTile);
+							GenNum++;
+						}
+					}
 				}
 			}
 			YCoord += YDiff;
 			CurC++;
 		}
-		Map[CurR] = MapRow;
 		XCoord += XDiff;
 		CurR++;
 	}
@@ -226,58 +324,60 @@ void UMapManager::GenerateMap(int32 NumCol)
 		int32 IslandType;
 		for (auto Elem : Row)
 		{
-			switch (Elem)
+			if (Map[CurR][CurC] == nullptr)
 			{
-			case ETileType::Island:
-				if (!IslandID.IsValidIndex(CurR) || !IslandID[CurR].IsValidIndex(CurC))
+				switch (Elem)
 				{
-					UE_LOG(LogTemp, Error, TEXT("Wrong IslandID index."));
-					return;
-				}
-				if (IslandID[CurR][CurC] < 10000)
-				{
-					if (!IslandTiles.IsValidIndex(IslandID[CurR][CurC]) || !IslandTiles[IslandID[CurR][CurC]].IsValidIndex(0))
+				case ETileType::Island:
+					if (!IslandID.IsValidIndex(CurR) || !IslandID[CurR].IsValidIndex(CurC))
 					{
-						UE_LOG(LogTemp, Error, TEXT("Wrong Guardian tile index."));
+						UE_LOG(LogTemp, Error, TEXT("Wrong IslandID index."));
 						return;
 					}
-					FRotator Rotator = (IslandTiles[IslandID[CurR][CurC]][0]->GetActorLocation() - FVector(XCoord, YCoord, 60.0f)).Rotation() + FRotator(0.0f, -30.0f, 0.0f);
+					if (IslandID[CurR][CurC] < 10000)
+					{
+						if (!IslandTiles.IsValidIndex(IslandID[CurR][CurC]) || !IslandTiles[IslandID[CurR][CurC]].IsValidIndex(0))
+						{
+							UE_LOG(LogTemp, Error, TEXT("Wrong Guardian tile index."));
+							return;
+						}
+						FRotator Rotator = (IslandTiles[IslandID[CurR][CurC]][0]->GetActorLocation() - FVector(XCoord, YCoord, 60.0f)).Rotation() + FRotator(0.0f, -30.0f, 0.0f);
 
-					IslandType = FMath::RandRange(0, 2);
-					if (IslandType == 0) IslandTile = GetWorld()->SpawnActor<AIslandTile>(MineTileClass, FVector(XCoord, YCoord, 60.0f), Rotator);
-					else if (IslandType == 1) IslandTile = GetWorld()->SpawnActor<AIslandTile>(ForestTileClass, FVector(XCoord, YCoord, 60.0f), Rotator);
-					else IslandTile = GetWorld()->SpawnActor<AIslandTile>(FarmTileClass, FVector(XCoord, YCoord, 60.0f), Rotator);
-					IslandTiles[IslandID[CurR][CurC]].Add(IslandTile);
-					Cast<AResourceTile>(IslandTile)->SetResources(1.0f);
-					IslandTile->SetIslandID(IslandID[CurR][CurC]);
-					Tile = IslandTile;
+						IslandType = FMath::RandRange(0, 2);
+						if (IslandType == 0) IslandTile = GetWorld()->SpawnActor<AIslandTile>(MineTileClass, FVector(XCoord, YCoord, 60.0f), Rotator);
+						else if (IslandType == 1) IslandTile = GetWorld()->SpawnActor<AIslandTile>(ForestTileClass, FVector(XCoord, YCoord, 60.0f), Rotator);
+						else IslandTile = GetWorld()->SpawnActor<AIslandTile>(FarmTileClass, FVector(XCoord, YCoord, 60.0f), Rotator);
+						IslandTiles[IslandID[CurR][CurC]].Add(IslandTile);
+						IslandTile->SetIslandID(IslandID[CurR][CurC]);
+						Tile = IslandTile;
+					}
+					break;
+				case ETileType::Cloud:
+					Tile = GetWorld()->SpawnActor<ABaseTile>(CloudTileClass, FVector(XCoord, YCoord, 0.0f), FRotator::ZeroRotator);
+					break;
+				case ETileType::Storm:
+					Tile = GetWorld()->SpawnActor<ABaseTile>(StormTileClass, FVector(XCoord, YCoord, 0.0f), FRotator::ZeroRotator);
+					break;
+				case ETileType::Sun:
+					Tile = GetWorld()->SpawnActor<ABaseTile>(SunTileClass, FVector(XCoord, YCoord, 0.0f), FRotator::ZeroRotator);
+					break;
+				case ETileType::Lightning:
+					Tile = GetWorld()->SpawnActor<ABaseTile>(LightningTileClass, FVector(XCoord, YCoord, 0.0f), FRotator::ZeroRotator);
+					break;
+				case ETileType::Meteor:
+					Tile = GetWorld()->SpawnActor<ABaseTile>(MeteorTileClass, FVector(XCoord, YCoord, 0.0f), FRotator::ZeroRotator);
+					break;
 				}
-				break;
-			case ETileType::Cloud:
-				Tile = GetWorld()->SpawnActor<ABaseTile>(CloudTileClass, FVector(XCoord, YCoord, 0.0f), FRotator::ZeroRotator);
-				break;
-			case ETileType::Storm:
-				Tile = GetWorld()->SpawnActor<ABaseTile>(StormTileClass, FVector(XCoord, YCoord, 0.0f), FRotator::ZeroRotator);
-				break;
-			case ETileType::Sun:
-				Tile = GetWorld()->SpawnActor<ABaseTile>(SunTileClass, FVector(XCoord, YCoord, 0.0f), FRotator::ZeroRotator);
-				break;
-			case ETileType::Lightning:
-				Tile = GetWorld()->SpawnActor<ABaseTile>(LightningTileClass, FVector(XCoord, YCoord, 0.0f), FRotator::ZeroRotator);
-				break;
-			case ETileType::Meteor:
-				Tile = GetWorld()->SpawnActor<ABaseTile>(MeteorTileClass, FVector(XCoord, YCoord, 0.0f), FRotator::ZeroRotator);
-				break;
-			}
-			if (Elem != ETileType::Island || IslandID[CurR][CurC] < 10000)
-			{
-				if (Tile == nullptr)
+				if (Elem != ETileType::Island || IslandID[CurR][CurC] < 10000)
 				{
-					UE_LOG(LogTemp, Error, TEXT("NULL TILE"));
+					if (Tile == nullptr)
+					{
+						UE_LOG(LogTemp, Error, TEXT("NULL TILE"));
+					}
+					Map[CurR][CurC] = Tile;
+					Tile->SetRow(CurR);
+					Tile->SetCol(CurC);
 				}
-				Map[CurR][CurC] = Tile;
-				Tile->SetRow(CurR);
-				Tile->SetCol(CurC);
 			}
 			YCoord += YDiff;
 			CurC++;
@@ -310,35 +410,23 @@ void UMapManager::GenerateMap(int32 NumCol)
 		}
 	}
 	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, 0);
+
+	SetTilePowers();
+	SetIslandResources();
 	SetStartLocation();
-	for (auto Tiles : Map)
+
+	for (auto Row : Map)
 	{
-		for (auto Tile : Tiles)
+		for (auto Tile : Row)
 		{
-			if (Tile)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("%s"), *Tile->GetName());
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("nullptr"));
-			}
+			UE_LOG(LogTemp, Warning, TEXT("%s"), *(Tile->GetName()));
 		}
 	}
 }
 
 void UMapManager::TimePassesToAllTile(int32 GameDate)
 {
-	/*
-	for (auto Island : IslandTiles)
-	{
-		for (auto Tile : Island)
-		{
-			if (Tile) Tile->TimePass(GameDate);
-		}
-	}
-	*/
-	
+	return;
 	for (auto Tiles : Map)
 	{
 		for (auto Tile : Tiles)
@@ -346,7 +434,6 @@ void UMapManager::TimePassesToAllTile(int32 GameDate)
 			Tile->TimePass(GameDate);
 		}
 	}
-	
 }
 
 void UMapManager::GetSameIslandTiles(int32 IslandID, TArray<class AIslandTile*>& OutArray) const
@@ -385,17 +472,176 @@ void UMapManager::GetAdjacentTiles(ABaseTile* Tile, TArray<class ABaseTile*>& Ou
 	}
 }
 
+void UMapManager::SetTilePowers()
+{
+	int32 NewR;
+	int32 NewC;
+	for (int32 Row = 0; Row < Map.Num(); Row++)
+	{
+		for (int32 Col = 0; Col < Map[Row].Num(); Col++)
+		{
+			int32 Count = 0;
+			for (int32 i = 0; i < 18; i++)
+			{
+				NewR = Row + RowOffset[i];
+				NewC = Col + ColOffset[Row % 2][i];
+
+				if (Map.IsValidIndex(NewR) && Map[NewR].IsValidIndex(NewC))
+				{
+					if (Map[NewR][NewC]->GetTileType() == Map[Row][Col]->GetTileType())
+					{
+						Count++;
+					}
+				}
+			}
+			if (Count <= 8) Map[Row][Col]->SetTilePower(1);
+			else if (Count <= 11) Map[Row][Col]->SetTilePower(2);
+			else if (Count <= 14) Map[Row][Col]->SetTilePower(3);
+			else Map[Row][Col]->SetTilePower(4);
+		}
+	}
+}
+
+void UMapManager::SetIslandResources()
+{
+	int32 NewR;
+	int32 NewC;
+
+	ETileType MostTile;
+	float TilePower;
+	int32 MostCount = 0;
+	int32 MaxCount[6] = { 0 };
+
+	int32 MinCount = 0;
+	int32 ResourceCount[11] = { 0 };
+	
+	int32 Skip = 0;
+	for (auto Row : IslandTiles)
+	{
+		if (Skip < GetWorld()->GetGameState<ASTSGameState>()->Commanders.Num())
+		{
+			Skip++;
+			continue;
+		}
+		for (int32 Idx = 1; Idx < Row.Num(); Idx++)
+		{
+			TilePower = 0;
+			for (int32 i = 0; i < 18; i++)
+			{
+				NewR = Row[Idx]->GetRow() + RowOffset[i];
+				NewC = Row[Idx]->GetCol() + ColOffset[Row[Idx]->GetRow() % 2][i];
+				if (Map.IsValidIndex(NewR) && Map[NewR].IsValidIndex(NewC))
+				{
+					MaxCount[(int32)Map[NewR][NewC]->GetTileType()]++;
+					if (Map[NewR][NewC]->GetTileType() != ETileType::Island && MostCount < MaxCount[(int32)Map[NewR][NewC]->GetTileType()])
+					{
+						MostCount = MaxCount[(int32)Map[NewR][NewC]->GetTileType()];
+						MostTile = Map[NewR][NewC]->GetTileType();
+						TilePower = Map[NewR][NewC]->GetTilePower();
+					}
+					else if (Map[NewR][NewC]->GetTileType() != ETileType::Island && MostCount == MaxCount[(int32)Map[NewR][NewC]->GetTileType()])
+					{
+						TilePower = FMath::Max(TilePower, Map[NewR][NewC]->GetTilePower());
+					}
+				}
+			}
+
+			TMap<uint8, float> Resources;
+			int32 Additional = FMath::RandRange(0, 2);
+			int32 Amount;
+			uint8 ResourceType;
+			switch (Row[Idx]->GetIslandType())
+			{
+			case EIslandTileType::Mine:
+				ResourceType = (uint8)MostTile - 1;
+				Amount = FMath::RandRange(1, 3) + TilePower;
+				Resources.Add(ResourceType, Amount);
+				ResourceCount[ResourceType] += Amount;
+
+				MinCount = 999999;
+				for (int32 Type = (int32)EResourceType::StoneCloud; Type <= (int32)EResourceType::StoneMeteor; Type++)
+				{
+					if (ResourceCount[Type] < MinCount)
+					{
+						MinCount = ResourceCount[Type];
+						ResourceType = Type;
+					}
+				}
+
+				for (; Additional != 0; Additional--)
+				{
+					Amount = FMath::RandRange(1, 3);
+					Resources.Add(ResourceType, Amount);
+					ResourceCount[ResourceType] += Amount;
+
+					MinCount = 999999;
+					for (int32 Type = (int32)EResourceType::StoneCloud; Type <= (int32)EResourceType::StoneMeteor; Type++)
+					{
+						if (ResourceCount[Type] < MinCount)
+						{
+							MinCount = ResourceCount[Type];
+							ResourceType = Type;
+						}
+					}
+				}
+				break;
+			case EIslandTileType::Forest:
+				ResourceType = (uint8)MostTile + 4;
+				Amount = FMath::RandRange(1, 3) + TilePower;
+				Resources.Add(ResourceType, Amount);
+				ResourceCount[ResourceType] += Amount;
+
+				MinCount = 999999;
+				for (int32 Type = (int32)EResourceType::WoodCloud; Type <= (int32)EResourceType::WoodMeteor; Type++)
+				{
+					if (ResourceCount[Type] < MinCount)
+					{
+						MinCount = ResourceCount[Type];
+						ResourceType = Type;
+					}
+				}
+
+				for (; Additional != 0; Additional--)
+				{
+					Amount = FMath::RandRange(1, 3);
+					Resources.Add(ResourceType, Amount);
+					ResourceCount[ResourceType] += Amount;
+
+					MinCount = 999999;
+					for (int32 Type = (int32)EResourceType::WoodCloud; Type <= (int32)EResourceType::WoodMeteor; Type++)
+					{
+						if (ResourceCount[Type] < MinCount)
+						{
+							MinCount = ResourceCount[Type];
+							ResourceType = Type;
+						}
+					}
+				}
+				break;
+			case EIslandTileType::Farm:
+				Resources.Add((uint8)EResourceType::Food, FMath::RandRange(1, 3) + TilePower);
+				break;
+			case EIslandTileType::Guardian:
+				break;
+			default:
+				break;
+			}
+			if (Row[Idx]->GetIslandType() != EIslandTileType::Guardian) Cast<AResourceTile>(Row[Idx])->SetResources(Resources);
+		}
+	}
+}
+
 void UMapManager::SetStartLocation()
 {
 	ASTSGameState* GameState = GetWorld()->GetGameState<ASTSGameState>();
-	int32 IslandID = 10;
+	int32 IslandID = 0;
 	for (auto Commander : GameState->Commanders)
 	{
 		GameState->SetIslandOwner(IslandID, Commander);
-		IslandID += 10;
+		IslandID++;
 	}
 	SelectAllIslandTiles();
-	Cast<APlayerCommander>(GetWorld()->GetFirstPlayerController()->GetPawn())->MoveCommanderToTile(IslandTiles[10][0], true);
+	Cast<APlayerCommander>(GetWorld()->GetFirstPlayerController()->GetPawn())->MoveCommanderToTile(IslandTiles[0][0], true);
 }
 
 void UMapManager::SelectAllIslandTiles()

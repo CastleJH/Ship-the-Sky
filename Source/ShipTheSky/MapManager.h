@@ -39,6 +39,8 @@ public:
 	void GetAdjacentTiles(class ABaseTile* Tile, TArray<class ABaseTile*>& OutArray) const;
 
 private:
+	void SetTilePowers();
+	void SetIslandResources();
 	void SetStartLocation();
 	void SelectAllIslandTiles();
 

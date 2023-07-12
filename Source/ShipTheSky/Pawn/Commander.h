@@ -42,8 +42,17 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Commander")
 	TSubclassOf<class ABaseUnit> WarriorClass;
 
+	//상징 색
 	UPROPERTY(EditDefaultsOnly, Category = "Commander")
 	int32 OutlineColorIndex;
+
+	//시작 섬 위치
+	UPROPERTY(EditDefaultsOnly, Category = "Commander")
+	int32 StartRow;
+	UPROPERTY(EditDefaultsOnly, Category = "Commander")
+	int32 StartCol;
+	UPROPERTY(EditDefaultsOnly, Category = "Commander")
+	int32 EmptyStartIndex;
 
 protected:
 	//지휘관이 작업 중인 타겟들

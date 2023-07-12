@@ -25,11 +25,13 @@ protected:
 	//鸥老 加己 包访 函荐
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tile")
 	ETileType TileType;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tile")
 	float TilePower;
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tile")
 	class AShip* ShipOnThisTile = nullptr;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tile")
 	int32 Row;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tile")
 	int32 Col;
 
 public:

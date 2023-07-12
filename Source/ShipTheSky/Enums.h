@@ -26,28 +26,33 @@ UENUM(BlueprintType)
 enum class ETileType : uint8
 {
 	Island = 0,
-	Cloud,
-	Storm,
-	Sun,
-	Lightning,
-	Meteor,
+	Cloud = 1,
+	Storm = 2,
+	Sun = 3,
+	Lightning = 4,
+	Meteor = 5,
 	None
 };
+
+/*
+Stone = TileType - 1;
+Wood = TileType + 4;
+*/
 
 UENUM(BlueprintType)
 enum class EResourceType : uint8
 {
 	StoneCloud = 0,
-	StoneStorm,
-	StoneSun,
-	StoneLightning,
-	StoneMeteor,
-	WoodCloud,
-	WoodStorm,
-	WoodSun,
-	WoodLightning,
-	WoodMeteor,
-	Food,
+	StoneStorm = 1,
+	StoneSun = 2,
+	StoneLightning = 3,
+	StoneMeteor = 4,
+	WoodCloud = 5,
+	WoodStorm = 6,
+	WoodSun = 7,
+	WoodLightning = 8,
+	WoodMeteor = 9,
+	Food = 10,
 	None
 };
 

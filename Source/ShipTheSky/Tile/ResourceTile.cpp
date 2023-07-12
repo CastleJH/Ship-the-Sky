@@ -8,6 +8,7 @@
 #include "Building/BaseBuilding.h"
 #include "Controller/STSPlayerController.h"
 #include "Components/WidgetComponent.h"
+#include "MapManager.h"
 
 AResourceTile::AResourceTile()
 {
@@ -20,42 +21,9 @@ AResourceTile::AResourceTile()
 	ResourcesWidgetComp->SetWidgetClass(LoadClass<UUserWidget>(nullptr, TEXT("/Game/UI/TileUI/WBP_TileResourcesUI.WBP_TileResourcesUI_C")));
 }
 
-void AResourceTile::SetResources(float ResourcePower)
+void AResourceTile::SetResources(TMap<uint8, float> NewResources)
 {
-	bool Selected[11] = { false };
-	int32 NumToSelect = 0;
-	int32 NumSelected = 0;
-	uint8 TypeSelect;
-	switch (IslandType)
-	{
-	case EIslandTileType::Mine:
-		NumToSelect = FMath::RandRange(1, 3);
-		while (NumToSelect != NumSelected)
-		{
-			TypeSelect = FMath::RandRange((int32)EResourceType::StoneCloud, (int32)EResourceType::StoneMeteor);
-			if (Selected[TypeSelect]) continue;
-			Selected[TypeSelect] = true;
-			NumSelected++;
-			Resources.Add(TPair<uint8, int32>(TypeSelect, FMath::RandRange(1, 4)));
-		}
-		break;
-	case EIslandTileType::Forest:
-		NumToSelect = FMath::RandRange(1, 3);
-		while (NumToSelect != NumSelected)
-		{
-			TypeSelect = FMath::RandRange((int32)EResourceType::WoodCloud, (int32)EResourceType::WoodMeteor);
-			if (Selected[TypeSelect]) continue;
-			Selected[TypeSelect] = true;
-			NumSelected++;
-			Resources.Add(TPair<uint8, int32>(TypeSelect, FMath::RandRange(1, 4)));
-		}
-		break;
-	case EIslandTileType::Farm:
-		Resources.Add(TPair<uint8, int32>((uint8)EResourceType::Food, FMath::RandRange(1, 4)));
-		break;
-	default:
-		break;
-	}
+	Resources = NewResources;
 	UpdateTileResourcesUI();
 }
 

@@ -40,6 +40,9 @@ public:
 
 	virtual void TimePass(int GameDate) override;
 	
+	//юс╫ц
+	UPROPERTY(VisibleAnywhere)
+	class ABaseTile* AffectedTile;
 protected:
 	virtual void BeginPlay() override;
 };

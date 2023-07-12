@@ -257,7 +257,8 @@ void UMapManager::GenerateMap(int32 NumCol)
 								UE_LOG(LogTemp, Warning, TEXT("Wrong Island"));
 								return;
 							}
-							FVector StartLocation(XCoord + (float)RowOffset[Near] * XDiff, YCoord + (float)ColOffset[NewR % 2][Near] * YDiff + ((NewR & 1) ? Offs * 0.5f : 0.0f), 60.0f);
+							//FVector StartLocation(XCoord + (float)RowOffset[Near] * XDiff, YCoord + (float)ColOffset[NewR % 2][Near] * YDiff + ((NewR & 1) ? Offs * 0.5f : 0.0f), 60.0f);
+							FVector StartLocation(XCoord + (float)RowOffset[Near] * XDiff, YCoord + (float)ColOffset[NewR % 2][Near] * YDiff + ((NewR & 1) ? Offs * 0.5f : 0.0f) + (CurR & 1 ? Offs * -0.5f : 0.0f), 60.0f);
 							TMap<uint8, float> StartResources;
 							switch (GenNum)
 							{
@@ -426,7 +427,6 @@ void UMapManager::GenerateMap(int32 NumCol)
 
 void UMapManager::TimePassesToAllTile(int32 GameDate)
 {
-	return;
 	for (auto Tiles : Map)
 	{
 		for (auto Tile : Tiles)
@@ -507,9 +507,8 @@ void UMapManager::SetIslandResources()
 	int32 NewR;
 	int32 NewC;
 
-	ETileType MostTile;
+	ETileType MostTile = ETileType::Cloud;
 	float TilePower;
-	int32 MostCount = 0;
 	int32 MaxCount[6] = { 0 };
 
 	int32 MinCount = 0;
@@ -526,6 +525,13 @@ void UMapManager::SetIslandResources()
 		for (int32 Idx = 1; Idx < Row.Num(); Idx++)
 		{
 			TilePower = 0;
+			MaxCount[0] = 0; 
+			MaxCount[1] = 0; 
+			MaxCount[2] = 0; 
+			MaxCount[3] = 0; 
+			MaxCount[4] = 0; 
+			MaxCount[5] = 0;
+			MostTile = ETileType::Cloud;
 			for (int32 i = 0; i < 18; i++)
 			{
 				NewR = Row[Idx]->GetRow() + RowOffset[i];
@@ -533,15 +539,21 @@ void UMapManager::SetIslandResources()
 				if (Map.IsValidIndex(NewR) && Map[NewR].IsValidIndex(NewC))
 				{
 					MaxCount[(int32)Map[NewR][NewC]->GetTileType()]++;
-					if (Map[NewR][NewC]->GetTileType() != ETileType::Island && MostCount < MaxCount[(int32)Map[NewR][NewC]->GetTileType()])
+					if (Map[NewR][NewC]->GetTileType() != ETileType::Island && MaxCount[(uint8)MostTile] <= MaxCount[(int32)Map[NewR][NewC]->GetTileType()])
 					{
-						MostCount = MaxCount[(int32)Map[NewR][NewC]->GetTileType()];
-						MostTile = Map[NewR][NewC]->GetTileType();
-						TilePower = Map[NewR][NewC]->GetTilePower();
-					}
-					else if (Map[NewR][NewC]->GetTileType() != ETileType::Island && MostCount == MaxCount[(int32)Map[NewR][NewC]->GetTileType()])
-					{
-						TilePower = FMath::Max(TilePower, Map[NewR][NewC]->GetTilePower());
+						if (MostTile == Map[NewR][NewC]->GetTileType())
+						{
+							float tmp = TilePower;
+							TilePower = FMath::Max(TilePower, Map[NewR][NewC]->GetTilePower());
+							if (tmp != TilePower) Row[Idx]->AffectedTile = Map[NewR][NewC];
+						}
+						else
+						{
+							MostTile = Map[NewR][NewC]->GetTileType();
+							TilePower = Map[NewR][NewC]->GetTilePower();
+							Row[Idx]->AffectedTile = Map[NewR][NewC];
+
+						}
 					}
 				}
 			}
@@ -626,7 +638,10 @@ void UMapManager::SetIslandResources()
 			default:
 				break;
 			}
-			if (Row[Idx]->GetIslandType() != EIslandTileType::Guardian) Cast<AResourceTile>(Row[Idx])->SetResources(Resources);
+			if (Row[Idx]->GetIslandType() != EIslandTileType::Guardian)
+			{
+				Cast<AResourceTile>(Row[Idx])->SetResources(Resources);
+			}
 		}
 	}
 }

@@ -217,7 +217,7 @@ void AGuardianTile::RecoverFriendly()
 		}	
 		if (Tile->GetShip())
 		{
-			Tile->GetShip()->RecoverDurability((int)((float)Tile->GetShip()->GetMaxDurability() * 0.05f));
+			Tile->GetShip()->RecoverDurability(Tile->GetShip()->GetMaxDurability() * 0.05f);
 		}
 	}
 	Guardian->BattleComponent->RecoverHP(Guardian->BattleComponent->GetMaxHP() * 0.05f);

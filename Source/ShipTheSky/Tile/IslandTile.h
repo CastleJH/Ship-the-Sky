@@ -37,6 +37,8 @@ public:
 	
 	UFUNCTION(BlueprintPure)
 	class ACommander* GetIslandOwner() const;
+
+	virtual void TimePass(int GameDate) override;
 	
 protected:
 	virtual void BeginPlay() override;

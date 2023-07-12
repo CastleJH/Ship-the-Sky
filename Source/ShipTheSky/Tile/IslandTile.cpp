@@ -8,6 +8,7 @@
 #include "Widget/IslandResourceUI.h"
 #include "MapManager.h"
 #include "STSGameState.h"
+#include "Ship.h"
 
 AIslandTile::AIslandTile()
 {
@@ -28,4 +29,20 @@ AGuardianTile* AIslandTile::GetGuardianTile() const
 ACommander* AIslandTile::GetIslandOwner() const
 {
 	return GetWorld()->GetGameState<ASTSGameState>()->GetIslandOwner(IslandID);
+}
+
+void AIslandTile::TimePass(int GameDate)
+{
+	Super::TimePass(GameDate);
+	if (ShipOnThisTile)
+	{
+		if (ShipOnThisTile->GetCurDurability() == 0)
+		{
+			ShipOnThisTile->SetModifiedFlightPower(ShipOnThisTile->GetOriginalFlightPower() * 2);
+		}
+		else
+		{
+			ShipOnThisTile->SetModifiedFlightPower(ShipOnThisTile->GetOriginalFlightPower());
+		}
+	}
 }

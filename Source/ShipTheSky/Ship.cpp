@@ -47,7 +47,7 @@ AShip::AShip()
 	LightningLevel = 1;
 	MeteorLevel = 1;
 
-	ResistanceDelta = 1;
+	ResistanceDelta = 5;
 	DurabilityDelta = 10;
 	FlightPowerDelta = 0.95f;
 }
@@ -84,14 +84,14 @@ bool AShip::TryLocateOnTile(ABaseTile* Tile, bool RightAfter)
 	return true;
 }
 
-void AShip::SetMaxDurability(int32 NewDurability)
+void AShip::SetMaxDurability(float NewDurability)
 {
 	MaxDurability = NewDurability;
 }
 
-void AShip::SetCurDurability(int32 NewDurability)
+void AShip::SetCurDurability(float NewDurability)
 {
-	CurDurability = FMath::Clamp(CurDurability - 1, 0, MaxDurability);
+	CurDurability = FMath::Clamp(NewDurability, 0, MaxDurability);
 	if (CurDurability == 0)
 	{
 		SetModifiedFlightPower(GetOriginalFlightPower() * 2);
@@ -390,7 +390,7 @@ bool AShip::UpgradeFlightPowerWithCloud()
 	if (OwnerCommander->GetResource(EResourceType::WoodCloud) < GetFlightPowerUpgradeCostWithCloud()) return false;
 	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::WoodCloud) - GetFlightPowerUpgradeCostWithCloud(), EResourceType::WoodCloud);
 	FlightPowerCloudLevel++;
-	OriginalFlightPower *= FlightPowerDelta;
+	SetOriginalFlightPower(OriginalFlightPower * FlightPowerDelta);
 	return true;
 }
 
@@ -399,7 +399,7 @@ bool AShip::UpgradeFlightPowerWithSun()
 	if (OwnerCommander->GetResource(EResourceType::WoodSun) < GetFlightPowerUpgradeCostWithSun()) return false;
 	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::WoodSun) - GetFlightPowerUpgradeCostWithSun(), EResourceType::WoodSun);
 	FlightPowerSunLevel++;
-	OriginalFlightPower *= FlightPowerDelta;
+	SetOriginalFlightPower(OriginalFlightPower * FlightPowerDelta);
 	return true;
 }
 
@@ -430,7 +430,7 @@ bool AShip::UpgradeCapacity()
 	return true;
 }
 
-void AShip::RecoverDurability(int32 Amount)
+void AShip::RecoverDurability(float Amount)
 {
 	SetCurDurability(GetCurDurability() + Amount);
 }

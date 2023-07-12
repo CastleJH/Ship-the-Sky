@@ -38,9 +38,9 @@ private:
 
 	//∫Ò«‡º± Ω∫≈»
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	int32 MaxDurability;
+	float MaxDurability;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	int32 CurDurability;
+	float CurDurability;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 CloudResistance;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -92,11 +92,11 @@ public:
 	class ABaseTile* GetCurTile() const { return CurTile; }
 
 	UFUNCTION(BlueprintPure)
-	int32 GetMaxDurability() const { return MaxDurability; }
-	void SetMaxDurability(int32 NewDurability);
+	float GetMaxDurability() const { return MaxDurability; }
+	void SetMaxDurability(float NewDurability);
 	UFUNCTION(BlueprintPure)
-	int32 GetCurDurability() const { return CurDurability; }
-	void SetCurDurability(int32 NewDurability);
+	float GetCurDurability() const { return CurDurability; }
+	void SetCurDurability(float NewDurability);
 
 	UFUNCTION(BlueprintPure)
 	int32 GetCloudResistance() const { return CloudResistance; }
@@ -196,6 +196,6 @@ public:
 	UFUNCTION(BlueprintPure)
 	int32 GetCapacityUpgradeCost() const;
 
-	void RecoverDurability(int32 Amount);
+	void RecoverDurability(float Amount);
 
 };

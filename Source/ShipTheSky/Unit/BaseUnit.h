@@ -39,10 +39,15 @@ protected:
 	float FoodConsume;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float Efficiency;
+	UPROPERTY(VisibleAnywhere)
 	int32 HPLevel;
+	UPROPERTY(VisibleAnywhere)
 	int32 FoodConsumeLevel;
+	UPROPERTY(VisibleAnywhere)
 	int32 AttackLevel;
+	UPROPERTY(VisibleAnywhere)
 	int32 EfficiencyLevel;
+	UPROPERTY(VisibleAnywhere)
 	int32 AllUpLevel;
 
 	//애니메이션 관련 변수
@@ -76,23 +81,24 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool UpgradeHP();
 	UFUNCTION(BlueprintPure)
-	int32 GetHPUpgradeCost() const { return HPLevel * 10; }
+	int32 GetHPUpgradeCost() const { return 50 + HPLevel * 10; }
 	UFUNCTION(BlueprintCallable)
 	bool UpgradeFoodConsume();
 	UFUNCTION(BlueprintPure)
-	int32 GetFoodConsumeUpgradeCost() const { return FoodConsumeLevel * 10; }
+	int32 GetFoodConsumeUpgradeCost() const { return 50 + FoodConsumeLevel * 10; }
 	UFUNCTION(BlueprintCallable)
 	bool UpgradeAttack();
 	UFUNCTION(BlueprintPure)
-	int32 GetAttackUpgradeCost() const { return AttackLevel * 10; }
+	int32 GetAttackUpgradeCost() const { return 50 + AttackLevel * 10; }
 	UFUNCTION(BlueprintCallable)
 	bool UpgradeEfficiency();
 	UFUNCTION(BlueprintPure)
-	int32 GetEfficiencyUpgradeCost() const { return EfficiencyLevel * 10; }
+	int32 GetEfficiencyUpgradeCost() const { return 50 + EfficiencyLevel * 10; }
 	UFUNCTION(BlueprintCallable)
 	bool UpgradeAll();
 	UFUNCTION(BlueprintPure)
-	int32 GetAllUpgradeCost() const { return AllUpLevel * 10; }
+	int32 GetAllUpgradeCost() const { return 50 + AllUpLevel * 10; }
+	TPair<enum EUnitStat, int32> GetStatUpgradeRecommendation();
 	
 	//전투 관련
 	float GetAttacked(float Damage);

@@ -151,6 +151,36 @@ bool ACommander::TryStopShip(AShip* Ship)
 	return true;
 }
 
+void ACommander::TryRelocateUnitsOfTwoTiles(AIslandTile* Tile1, AIslandTile* Tile2)
+{
+	if (Tile1 == Tile2) return;
+	ABaseUnit* Unit1 = nullptr;
+	AResourceTile* ResourceTile1 = Cast<AResourceTile>(Tile1);
+	if (ResourceTile1 != nullptr) Unit1 = ResourceTile1->GetUnit();
+
+	ABaseUnit* Unit2 = nullptr;
+	AResourceTile* ResourceTile2 = Cast<AResourceTile>(Tile2);
+	if (ResourceTile2 != nullptr) Unit2 = ResourceTile2->GetUnit();
+
+	if (Unit1 != nullptr) Unit1->LocateOnIslandTile(Tile2, false);
+	if (Unit2 != nullptr) Unit2->LocateOnIslandTile(Tile1, false);
+}
+
+void ACommander::TryRelocateUnitOnTile(ABaseUnit* Unit, AIslandTile* Tile)
+{
+	if (!Unit) return;
+	AIslandTile* UnitTile = Unit->GetCurIslandTile();
+	if (UnitTile == Tile) return;
+
+	ABaseUnit* OtherUnit = nullptr;
+	AResourceTile* OtherUnitTile = Cast<AResourceTile>(Tile);
+	if (OtherUnitTile) OtherUnit = OtherUnitTile->GetUnit();
+
+	if (Unit != nullptr) Unit->LocateOnIslandTile(Tile, false);
+	if (OtherUnit != nullptr) OtherUnit->LocateOnIslandTile(UnitTile, false);
+}
+
+
 void ACommander::FillIslandWithUnit(int32 IslandID, ABaseUnit* Unit)
 {
 	AResourceTile* EmptyIslandTile = nullptr;

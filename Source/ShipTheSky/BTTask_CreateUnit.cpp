@@ -19,7 +19,7 @@ EBTNodeResult::Type UBTTask_CreateUnit::ExecuteTask(UBehaviorTreeComponent& Owne
 	ACommander* Commander = Cast<ACommander>(OwnerComp.GetAIOwner()->GetPawn());
 	if (!Commander) return EBTNodeResult::Failed;
 
-	ABarracks* Barracks = Cast<ABarracks>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(TEXT("BuildingToCreateUnit")));
+	ABarracks* Barracks = Cast<ABarracks>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(TEXT("BarracksToCreateUnit")));
 	EUnitType Type = StaticCast<EUnitType>(OwnerComp.GetBlackboardComponent()->GetValueAsEnum(TEXT("UnitTypeToCreate")));
 
 	if (Commander->TryCreateUnit(Barracks, Type))

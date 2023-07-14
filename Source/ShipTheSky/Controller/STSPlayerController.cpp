@@ -211,14 +211,14 @@ void ASTSPlayerController::MouseReleased(const FInputActionValue& Value)
 		if (bIsUnitRelocationMode)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("From UI"));
-			RelocateUnitWithUI(UnitWaitingRelocationFromUI, SecondTile);
+			Commander->TryRelocateUnitOnTile(UnitWaitingRelocationFromUI, SecondTile);
 			bIsUnitRelocationMode = false;
 		}
 		else
 		{
 			if (FirstTile && SecondTile && FirstTile != SecondTile)
 			{
-				RelocateUnitOnTwoTile(FirstTile, SecondTile);
+				Commander->TryRelocateUnitsOfTwoTiles(FirstTile, SecondTile);
 			}
 		}
 	}
@@ -253,33 +253,6 @@ void ASTSPlayerController::MouseReleasedForPortal(const FInputActionValue& Value
 		}
 	}
 	else SetToViewMode();
-}
-
-void ASTSPlayerController::RelocateUnitOnTwoTile(AIslandTile* Tile1, AIslandTile* Tile2)
-{
-	ABaseUnit* Unit1 = nullptr;
-	AResourceTile* ResourceTile1 = Cast<AResourceTile>(Tile1);
-	if (ResourceTile1 != nullptr) Unit1 = ResourceTile1->GetUnit();
-
-	ABaseUnit* Unit2 = nullptr;
-	AResourceTile* ResourceTile2 = Cast<AResourceTile>(Tile2);
-	if (ResourceTile2 != nullptr) Unit2 = ResourceTile2->GetUnit();
-
-	if (Unit1 != nullptr) Unit1->LocateOnIslandTile(Tile2, false);
-	if (Unit2 != nullptr) Unit2->LocateOnIslandTile(Tile1, false);
-}
-
-void ASTSPlayerController::RelocateUnitWithUI(ABaseUnit* Unit, AIslandTile* Tile)
-{
-	if (!Unit) return;
-	AIslandTile* UnitTile = Unit->GetCurIslandTile();
-
-	ABaseUnit* OtherUnit = nullptr;
-	AResourceTile* OtherUnitTile = Cast<AResourceTile>(Tile);
-	if (OtherUnitTile) OtherUnit = OtherUnitTile->GetUnit();
-
-	if (Unit != nullptr) Unit->LocateOnIslandTile(Tile, false);
-	if (OtherUnit != nullptr) OtherUnit->LocateOnIslandTile(UnitTile, false);
 }
 
 void ASTSPlayerController::OnPossess(APawn* InPawn)

@@ -104,6 +104,8 @@ public:
 	bool TryDepartShip(class AShip* Ship);
 	UFUNCTION(BlueprintCallable)
 	bool TryStopShip(class AShip* Ship);
+	void TryRelocateUnitsOfTwoTiles(AIslandTile* Tile1, AIslandTile* Tile2);
+	void TryRelocateUnitOnTile(ABaseUnit* Unit, AIslandTile* Tile);
 	UFUNCTION(BlueprintCallable)
 	void FillIslandWithUnit(int32 IslandID, class ABaseUnit* Unit);
 

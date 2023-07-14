@@ -142,11 +142,6 @@ private:
 	void MouseDraggedForPath(const FInputActionValue& Value);
 	void MouseReleasedForPortal(const FInputActionValue& Value);
 
-	UFUNCTION()
-	void RelocateUnitOnTwoTile(class AIslandTile* Tile1, class AIslandTile* Tile2);
-	UFUNCTION()
-	void RelocateUnitWithUI(class ABaseUnit* Unit, class AIslandTile* Tile);
-
 	virtual void OnPossess(APawn* InPawn) override;
 
 	UFUNCTION()

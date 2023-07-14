@@ -75,3 +75,14 @@ enum class EBuildingType : uint8
 	Sanctuary,
 	None
 };
+
+UENUM(BlueprintType)
+enum class EUnitStat : uint8
+{
+	HP = 0,
+	Attack,
+	FoodConsume,
+	Efficiency,
+	All,
+	None
+};

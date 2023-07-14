@@ -11,6 +11,7 @@
 #include "Ship.h"
 #include "Animation/UnitAnimInstance.h"
 #include "Battle/BattleComponent.h"
+#include "Building/BaseBuilding.h"
 
 // Sets default values
 ABaseUnit::ABaseUnit()
@@ -131,6 +132,8 @@ bool ABaseUnit::Disembark()
 
 bool ABaseUnit::UpgradeHP()
 {
+	AResourceTile* CurResourceTile = Cast<AResourceTile>(CurIslandTile);
+	if (!CurResourceTile || !CurResourceTile->GetBuilding() || CurResourceTile->GetBuilding()->GetBuildingType() != EBuildingType::Barracks) return false;
 	if (OwnerCommander->GetResource(EResourceType::StoneCloud) < GetHPUpgradeCost()) return false;
 
 	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::StoneCloud) - GetHPUpgradeCost(), EResourceType::StoneCloud);
@@ -141,6 +144,8 @@ bool ABaseUnit::UpgradeHP()
 
 bool ABaseUnit::UpgradeFoodConsume()
 {
+	AResourceTile* CurResourceTile = Cast<AResourceTile>(CurIslandTile);
+	if (!CurResourceTile || !CurResourceTile->GetBuilding() || CurResourceTile->GetBuilding()->GetBuildingType() != EBuildingType::Barracks) return false;
 	if (OwnerCommander->GetResource(EResourceType::StoneSun) < GetFoodConsumeUpgradeCost()) return false;
 
 	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::StoneSun) - GetFoodConsumeUpgradeCost(), EResourceType::StoneSun);
@@ -151,6 +156,8 @@ bool ABaseUnit::UpgradeFoodConsume()
 
 bool ABaseUnit::UpgradeAttack()
 {
+	AResourceTile* CurResourceTile = Cast<AResourceTile>(CurIslandTile);
+	if (!CurResourceTile || !CurResourceTile->GetBuilding() || CurResourceTile->GetBuilding()->GetBuildingType() != EBuildingType::Barracks) return false;
 	if (OwnerCommander->GetResource(EResourceType::StoneStorm) < GetAttackUpgradeCost()) return false;
 
 	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::StoneStorm) - GetAttackUpgradeCost(), EResourceType::StoneStorm);
@@ -161,6 +168,8 @@ bool ABaseUnit::UpgradeAttack()
 
 bool ABaseUnit::UpgradeEfficiency()
 {
+	AResourceTile* CurResourceTile = Cast<AResourceTile>(CurIslandTile);
+	if (!CurResourceTile || !CurResourceTile->GetBuilding() || CurResourceTile->GetBuilding()->GetBuildingType() != EBuildingType::Barracks) return false;
 	if (OwnerCommander->GetResource(EResourceType::StoneLightning) < GetEfficiencyUpgradeCost()) return false;
 
 	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::StoneLightning) - GetEfficiencyUpgradeCost(), EResourceType::StoneLightning);
@@ -171,6 +180,8 @@ bool ABaseUnit::UpgradeEfficiency()
 
 bool ABaseUnit::UpgradeAll()
 {
+	AResourceTile* CurResourceTile = Cast<AResourceTile>(CurIslandTile);
+	if (!CurResourceTile || !CurResourceTile->GetBuilding() || CurResourceTile->GetBuilding()->GetBuildingType() != EBuildingType::Barracks) return false;
 	if (OwnerCommander->GetResource(EResourceType::StoneMeteor) < GetAllUpgradeCost()) return false;
 
 	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::StoneMeteor) - GetAllUpgradeCost(), EResourceType::StoneMeteor);
@@ -180,6 +191,42 @@ bool ABaseUnit::UpgradeAll()
 	Efficiency += 0.5f;
 	FoodConsume *= 0.975f;
 	return true;
+}
+
+TPair<enum EUnitStat, int32> ABaseUnit::GetStatUpgradeRecommendation()
+{
+	EResourceType Stone = EResourceType::None;
+	int32 MaxResource = -1;
+
+	for (EResourceType Type = EResourceType::StoneCloud; Type != EResourceType::WoodCloud;)
+	{
+		if (OwnerCommander->GetResource(Type) > MaxResource)
+		{
+			Stone = Type;
+			MaxResource = OwnerCommander->GetResource(Type);
+		}
+		Type = StaticCast<EResourceType>((uint8)Type + 1);
+	}
+
+	switch (Stone)
+	{
+	case EResourceType::StoneCloud: 
+		if (OwnerCommander->GetResource(EResourceType::StoneCloud) >= GetHPUpgradeCost()) return TPair<enum EUnitStat, int32>(EUnitStat::HP, GetHPUpgradeCost());
+		else return TPair<enum EUnitStat, int32>(EUnitStat::None, 0);
+	case EResourceType::StoneStorm:
+		if (OwnerCommander->GetResource(EResourceType::StoneStorm) >= GetAttackUpgradeCost()) return TPair<enum EUnitStat, int32>(EUnitStat::Attack, GetAttackUpgradeCost());
+		else return TPair<enum EUnitStat, int32>(EUnitStat::None, 0);
+	case EResourceType::StoneSun:
+		if (OwnerCommander->GetResource(EResourceType::StoneSun) >= GetFoodConsumeUpgradeCost()) return TPair<enum EUnitStat, int32>(EUnitStat::FoodConsume, GetFoodConsumeUpgradeCost());
+		else return TPair<enum EUnitStat, int32>(EUnitStat::None, 0);
+	case EResourceType::StoneLightning:
+		if (OwnerCommander->GetResource(EResourceType::StoneLightning) >= GetEfficiencyUpgradeCost()) return TPair<enum EUnitStat, int32>(EUnitStat::Efficiency, GetEfficiencyUpgradeCost());
+		else return TPair<enum EUnitStat, int32>(EUnitStat::None, 0);
+	case EResourceType::StoneMeteor:
+		if (OwnerCommander->GetResource(EResourceType::StoneMeteor) >= GetAllUpgradeCost()) return TPair<enum EUnitStat, int32>(EUnitStat::All, GetAllUpgradeCost());
+		else return TPair<enum EUnitStat, int32>(EUnitStat::None, 0);
+	default: return TPair<enum EUnitStat, int32>(EUnitStat::None, 0);
+	}
 }
 
 float ABaseUnit::GetAttacked(float Damage)
@@ -230,7 +277,6 @@ void ABaseUnit::Tick(float DeltaSeconds)
 			AnimInstance->bIsWalking = false;
 		}
 		Path.RemoveAt(0);
-		UE_LOG(LogTemp, Warning, TEXT("RemovePath"));
 	}
 }
 

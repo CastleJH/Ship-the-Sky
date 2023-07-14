@@ -17,10 +17,9 @@ class SHIPTHESKY_API AGuardianTile : public AIslandTile
 public:
 	AGuardianTile();
 	
-protected:
+public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<class ABaseUnit*> UnitsOnThisIsland;
-	TArray<TSubclassOf<AActor>> Guardians;
 
 	//¼öÈ£ÀÚ
 	class AGuardian* Guardian;

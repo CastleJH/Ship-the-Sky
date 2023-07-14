@@ -5,12 +5,12 @@
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Pawn/Commander.h"
+#include "Enums.h"
 #include "Tile/GuardianTile.h"
 #include "Tile/ResourceTile.h"
 #include "Building/BaseBuilding.h"
 #include "Building/Barracks.h"
 #include "Unit/BaseUnit.h"
-#include "Enums.h"
 
 UBTService_UnitCreationTarget::UBTService_UnitCreationTarget()
 {
@@ -22,7 +22,6 @@ UBTService_UnitCreationTarget::UBTService_UnitCreationTarget()
 void UBTService_UnitCreationTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
-	UE_LOG(LogTemp, Warning, TEXT("Unit Creation Target"));
 
 	ACommander* Commander = Cast<ACommander>(OwnerComp.GetAIOwner()->GetPawn());
 	if (!Commander) return;
@@ -48,27 +47,31 @@ void UBTService_UnitCreationTarget::TickNode(UBehaviorTreeComponent& OwnerComp, 
 					MinWaiting = Barracks->WaitingUnitArray.Num();
 				}
 			}
-			if (!Tile->GetUnit() || (uint8)Tile->GetUnit()->GetUnitType() != (uint8)Tile->GetIslandType())
-			{
-				EmptyTiles[(uint8)Tile->GetIslandType()]++;
-			}
+			EmptyTiles[(uint8)Tile->GetIslandType()]++;
+		}
+		for (auto Unit : GuardianTile->UnitsOnThisIsland)
+		{
+			EmptyTiles[(uint8)Unit->GetUnitType()]--;
 		}
 		if (EmptyTiles[(uint8)EUnitType::Farmer] > 0)
 		{
 			OwnerComp.GetBlackboardComponent()->SetValueAsEnum(TEXT("UnitTypeToCreate"), (uint8)EUnitType::Farmer);
+			OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("BarracksToCreateUnit"), TargetBarracks);
+			return;
 		}
 		else if (EmptyTiles[(uint8)EUnitType::Miner] > 0)
 		{
 			OwnerComp.GetBlackboardComponent()->SetValueAsEnum(TEXT("UnitTypeToCreate"), (uint8)EUnitType::Miner);
+			OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("BarracksToCreateUnit"), TargetBarracks);
+			return;
 		}
 		else if (EmptyTiles[(uint8)EUnitType::Woodcutter] > 0)
 		{
 			OwnerComp.GetBlackboardComponent()->SetValueAsEnum(TEXT("UnitTypeToCreate"), (uint8)EUnitType::Woodcutter);
-		}
-		else
-		{
-			OwnerComp.GetBlackboardComponent()->SetValueAsEnum(TEXT("UnitTypeToCreate"), (uint8)EUnitType::None);
+			OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("BarracksToCreateUnit"), TargetBarracks);
+			return;
 		}
 	}
-	OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("BuildingToCreateUnit"), TargetBarracks);
+	OwnerComp.GetBlackboardComponent()->SetValueAsEnum(TEXT("UnitTypeToCreate"), (uint8)EUnitType::None);
+	OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("BarracksToCreateUnit"), TargetBarracks);
 }

@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTService.h"
-#include "BTService_SelectTileToBuild.generated.h"
+#include "BTService_ConstructionTarget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SHIPTHESKY_API UBTService_SelectTileToBuild : public UBTService
+class SHIPTHESKY_API UBTService_ConstructionTarget : public UBTService
 {
 	GENERATED_BODY()
 	
 public:
-	UBTService_SelectTileToBuild();
+	UBTService_ConstructionTarget();
 
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;

@@ -26,7 +26,7 @@ ACommander::ACommander()
 	OutlineColorIndex = 1;
 
 	for (int32 Idx = 0; Idx < (int32)EResourceType::None; Idx++)
-		Resources[Idx] = 5000;
+		Resources[Idx] = 200;
 
 	UnitCreationCost = 50;
 	ShipCreationCost = 100;
@@ -54,7 +54,6 @@ bool ACommander::TryConstructBuilding(AResourceTile* Tile, EBuildingType Type)
 		break;
 	}
 	if (Tile->GetIslandOwner() != this) return false;
-	UE_LOG(LogTemp, Warning, TEXT("HERE"));
 	if (Tile && !Tile->GetBuilding())
 	{
 		ABaseBuilding* Building = nullptr;
@@ -96,6 +95,7 @@ bool ACommander::TryCreateUnit(ABarracks* Barracks, EUnitType Type)
 	int32 FoodConsume = GetUnitCreationCost();
 	if (GetResource(EResourceType::Food) < FoodConsume) return false;
 	if (Barracks == nullptr) return false;
+	if (Type == EUnitType::None) return false;
 	if (Barracks->AddUnitCreationToArray(Type))
 	{
 		SetResource(GetResource(EResourceType::Food) - FoodConsume, EResourceType::Food);

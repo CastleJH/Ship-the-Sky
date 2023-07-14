@@ -18,10 +18,11 @@ public:
 	ABarracks();
 	const int32 MaxWaitingUnit = 10;
 
-private:
+public:
 	//대기중인 유닛들
 	TArray<enum EUnitType> WaitingUnitArray;
 
+private:
 	//유닛 생성 관련 변수
 	int32 TimeNeed;
 	bool bIsCreatingUnit;

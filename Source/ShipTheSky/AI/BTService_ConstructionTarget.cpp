@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AI/BTService_SelectTileToBuild.h"
+#include "AI/BTService_ConstructionTarget.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Pawn/Commander.h"
@@ -10,14 +10,14 @@
 #include "Building/BaseBuilding.h"
 #include "Enums.h"
 
-UBTService_SelectTileToBuild::UBTService_SelectTileToBuild()
+UBTService_ConstructionTarget::UBTService_ConstructionTarget()
 {
-	NodeName = TEXT("Select Resource Tile To Build");
+	NodeName = TEXT("Building Construction Target");
 
 	Interval = 10.0f;
 }
 
-void UBTService_SelectTileToBuild::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+void UBTService_ConstructionTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 

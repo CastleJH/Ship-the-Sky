@@ -286,7 +286,7 @@ void UMapManager::GenerateMap(int32 NumCol)
 								break;
 							case 4:
 								IslandTile = GetWorld()->SpawnActor<AIslandTile>(FarmTileClass, StartLocation, FRotator::ZeroRotator);
-								StartResources.Add(10, 5);
+								StartResources.Add(10, 8);
 								break;
 							}
 							IslandTile->SetIslandID(GuardianTileID);

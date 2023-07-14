@@ -28,11 +28,11 @@ protected:
 private:
 	UPROPERTY()
 	TArray<class AShip*> EnemyShips;
+	int32 RecoveryCount;
 	UPROPERTY()
 	TArray<class ABaseTile*> AdjTiles;
 	UPROPERTY()
 	TArray<class AResourceTile*> AdjResourceTiles;
-	int32 RecoveryCount;
 
 public:
 	void AddUnitOnThisIsland(class ABaseUnit* Unit);
@@ -55,6 +55,7 @@ public:
 	//인접 타일 정보
 	void SetAdjTiles(TArray<class ABaseTile*>& InTile);
 	void SetAdjResourceTiles(TArray<class AResourceTile*>& InTile);
+	TArray<class AResourceTile*>& GetAdjResourceTiles() { return AdjResourceTiles; }
 
 protected:
 	virtual void BeginPlay() override;

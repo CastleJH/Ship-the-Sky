@@ -49,6 +49,9 @@ bool ACommander::TryConstructBuilding(AResourceTile* Tile, EBuildingType Type)
 	case EBuildingType::Sanctuary:
 		if (Resources[(int32)EResourceType::WoodMeteor] < GetBuildingCreationCost(Type)) return false;
 		break;
+	case EBuildingType::None:
+		return false;
+		break;
 	}
 	if (Tile->GetIslandOwner() != this) return false;
 	UE_LOG(LogTemp, Warning, TEXT("HERE"));

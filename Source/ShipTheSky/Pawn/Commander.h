@@ -54,6 +54,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Commander")
 	int32 EmptyStartIndex;
 
+	UPROPERTY(VisibleAnywhere)
+	TArray<class AGuardianTile*> OwningIslands;
+	
+
 protected:
 	//지휘관이 작업 중인 타겟들
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Commander", meta = (AllowPrivateAccess = "true"))
@@ -75,6 +79,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	int32 ShipCreationCost;
 
+public:
 	//지휘관 소유 유닛/건물/비행선
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<class ABaseUnit*> Units;

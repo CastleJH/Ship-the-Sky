@@ -8,11 +8,16 @@
 void ASTSGameState::ResetIslandOwner(int32 NewIslandNum, int32 PlayerOwnAmount)
 {
 	IslandOwner.Init(nullptr, NewIslandNum);
-	for (int32 i = 0; i < PlayerOwnAmount; i++)
+	int32 Idx = Commanders.Num();
+	for (auto Commander : Commanders)
 	{
-		if (IslandOwner.IsValidIndex(i))
+		for (int32 Cnt = 0; Cnt < PlayerOwnAmount; Cnt++)
 		{
-			IslandOwner[i] = Cast<ACommander>(GetWorld()->GetFirstPlayerController()->GetPawn());
+			if (IslandOwner.IsValidIndex(Idx))
+			{
+				IslandOwner[Idx] = Commander;
+			}
+			Idx++;
 		}
 	}
 
@@ -35,7 +40,13 @@ void ASTSGameState::SetIslandOwner(int32 IslandID, ACommander* NewOwner)
 {
 	if (IslandOwner.IsValidIndex(IslandID))
 	{
+		AGuardianTile* Tile = GetGameInstance()->GetSubsystem<UMapManager>()->GetGuardianTile(IslandID);
+		if (IslandOwner[IslandID])
+		{
+			IslandOwner[IslandID]->OwningIslands.Remove(Tile);
+		}
 		IslandOwner[IslandID] = NewOwner;
+		NewOwner->OwningIslands.Add(Tile);
 	}
 	else
 	{

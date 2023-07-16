@@ -81,23 +81,23 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool UpgradeHP();
 	UFUNCTION(BlueprintPure)
-	int32 GetHPUpgradeCost() const { return 50 + HPLevel * 10; }
+	int32 GetHPUpgradeCost() const { return 40 + HPLevel * 10; }
 	UFUNCTION(BlueprintCallable)
 	bool UpgradeFoodConsume();
 	UFUNCTION(BlueprintPure)
-	int32 GetFoodConsumeUpgradeCost() const { return 50 + FoodConsumeLevel * 10; }
+	int32 GetFoodConsumeUpgradeCost() const { return 40 + FoodConsumeLevel * 10; }
 	UFUNCTION(BlueprintCallable)
 	bool UpgradeAttack();
 	UFUNCTION(BlueprintPure)
-	int32 GetAttackUpgradeCost() const { return 50 + AttackLevel * 10; }
+	int32 GetAttackUpgradeCost() const { return 40 + AttackLevel * 10; }
 	UFUNCTION(BlueprintCallable)
 	bool UpgradeEfficiency();
 	UFUNCTION(BlueprintPure)
-	int32 GetEfficiencyUpgradeCost() const { return 50 + EfficiencyLevel * 10; }
+	int32 GetEfficiencyUpgradeCost() const { return 40 + EfficiencyLevel * 10; }
 	UFUNCTION(BlueprintCallable)
 	bool UpgradeAll();
 	UFUNCTION(BlueprintPure)
-	int32 GetAllUpgradeCost() const { return 50 + AllUpLevel * 10; }
+	int32 GetAllUpgradeCost() const { return 40 + AllUpLevel * 10; }
 	TPair<enum EUnitStat, int32> GetStatUpgradeRecommendation();
 	
 	//전투 관련

@@ -6,6 +6,7 @@
 #include "Components/WidgetComponent.h"
 #include "Tile/GuardianTile.h"
 #include "Pawn/Commander.h"
+#include "Enums.h"
 
 // Sets default values
 AGuardian::AGuardian()
@@ -112,4 +113,40 @@ void AGuardian::ResetLevelAndPower()
 bool AGuardian::IsReinforcementPanelVisible() const
 {
 	return Tile->IsBuildingTypeBuilt(EBuildingType::Sanctuary) && Tile->GetIslandOwner() == Cast<ACommander>(GetWorld()->GetFirstPlayerController()->GetPawn());
+}
+
+TPair<enum EGuardianStat, int32> AGuardian::GetStatUpgradeRecommendation()
+{
+	EResourceType Stone = EResourceType::None;
+	int32 MaxResource = -1;
+
+	for (EResourceType Type = EResourceType::StoneCloud; Type != EResourceType::WoodCloud;)
+	{
+		if (Tile->GetIslandOwner()->GetResource(Type) > MaxResource)
+		{
+			Stone = Type;
+			MaxResource = Tile->GetIslandOwner()->GetResource(Type);
+		}
+		Type = StaticCast<EResourceType>((uint8)Type + 1);
+	}
+
+	switch (Stone)
+	{
+	case EResourceType::StoneCloud:
+		if (Tile->GetIslandOwner()->GetResource(EResourceType::StoneCloud) >= GetHPUpgradeCostWithCloud()) return TPair<enum EGuardianStat, int32>(EGuardianStat::HPCloud, GetHPUpgradeCostWithCloud());
+		else return TPair<enum EGuardianStat, int32>(EGuardianStat::None, 0);
+	case EResourceType::StoneStorm:
+		if (Tile->GetIslandOwner()->GetResource(EResourceType::StoneStorm) >= GetAttackUpgradeCostWithStorm()) return TPair<enum EGuardianStat, int32>(EGuardianStat::AttackStorm, GetAttackUpgradeCostWithStorm());
+		else return TPair<enum EGuardianStat, int32>(EGuardianStat::None, 0);
+	case EResourceType::StoneSun:
+		if (Tile->GetIslandOwner()->GetResource(EResourceType::StoneSun) >= GetHPUpgradeCostWithSun()) return TPair<enum EGuardianStat, int32>(EGuardianStat::HPSun, GetHPUpgradeCostWithSun());
+		else return TPair<enum EGuardianStat, int32>(EGuardianStat::None, 0);
+	case EResourceType::StoneLightning:
+		if (Tile->GetIslandOwner()->GetResource(EResourceType::StoneLightning) >= GetAttackUpgradeCostWithLightning()) return TPair<enum EGuardianStat, int32>(EGuardianStat::AttackLightning, GetAttackUpgradeCostWithLightning());
+		else return TPair<enum EGuardianStat, int32>(EGuardianStat::None, 0);
+	case EResourceType::StoneMeteor:
+		if (Tile->GetIslandOwner()->GetResource(EResourceType::StoneMeteor) >= GetScorePowerUpgradeCost()) return TPair<enum EGuardianStat, int32>(EGuardianStat::Score, GetScorePowerUpgradeCost());
+		else return TPair<enum EGuardianStat, int32>(EGuardianStat::None, 0);
+	default: return TPair<enum EGuardianStat, int32>(EGuardianStat::None, 0);
+	}
 }

@@ -70,13 +70,33 @@ void UBTService_ConstructionTarget::TickNode(UBehaviorTreeComponent& OwnerComp, 
 		BuildingCount[(int32)Building->GetBuildingType()]++;
 	}
 
-	if (BuildingCount[(int32)EBuildingType::Barracks] * 2 > BuildingCount[(int32)EBuildingType::Shipyard] * 3 && BuildingExists[(int32)EBuildingType::Shipyard] == 0)
+	/*if (BuildingCount[(int32)EBuildingType::Barracks] * 2 > BuildingCount[(int32)EBuildingType::Shipyard] * 3 && BuildingExists[(int32)EBuildingType::Shipyard] == 0)
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsEnum(TEXT("BuildingTypeToBuild"), (uint8)EBuildingType::Shipyard);
 	}
 	else if (BuildingExists[(int32)EBuildingType::Barracks] < 2)
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsEnum(TEXT("BuildingTypeToBuild"), (uint8)EBuildingType::Barracks);
+	}
+	else if (BuildingExists[(int32)EBuildingType::Sanctuary] == 0)
+	{
+		OwnerComp.GetBlackboardComponent()->SetValueAsEnum(TEXT("BuildingTypeToBuild"), (uint8)EBuildingType::Sanctuary);
+	}
+	else
+	{
+		OwnerComp.GetBlackboardComponent()->SetValueAsEnum(TEXT("BuildingTypeToBuild"), (uint8)EBuildingType::None);
+	}*/
+	if (BuildingExists[(int32)EBuildingType::Barracks] == 0)
+	{
+		OwnerComp.GetBlackboardComponent()->SetValueAsEnum(TEXT("BuildingTypeToBuild"), (uint8)EBuildingType::Barracks);
+	}
+	else if (BuildingExists[(int32)EBuildingType::Shipyard] == 0)
+	{
+		OwnerComp.GetBlackboardComponent()->SetValueAsEnum(TEXT("BuildingTypeToBuild"), (uint8)EBuildingType::Shipyard);
+	}
+	else if (BuildingExists[(int32)EBuildingType::Sanctuary] == 0)
+	{
+		OwnerComp.GetBlackboardComponent()->SetValueAsEnum(TEXT("BuildingTypeToBuild"), (uint8)EBuildingType::Sanctuary);
 	}
 	else
 	{

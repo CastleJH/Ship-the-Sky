@@ -86,3 +86,14 @@ enum class EUnitStat : uint8
 	All,
 	None
 };
+
+UENUM(BlueprintType)
+enum class EGuardianStat : uint8
+{
+	HPCloud = 0,
+	AttackStorm,
+	HPSun,
+	AttackLightning,
+	Score,
+	None
+};

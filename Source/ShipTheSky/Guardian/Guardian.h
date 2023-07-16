@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Enums.h"
 #include "Guardian.generated.h"
 
 UCLASS()
@@ -57,24 +58,25 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool UpgradeHPWithCloud();
 	UFUNCTION(BlueprintPure)
-	int32 GetHPUpgradeCostWithCloud() const { return HPCloudLevel * 50; }
+	int32 GetHPUpgradeCostWithCloud() const { return 30 + HPCloudLevel * 20; }
 	UFUNCTION(BlueprintCallable)
 	bool UpgradeHPWithSun();
 	UFUNCTION(BlueprintPure)
-	int32 GetHPUpgradeCostWithSun() const { return HPSunLevel * 50; }
+	int32 GetHPUpgradeCostWithSun() const { return 30 + HPSunLevel * 20; }
 	UFUNCTION(BlueprintCallable)
 	bool UpgradeAttackWithStorm();
 	UFUNCTION(BlueprintPure)
-	int32 GetAttackUpgradeCostWithStorm() const { return AttackStormLevel * 50; }
+	int32 GetAttackUpgradeCostWithStorm() const { return 30 + AttackStormLevel * 20; }
 	UFUNCTION(BlueprintCallable)
 	bool UpgradeAttackWithLightning();
 	UFUNCTION(BlueprintPure)
-	int32 GetAttackUpgradeCostWithLightning() const { return AttackLightningLevel * 50; }
+	int32 GetAttackUpgradeCostWithLightning() const { return 30 + AttackLightningLevel * 20; }
 	UFUNCTION(BlueprintCallable)
 	bool UpgradeScorePower();
 	UFUNCTION(BlueprintPure)
-	int32 GetScorePowerUpgradeCost() const { return ScorePowerLevel * 50; }
+	int32 GetScorePowerUpgradeCost() const { return 30 + ScorePowerLevel * 20; }
 	void ResetLevelAndPower();
 	UFUNCTION(BlueprintPure)
 	bool IsReinforcementPanelVisible() const;
+	TPair<enum EGuardianStat, int32> GetStatUpgradeRecommendation();
 };

@@ -24,6 +24,7 @@ EBTNodeResult::Type UBTTask_CreateUnit::ExecuteTask(UBehaviorTreeComponent& Owne
 
 	if (Commander->TryCreateUnit(Barracks, Type))
 	{
+		OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("BarracksToCreateUnit"), nullptr);
 		OwnerComp.GetBlackboardComponent()->SetValueAsEnum(TEXT("UnitTypeToCreate"), (uint8)EUnitType::None);
 		return EBTNodeResult::Succeeded;
 	}

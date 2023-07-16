@@ -388,6 +388,7 @@ void UMapManager::GenerateMap(int32 NumCol)
 	}
 	XCoord -= XDiff;
 	YCoord -= YDiff;
+	int32 PlayerIslandCount = 0;
 	for (auto Row : IslandTiles)
 	{
 		if (Row.IsValidIndex(0))
@@ -396,7 +397,8 @@ void UMapManager::GenerateMap(int32 NumCol)
 			if (GuardianTile)
 			{
 				ASTSPlayerController* Controller = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
-				GuardianTile->SpawnGuardian(FMath::RandRange(0, Controller->GuardianClass.Num() - 1));
+				if (PlayerIslandCount < GetWorld()->GetGameState<ASTSGameState>()->Commanders.Num()) GuardianTile->SpawnGuardian(Controller->GuardianClass.Num() - 1);
+				else GuardianTile->SpawnGuardian(FMath::RandRange(0, Controller->GuardianClass.Num() - 1));
 				TArray<ABaseTile*> InTile;
 				GetAdjacentTiles(GuardianTile, InTile);
 				GuardianTile->SetAdjTiles(InTile);
@@ -409,6 +411,7 @@ void UMapManager::GenerateMap(int32 NumCol)
 				GuardianTile->SetAdjResourceTiles(ResourceInTile);
 			}
 		}
+		PlayerIslandCount++;
 	}
 	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, 0);
 

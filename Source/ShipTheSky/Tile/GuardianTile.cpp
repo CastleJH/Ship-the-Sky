@@ -11,6 +11,8 @@
 #include "Tile/ResourceTile.h"
 #include "Tile/IslandTile.h"
 #include "STSGameState.h"
+#include "Building/BaseBuilding.h"
+#include "Enums.h"
 
 AGuardianTile::AGuardianTile()
 {
@@ -62,6 +64,7 @@ void AGuardianTile::TimePass(int32 GameDate)
 
 void AGuardianTile::SpawnGuardian(int32 Index)
 {
+	if (Guardian) return;
 	FTransform Loc(GetActorLocation());
 	Guardian = GetWorld()->SpawnActorDeferred<AGuardian>(Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController())->GuardianClass[Index], Loc);
 	Guardian->SetActorRotation(FRotator(0.0f, 180.0f, 0.0f));
@@ -238,6 +241,16 @@ void AGuardianTile::SetAdjResourceTiles(TArray<class AResourceTile*>& InTile)
 {
 	AdjResourceTiles.Empty();
 	for (auto Elem : InTile) AdjResourceTiles.Add(Elem);
+}
+
+bool AGuardianTile::IsBuildingTypeBuilt(EBuildingType Type)
+{
+	for (auto Tile : AdjResourceTiles)
+	{
+		if (Tile->GetBuilding() && Tile->GetBuilding()->GetBuildingType() == Type) return true;
+	}
+
+	return false;
 }
 
 void AGuardianTile::BeginPlay()

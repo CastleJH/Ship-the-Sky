@@ -111,5 +111,5 @@ void AGuardian::ResetLevelAndPower()
 
 bool AGuardian::IsReinforcementPanelVisible() const
 {
-	return Tile->GetIslandOwner() == Cast<ACommander>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	return Tile->IsBuildingTypeBuilt(EBuildingType::Sanctuary) && Tile->GetIslandOwner() == Cast<ACommander>(GetWorld()->GetFirstPlayerController()->GetPawn());
 }

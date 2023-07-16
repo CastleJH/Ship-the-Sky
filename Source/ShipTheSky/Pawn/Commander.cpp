@@ -45,9 +45,11 @@ bool ACommander::TryConstructBuilding(AResourceTile* Tile, EBuildingType Type)
 		break;
 	case EBuildingType::Portal:
 		if (Resources[(int32)EResourceType::WoodLightning] < GetBuildingCreationCost(Type)) return false;
+		if (Tile->GetGuardianTile()->IsBuildingTypeBuilt(Type)) return false;
 		break;
 	case EBuildingType::Sanctuary:
 		if (Resources[(int32)EResourceType::WoodMeteor] < GetBuildingCreationCost(Type)) return false;
+		if (Tile->GetGuardianTile()->IsBuildingTypeBuilt(Type)) return false;
 		break;
 	case EBuildingType::None:
 		return false;

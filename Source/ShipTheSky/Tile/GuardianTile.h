@@ -55,6 +55,8 @@ public:
 	void SetAdjTiles(TArray<class ABaseTile*>& InTile);
 	void SetAdjResourceTiles(TArray<class AResourceTile*>& InTile);
 	TArray<class AResourceTile*>& GetAdjResourceTiles() { return AdjResourceTiles; }
+	UFUNCTION(BlueprintPure)
+	bool IsBuildingTypeBuilt(enum EBuildingType Type);
 
 protected:
 	virtual void BeginPlay() override;

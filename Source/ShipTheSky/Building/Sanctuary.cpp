@@ -2,4 +2,11 @@
 
 
 #include "Building/Sanctuary.h"
+#include "Enums.h"
+
+ASanctuary::ASanctuary()
+{
+	BuildingType = EBuildingType::Sanctuary;
+}
+
 

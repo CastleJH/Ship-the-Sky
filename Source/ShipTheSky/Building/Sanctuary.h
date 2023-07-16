@@ -14,4 +14,6 @@ class SHIPTHESKY_API ASanctuary : public ABaseBuilding
 {
 	GENERATED_BODY()
 	
+public:
+	ASanctuary();
 };

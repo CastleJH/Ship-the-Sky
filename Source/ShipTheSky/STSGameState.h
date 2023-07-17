@@ -23,6 +23,7 @@ private:
 public:
 	UPROPERTY(VisibleAnywhere)
 	TArray<class ACommander*> Commanders;
+	TArray<int32> CommanderScores;
 
 public:
 	//섬 소유권 초기화
@@ -31,6 +32,8 @@ public:
 	//섬 소유자 반환
 	UFUNCTION(BlueprintPure)
 	ACommander* GetIslandOwner(int32 IslandID) const;
+	UFUNCTION(BlueprintPure)
+	int32 GetCommanderScore(int32 Idx) const { return CommanderScores[Idx]; }
 	
 	//섬 소유자 설정
 	void SetIslandOwner(int32 IslandID, class ACommander* NewOwner);

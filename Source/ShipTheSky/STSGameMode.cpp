@@ -35,8 +35,9 @@ void ASTSGameMode::StartPlay()
 	{
 		STSGameState->Commanders.Add(GetWorld()->SpawnActor<ACommander>(Class));
 		check(STSGameState->Commanders.Last() != nullptr)
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *STSGameState->Commanders.Last()->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *STSGameState->Commanders.Last()->GetName());
 	}
+	STSGameState->CommanderScores.Init(0, STSGameState->Commanders.Num());
 
 	GetGameInstance()->GetSubsystem<UMapManager>()->GenerateMap(60);
 

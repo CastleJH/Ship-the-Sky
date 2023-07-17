@@ -44,7 +44,7 @@ public:
 
 	//»óÂ¡ »ö
 	UPROPERTY(EditDefaultsOnly, Category = "Commander")
-	int32 OutlineColorIndex;
+	int32 CommanderID;
 
 	//½ÃÀÛ ¼¶ À§Ä¡
 	UPROPERTY(EditDefaultsOnly, Category = "Commander")

@@ -60,6 +60,10 @@ void AGuardianTile::TimePass(int32 GameDate)
 		if (RecoveryCount == 30) RecoverFriendly();
 		else RecoveryCount++;
 	}
+
+	ASTSGameState* GameState = GetWorld()->GetGameState<ASTSGameState>();
+	ACommander* IslandOwner = GameState->GetIslandOwner(IslandID);
+	if (IslandOwner) GameState->CommanderScores[IslandOwner->CommanderID] += Guardian->GetScorePower();
 }
 
 void AGuardianTile::SpawnGuardian(int32 Index)

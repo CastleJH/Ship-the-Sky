@@ -76,7 +76,7 @@ void ABaseTile::SetOutline()
 		 if (IslandOwner)
 		 {
 			 StaticMeshComp->SetRenderCustomDepth(false);
-			 StaticMeshComp->CustomDepthStencilValue = IslandOwner->OutlineColorIndex;
+			 StaticMeshComp->CustomDepthStencilValue = IslandOwner->CommanderID;
 			 StaticMeshComp->SetRenderCustomDepth(true);
 		 }
 		 else StaticMeshComp->SetRenderCustomDepth(false);

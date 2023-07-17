@@ -23,7 +23,7 @@ ACommander::ACommander()
 	TargetIslandTile = nullptr;
 	TargetTile = nullptr;
 
-	OutlineColorIndex = 1;
+	CommanderID = 1;
 
 	for (int32 Idx = 0; Idx < (int32)EResourceType::None; Idx++)
 		Resources[Idx] = 200;

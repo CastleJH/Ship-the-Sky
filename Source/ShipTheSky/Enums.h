@@ -97,3 +97,14 @@ enum class EGuardianStat : uint8
 	Score,
 	None
 };
+
+UENUM(BlueprintType)
+enum class EShipStatus : uint8
+{
+	MoveForUpgrade = 0,
+	MoveForEmbarkUnit,
+	MoveForBattle,
+	InBattle = 0,
+	Stuck = 0,
+	None
+};

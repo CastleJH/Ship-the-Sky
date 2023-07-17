@@ -9,6 +9,16 @@
 /**
  * 
  */
+
+struct Cell
+{
+	class ABaseTile* Tile;
+	class ABaseTile* Parent;
+	int32 f;
+	int32 g;
+	int32 h;
+};
+
 UCLASS()
 class SHIPTHESKY_API UMapManager : public UGameInstanceSubsystem
 {
@@ -37,6 +47,12 @@ public:
 	//인접 타일 반환
 	UFUNCTION()
 	void GetAdjacentTiles(class ABaseTile* Tile, TArray<class ABaseTile*>& OutArray) const;
+
+	//경로 생성
+	bool GetPathForTile(class AShip* Ship, class ABaseTile* EndTile, bool bIsForBattle);
+
+	//거리 계산
+	int32 GetDistanceOfTwoTile(class ABaseTile* Tile1, class ABaseTile* Tile2);
 
 private:
 	void SetTilePowers();

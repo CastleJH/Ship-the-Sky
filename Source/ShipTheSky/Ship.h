@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Enums.h"
 #include "Ship.generated.h"
 
 UCLASS()
@@ -75,6 +76,9 @@ private:
 	FTimerHandle MoveTimer;
 	UPROPERTY(VisibleAnywhere)
 	class ACommander* OwnerCommander;
+
+	//적 AI만 다룸
+	EShipStatus ShipStatus;
 
 public:
 
@@ -198,4 +202,7 @@ public:
 
 	void RecoverDurability(float Amount);
 
+	//적 AI만
+	EShipStatus GetShipStatus() const { return ShipStatus; }
+	void SetShipStatus(EShipStatus NewStatus) { ShipStatus = NewStatus; }
 };

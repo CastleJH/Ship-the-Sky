@@ -9,6 +9,8 @@
 #include "Pawn/PlayerCommander.h"
 #include "Controller/STSPlayerController.h"
 #include "Enums.h"
+#include "Ship.h"
+#include "Tile/BaseTile.h"
 
 UMapManager::UMapManager()
 {
@@ -473,6 +475,67 @@ void UMapManager::GetAdjacentTiles(ABaseTile* Tile, TArray<class ABaseTile*>& Ou
 			}
 		}
 	}
+}
+
+bool UMapManager::GetPathForTile(AShip* Ship, ABaseTile* EndTile, bool bIsForBattle)
+{
+	if (!Ship || !EndTile || !Ship->GetCurTile()) return false;
+
+	//TPair<int32, ABaseTile*>
+	TSet<TPair<int32, ABaseTile*>> Opened;
+	TArray<TArray<bool>> Closed;
+	TArray<TArray<Cell>> Cells;
+
+	int32 INF = 1987654321;
+
+	//초기화
+	for (int32 i = 0; i < Map.Num(); i++)
+	{
+		TArray<bool> Row;
+		Row.Init(false, Map[i].Num());
+		Closed.Add(Row);
+
+		TArray<Cell> CRow;
+		Cell C;
+		CRow.Init(C, Map[i].Num());
+		for (int32 j = 0; j < Map[i].Num(); j++)
+		{
+			CRow[j].Tile = Map[i][j];
+			CRow[j].Parent = nullptr;
+			CRow[j].f = INF;
+			CRow[j].g = INF;
+			CRow[j].h = INF;
+		}
+	}
+
+	//첫 좌표 표시
+	Cells[Ship->GetCurTile()->GetRow()][Ship->GetCurTile()->GetCol()].f = 0;
+	Cells[Ship->GetCurTile()->GetRow()][Ship->GetCurTile()->GetCol()].g = 0;
+	Cells[Ship->GetCurTile()->GetRow()][Ship->GetCurTile()->GetCol()].h = 0;
+
+	Cells[Ship->GetCurTile()->GetRow()][Ship->GetCurTile()->GetCol()].Parent = Ship->GetCurTile();
+	Opened.Add(TPair<int32, ABaseTile*>(0, Ship->GetCurTile()));
+
+	while (!Opened.IsEmpty())
+	{
+		TPair<int32, ABaseTile*> Pair = *Opened.begin();
+		Opened.Remove(Pair);
+
+		Closed[Pair.Value->GetRow()][Pair.Value->GetCol()] = true;
+
+
+	}
+
+
+	return true;
+}
+
+int32 UMapManager::GetDistanceOfTwoTile(ABaseTile* Tile1, ABaseTile* Tile2)
+{
+	int32 Dr = FMath::Abs(Tile1->GetRow() - Tile2->GetRow());
+	int32 Dc = FMath::Abs(Tile1->GetCol() - Tile2->GetCol());
+
+	return Dr + Dc - (Dr + (Tile1->GetRow() & 1 ? 0 : 1)) / 2;
 }
 
 void UMapManager::SetTilePowers()

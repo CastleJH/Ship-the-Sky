@@ -25,8 +25,8 @@ void AMeteorTile::TimePass(int32 GameDate)
 		}
 		if (FMath::RandRange(0.0f, 1.0f) < GetResistanceAdjustedTilePower(ShipOnThisTile->GetMeteorResistance()) * 0.01f)
 		{
-			ShipOnThisTile->GetAttacked(99999999.0f);
-			ShipOnThisTile->GetAttacked(1.0f);
+			ShipOnThisTile->GetAttacked(1987654321.0f);
+			if (ShipOnThisTile) ShipOnThisTile->GetAttacked(1.0f);
 		}
 	}
 }

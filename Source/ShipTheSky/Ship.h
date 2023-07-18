@@ -82,7 +82,7 @@ private:
 
 public:
 
-	void Tick(float DeltaTime) override;
+	void Tick(float DeltaSeconds) override;
 
 	bool TryLocateOnTile(class ABaseTile* Tile, bool RightAfter);
 

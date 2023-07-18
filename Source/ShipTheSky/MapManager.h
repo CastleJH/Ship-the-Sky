@@ -16,7 +16,17 @@ struct Cell
 	class ABaseTile* Parent;
 	int32 f;
 	int32 g;
-	int32 h;
+};
+
+struct PQElem
+{
+	int32 f;
+	class ABaseTile* Tile;
+
+	bool operator <(const PQElem& A) const
+	{
+		return f < A.f;
+	}
 };
 
 UCLASS()
@@ -49,10 +59,13 @@ public:
 	void GetAdjacentTiles(class ABaseTile* Tile, TArray<class ABaseTile*>& OutArray) const;
 
 	//경로 생성
-	bool GetPathForTile(class AShip* Ship, class ABaseTile* EndTile, bool bIsForBattle);
+	bool MakePathToTile(class AShip* Ship, class ABaseTile* EndTile, bool bIsForBattle);
 
 	//거리 계산
 	int32 GetDistanceOfTwoTile(class ABaseTile* Tile1, class ABaseTile* Tile2);
+
+	//배가 없으면서, 적 섬타일이 아니면서, 적대적인 수호자의 인접타일이 아닌지 반환
+	bool GetIsTileAccessible(class ACommander* Commander, class ABaseTile* Tile);
 
 private:
 	void SetTilePowers();

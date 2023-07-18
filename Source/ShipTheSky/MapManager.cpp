@@ -11,6 +11,7 @@
 #include "Enums.h"
 #include "Ship.h"
 #include "Tile/BaseTile.h"
+#include "Util/IndexPriorityQueue.h"
 
 UMapManager::UMapManager()
 {
@@ -477,16 +478,29 @@ void UMapManager::GetAdjacentTiles(ABaseTile* Tile, TArray<class ABaseTile*>& Ou
 	}
 }
 
-bool UMapManager::GetPathForTile(AShip* Ship, ABaseTile* EndTile, bool bIsForBattle)
+bool UMapManager::MakePathToTile(AShip* Ship, ABaseTile* EndTile, bool bIsForBattle)
 {
-	if (!Ship || !EndTile || !Ship->GetCurTile()) return false;
+	if (!Ship || !EndTile || !Ship->GetCurTile())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Wrong Status of ship"));
+		return false;
+	}
 
 	//TPair<int32, ABaseTile*>
-	TSet<TPair<int32, ABaseTile*>> Opened;
+	TArray<PQElem> Opened;
 	TArray<TArray<bool>> Closed;
 	TArray<TArray<Cell>> Cells;
 
 	int32 INF = 1987654321;
+	int32 CurRow;
+	int32 CurCol;
+	int32 NewRow;
+	int32 NewCol;
+	int32 Ng;
+	int32 Nh;
+	int32 Nf;
+
+	bool FoundPath = false;
 
 	//초기화
 	for (int32 i = 0; i < Map.Num(); i++)
@@ -504,30 +518,85 @@ bool UMapManager::GetPathForTile(AShip* Ship, ABaseTile* EndTile, bool bIsForBat
 			CRow[j].Parent = nullptr;
 			CRow[j].f = INF;
 			CRow[j].g = INF;
-			CRow[j].h = INF;
 		}
+		Cells.Add(CRow);
 	}
 
 	//첫 좌표 표시
 	Cells[Ship->GetCurTile()->GetRow()][Ship->GetCurTile()->GetCol()].f = 0;
 	Cells[Ship->GetCurTile()->GetRow()][Ship->GetCurTile()->GetCol()].g = 0;
-	Cells[Ship->GetCurTile()->GetRow()][Ship->GetCurTile()->GetCol()].h = 0;
 
 	Cells[Ship->GetCurTile()->GetRow()][Ship->GetCurTile()->GetCol()].Parent = Ship->GetCurTile();
-	Opened.Add(TPair<int32, ABaseTile*>(0, Ship->GetCurTile()));
+	Opened.Add(PQElem{ 0, Ship->GetCurTile() });
 
 	while (!Opened.IsEmpty())
 	{
-		TPair<int32, ABaseTile*> Pair = *Opened.begin();
-		Opened.Remove(Pair);
+		PQElem Elem;
+		Opened.HeapPop(Elem);
 
-		Closed[Pair.Value->GetRow()][Pair.Value->GetCol()] = true;
+		CurRow = Elem.Tile->GetRow();
+		CurCol = Elem.Tile->GetCol();
+		Closed[CurRow][CurCol] = true;
 
+		for (int32 i = 0; i < 6; i++)
+		{
+			NewRow = CurRow + RowOffset[i];
+			NewCol = CurCol + ColOffset[CurRow % 2][i];
+			if (Map.IsValidIndex(NewRow) && Map[NewRow].IsValidIndex(NewCol))
+			{
+				if (NewRow == EndTile->GetRow() && NewCol == EndTile->GetCol())
+				{
+					Cells[NewRow][NewCol].Parent = Elem.Tile;
+					FoundPath = true; 
+					break;
+				}
+				else if (!Closed[NewRow][NewCol] && GetIsTileAccessible(Ship->GetOwnerCommander(), Map[NewRow][NewCol]))
+				{
+					Ng = Cells[CurRow][CurCol].g + 1;
+					Nh = GetDistanceOfTwoTile(Map[NewRow][NewCol], EndTile);
+					Nf = Ng + Nh;
 
+					UE_LOG(LogTemp, Warning, TEXT("%d"), Nf);
+
+					if (Cells[NewRow][NewCol].f > Nf)
+					{
+						Cells[NewRow][NewCol].f = Nf;
+						Cells[NewRow][NewCol].g = Ng;
+						Cells[NewRow][NewCol].Parent = Elem.Tile;
+						Opened.HeapPush(PQElem{ Nf, Map[NewRow][NewCol] });
+					}
+				}
+			}
+		}
+		if (FoundPath) break;
 	}
 
+	if (FoundPath)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Found Path"));
+		TArray<Cell> Stack;
+		Stack.Push(Cells[EndTile->GetRow()][EndTile->GetCol()]);
 
-	return true;
+		while (Stack.Top().Parent != Stack.Top().Tile)
+		{
+			Stack.Push(Cells[Stack.Top().Parent->GetRow()][Stack.Top().Parent->GetCol()]);
+		}
+
+		Cell C = Stack.Pop();
+		Ship->TryAddTileToPath(C.Tile, true);
+		while (!Stack.IsEmpty())
+		{
+			C = Stack.Pop();
+			if (!Ship->TryAddTileToPath(C.Tile, false)) return false;
+		}
+		return true;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Path"));
+		return false;
+	}
+
 }
 
 int32 UMapManager::GetDistanceOfTwoTile(ABaseTile* Tile1, ABaseTile* Tile2)
@@ -536,6 +605,29 @@ int32 UMapManager::GetDistanceOfTwoTile(ABaseTile* Tile1, ABaseTile* Tile2)
 	int32 Dc = FMath::Abs(Tile1->GetCol() - Tile2->GetCol());
 
 	return Dr + Dc - (Dr + (Tile1->GetRow() & 1 ? 0 : 1)) / 2;
+}
+
+//배가 없으면서, 적 섬타일이 아니면서, 적대적인 수호자의 인접타일이 아닌지 반환
+bool UMapManager::GetIsTileAccessible(ACommander* Commander, ABaseTile* Tile)
+{
+	if (Tile->GetShip()) return false;
+
+	if (Tile->GetTileType() == ETileType::Island)
+	{
+		if (Cast<AIslandTile>(Tile)->GetIslandOwner() == Commander) return true;
+		else return false;
+	}
+	else
+	{
+		TArray<ABaseTile*> AdjTiles;
+		GetAdjacentTiles(Tile, AdjTiles);
+		for (auto Tile : AdjTiles)
+		{
+			AGuardianTile* GuardianTile = Cast<AGuardianTile>(Tile);
+			if (GuardianTile && GuardianTile->GetIslandOwner() != Commander) return false;
+		}
+		return true;
+	}
 }
 
 void UMapManager::SetTilePowers()

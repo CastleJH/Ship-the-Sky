@@ -50,17 +50,21 @@ AShip::AShip()
 	ResistanceDelta = 5;
 	DurabilityDelta = 10;
 	FlightPowerDelta = 0.95f;
+
+	debugcnt = 0;
 }
 
-void AShip::Tick(float DeltaTime)
+void AShip::Tick(float DeltaSeconds)
 {
+	Super::Tick(DeltaSeconds);
+
 	FVector LerpedPosition = FMath::Lerp(GetActorLocation(), CurTile->GetActorLocation() + FVector(0.0f, 0.0f, 250.0f), 0.05f);
 
 	SetActorLocation(LerpedPosition);
 
 	if (bIsAttackedRecently)
 	{
-		LastAttackedSecond += DeltaTime;
+		LastAttackedSecond += DeltaSeconds;
 		if (LastAttackedSecond >= 3.0f) bIsAttackedRecently = false;
 	}
 	else LastAttackedSecond = 0.0f;

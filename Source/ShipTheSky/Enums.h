@@ -101,10 +101,26 @@ enum class EGuardianStat : uint8
 UENUM(BlueprintType)
 enum class EShipStatus : uint8
 {
+	MoveForDurability = 0,
 	MoveForUpgrade = 0,
 	MoveForEmbarkUnit,
 	MoveForBattle,
 	InBattle = 0,
 	Stuck = 0,
 	None
+};
+
+UENUM(BlueprintType)
+enum class EShipStat : uint8
+{
+	ResCloud = 0,
+	ResStorm,
+	ResSun,
+	ResLightning,
+	ResMeteor,
+	FlightPowerCloud,
+	DurabilityStorm,
+	FlightPowerSun,
+	DurabilityLightning,
+	Capacity
 };

@@ -79,6 +79,7 @@ private:
 
 	//Àû AI¸¸ ´Ù·ë
 	EShipStatus ShipStatus;
+	int32 StuckCount;
 
 public:
 

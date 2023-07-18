@@ -3,3 +3,6 @@
 
 #include "AI/BTTask_MoveShipForUpgrade.h"
 
+UBTTask_MoveShipForUpgrade::UBTTask_MoveShipForUpgrade()
+{
+}

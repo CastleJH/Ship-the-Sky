@@ -614,16 +614,17 @@ bool UMapManager::GetIsTileAccessible(ACommander* Commander, ABaseTile* Tile)
 
 	if (Tile->GetTileType() == ETileType::Island)
 	{
+		if (Cast<AGuardianTile>(Tile)) return false;
 		if (Cast<AIslandTile>(Tile)->GetIslandOwner() == Commander) return true;
-		else return false;
+		return false;
 	}
 	else
 	{
 		TArray<ABaseTile*> AdjTiles;
 		GetAdjacentTiles(Tile, AdjTiles);
-		for (auto Tile : AdjTiles)
+		for (auto Adj : AdjTiles)
 		{
-			AGuardianTile* GuardianTile = Cast<AGuardianTile>(Tile);
+			AGuardianTile* GuardianTile = Cast<AGuardianTile>(Adj);
 			if (GuardianTile && GuardianTile->GetIslandOwner() != Commander) return false;
 		}
 		return true;

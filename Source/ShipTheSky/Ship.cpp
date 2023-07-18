@@ -51,7 +51,8 @@ AShip::AShip()
 	DurabilityDelta = 10;
 	FlightPowerDelta = 0.95f;
 
-	debugcnt = 0;
+	ShipStatus = EShipStatus::None;
+	StuckCount = 0;
 }
 
 void AShip::Tick(float DeltaSeconds)
@@ -65,9 +66,14 @@ void AShip::Tick(float DeltaSeconds)
 	if (bIsAttackedRecently)
 	{
 		LastAttackedSecond += DeltaSeconds;
-		if (LastAttackedSecond >= 3.0f) bIsAttackedRecently = false;
+		if (LastAttackedSecond >= 3.0f)
+		{
+			bIsAttackedRecently = false;
+			ShipStatus = EShipStatus::None;
+		}
 	}
 	else LastAttackedSecond = 0.0f;
+
 }
 
 bool AShip::TryLocateOnTile(ABaseTile* Tile, bool RightAfter)
@@ -189,12 +195,22 @@ void AShip::FollowPath()
 		{
 			if (bIsBeingObserved) RemoveFrontPathUI();
 			Path.RemoveAt(0);
+			StuckCount = 0;
+		}
+		else
+		{
+			if (StuckCount > 10) ShipStatus = EShipStatus::Stuck;
+			else StuckCount++;
 		}
 
 		if (!Path.IsEmpty())
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Next"));
 			GetWorld()->GetTimerManager().SetTimer(MoveTimer, this, &AShip::FollowPath, ModifiedFlightPower, false, ModifiedFlightPower);
+		}
+		else
+		{
+			ShipStatus = EShipStatus::None;
 		}
 	}
 }
@@ -318,6 +334,7 @@ void AShip::GetAttacked(float Damage)
 			}
 		}
 		bIsAttackedRecently = true;
+		ShipStatus = EShipStatus::InBattle;
 	}
 }
 

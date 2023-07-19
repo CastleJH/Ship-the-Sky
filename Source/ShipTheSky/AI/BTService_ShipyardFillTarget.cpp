@@ -34,8 +34,10 @@ void UBTService_ShipyardFillTarget::TickNode(UBehaviorTreeComponent& OwnerComp, 
 
 	for (auto Ship : Commander->Ships)
 	{
-		if (Ship->GetShipStatus() == EShipStatus::None)
+		if (Ship->GetShipStatus() == EShipStatus::None && Ship->GetCurTile())
 		{
+			AResourceTile* ResTile = Cast<AResourceTile>(Ship->GetCurTile());
+			if (ResTile && ResTile->GetBuilding() && ResTile->GetBuilding()->GetBuildingType() == EBuildingType::Shipyard) continue;
 			ShipToMoveForUpgrade = Ship;
 			break;
 		}

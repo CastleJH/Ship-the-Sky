@@ -27,11 +27,11 @@ EBTNodeResult::Type UBTTask_UpgradeShip::ExecuteTask(UBehaviorTreeComponent& Own
 	if (!ShipToUpgrade || ShipStatToUpgrade == EShipStat::None) return EBTNodeResult::Failed;
 
 
-	float TargetResourceAmount = 0.0f;
+	float TargetResourceAmount = Commander->GetShipCreationCost() + 200.0f;
 
 	if ((uint8)ShipStatToUpgrade < (uint8)EShipStat::FlightPowerCloud)
 	{
-		TargetResourceAmount = Commander->GetResource(StaticCast<EResourceType>((uint8)ShipStatToUpgrade + 5)) / 2.0f;
+		//TargetResourceAmount = Commander->GetResource(StaticCast<EResourceType>((uint8)ShipStatToUpgrade + 5)) / 2.0f;
 		while (true)
 		{
 			if (!ShipToUpgrade->UpgradeResistance(StaticCast<ETileType>((uint8)ShipStatToUpgrade + 1))) break;
@@ -44,7 +44,7 @@ EBTNodeResult::Type UBTTask_UpgradeShip::ExecuteTask(UBehaviorTreeComponent& Own
 		switch (ShipStatToUpgrade)
 		{
 		case EShipStat::FlightPowerCloud:
-			TargetResourceAmount = Commander->GetResource(EResourceType::WoodCloud) / 2.0f;
+			//TargetResourceAmount = Commander->GetResource(EResourceType::WoodCloud) / 2.0f;
 			while (true)
 			{
 				if (!ShipToUpgrade->UpgradeFlightPowerWithCloud()) break;
@@ -52,7 +52,7 @@ EBTNodeResult::Type UBTTask_UpgradeShip::ExecuteTask(UBehaviorTreeComponent& Own
 			}
 			return EBTNodeResult::Succeeded;
 		case EShipStat::DurabilityStorm:
-			TargetResourceAmount = Commander->GetResource(EResourceType::WoodStorm) / 2.0f;
+			//TargetResourceAmount = Commander->GetResource(EResourceType::WoodStorm) / 2.0f;
 			while (true)
 			{
 				if (!ShipToUpgrade->UpgradeDurabilityWithStorm()) break;
@@ -60,7 +60,7 @@ EBTNodeResult::Type UBTTask_UpgradeShip::ExecuteTask(UBehaviorTreeComponent& Own
 			}
 			return EBTNodeResult::Succeeded;
 		case EShipStat::FlightPowerSun:
-			TargetResourceAmount = Commander->GetResource(EResourceType::WoodSun) / 2.0f;
+			//TargetResourceAmount = Commander->GetResource(EResourceType::WoodSun) / 2.0f;
 			while (true)
 			{
 				if (!ShipToUpgrade->UpgradeFlightPowerWithSun()) break;
@@ -68,7 +68,7 @@ EBTNodeResult::Type UBTTask_UpgradeShip::ExecuteTask(UBehaviorTreeComponent& Own
 			}
 			return EBTNodeResult::Succeeded;
 		case EShipStat::DurabilityLightning:
-			TargetResourceAmount = Commander->GetResource(EResourceType::WoodLightning) / 2.0f;
+			//TargetResourceAmount = Commander->GetResource(EResourceType::WoodLightning) / 2.0f;
 			while (true)
 			{
 				if (!ShipToUpgrade->UpgradeDurabilityWithLightning()) break;
@@ -76,7 +76,7 @@ EBTNodeResult::Type UBTTask_UpgradeShip::ExecuteTask(UBehaviorTreeComponent& Own
 			}
 			return EBTNodeResult::Succeeded;
 		case EShipStat::Capacity:
-			TargetResourceAmount = Commander->GetResource(EResourceType::WoodMeteor) / 2.0f;
+			//TargetResourceAmount = Commander->GetResource(EResourceType::WoodMeteor) / 2.0f;
 			while (true)
 			{
 				if (!ShipToUpgrade->UpgradeCapacity()) break;

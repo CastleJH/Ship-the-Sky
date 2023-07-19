@@ -27,11 +27,11 @@ EBTNodeResult::Type UBTTask_UpgradeUnit::ExecuteTask(UBehaviorTreeComponent& Own
 
 	EUnitStat StatToUpgrade = StaticCast<EUnitStat>(OwnerComp.GetBlackboardComponent()->GetValueAsEnum(TEXT("UnitStatToUpgrade")));
 	
-	float TargetResourceAmount = 0.0f;
+	float TargetResourceAmount = 200.0f;
 	switch (StatToUpgrade)
 	{
 	case EUnitStat::HP:
-		TargetResourceAmount = Commander->GetResource(EResourceType::StoneCloud) / 2.0f;
+		//TargetResourceAmount = Commander->GetResource(EResourceType::StoneCloud) / 2.0f;
 		while (true)
 		{
 			if (!Unit->UpgradeHP()) break;
@@ -39,7 +39,7 @@ EBTNodeResult::Type UBTTask_UpgradeUnit::ExecuteTask(UBehaviorTreeComponent& Own
 		}
 		return EBTNodeResult::Succeeded;
 	case EUnitStat::Attack:
-		TargetResourceAmount = Commander->GetResource(EResourceType::StoneStorm) / 2.0f;
+		//TargetResourceAmount = Commander->GetResource(EResourceType::StoneStorm) / 2.0f;
 		while (true)
 		{
 			if (!Unit->UpgradeAttack()) break;
@@ -47,7 +47,7 @@ EBTNodeResult::Type UBTTask_UpgradeUnit::ExecuteTask(UBehaviorTreeComponent& Own
 		}
 		return EBTNodeResult::Succeeded;
 	case EUnitStat::FoodConsume:
-		TargetResourceAmount = Commander->GetResource(EResourceType::StoneSun) / 2.0f;
+		//TargetResourceAmount = Commander->GetResource(EResourceType::StoneSun) / 2.0f;
 		while (true)
 		{
 			if (!Unit->UpgradeFoodConsume()) break;
@@ -55,7 +55,7 @@ EBTNodeResult::Type UBTTask_UpgradeUnit::ExecuteTask(UBehaviorTreeComponent& Own
 		}
 		return EBTNodeResult::Succeeded;
 	case EUnitStat::Efficiency:
-		TargetResourceAmount = Commander->GetResource(EResourceType::StoneLightning) / 2.0f;
+		//TargetResourceAmount = Commander->GetResource(EResourceType::StoneLightning) / 2.0f;
 		while (true)
 		{
 			if (!Unit->UpgradeEfficiency()) break;
@@ -63,7 +63,7 @@ EBTNodeResult::Type UBTTask_UpgradeUnit::ExecuteTask(UBehaviorTreeComponent& Own
 		}
 		return EBTNodeResult::Succeeded;
 	case EUnitStat::All:
-		TargetResourceAmount = Commander->GetResource(EResourceType::StoneMeteor) / 2.0f;
+		//TargetResourceAmount = Commander->GetResource(EResourceType::StoneMeteor) / 2.0f;
 		while (true)
 		{
 			if (!Unit->UpgradeAll()) break;

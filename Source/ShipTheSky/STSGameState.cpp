@@ -13,10 +13,7 @@ void ASTSGameState::ResetIslandOwner(int32 NewIslandNum, int32 PlayerOwnAmount)
 	{
 		for (int32 Cnt = 0; Cnt < PlayerOwnAmount; Cnt++)
 		{
-			if (IslandOwner.IsValidIndex(Idx))
-			{
-				IslandOwner[Idx] = Commander;
-			}
+			SetIslandOwner(Idx, Commander);
 			Idx++;
 		}
 	}

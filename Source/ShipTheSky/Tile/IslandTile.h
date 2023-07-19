@@ -25,15 +25,17 @@ protected:
 	int32 IslandID = -1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EIslandTileType IslandType;
-
+	UPROPERTY()
+	class AGuardianTile* GuardianTile;
 public:
 	//섬 관련 변수 접근
 	UFUNCTION(BlueprintPure)
 	int32 GetIslandID() const { return IslandID; }
-	void SetIslandID(int32 NewIslandID) { IslandID = NewIslandID; }
+	void SetIslandID(int32 NewIslandID);
 	EIslandTileType GetIslandType() const { return IslandType; };
 	UFUNCTION(BlueprintPure)
 	class AGuardianTile* GetGuardianTile() const;
+	void SetGuardianTile(class AIslandTile* Tile);
 	
 	UFUNCTION(BlueprintPure)
 	class ACommander* GetIslandOwner() const;

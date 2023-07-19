@@ -24,11 +24,11 @@ EBTNodeResult::Type UBTTask_UpgradeGuardian::ExecuteTask(UBehaviorTreeComponent&
 
 	EGuardianStat StatToUpgrade = StaticCast<EGuardianStat>(OwnerComp.GetBlackboardComponent()->GetValueAsEnum(TEXT("GuardianStatToUpgrade")));
 
-	float TargetResourceAmount = 0.0f;
+	float TargetResourceAmount = 200.0f;
 	switch (StatToUpgrade)
 	{
 	case EGuardianStat::HPCloud:
-		TargetResourceAmount = Commander->GetResource(EResourceType::StoneCloud) / 2.0f;
+		//TargetResourceAmount = Commander->GetResource(EResourceType::StoneCloud) / 2.0f;
 		while (true)
 		{
 			if (!Guardian->UpgradeHPWithCloud()) break;
@@ -36,7 +36,7 @@ EBTNodeResult::Type UBTTask_UpgradeGuardian::ExecuteTask(UBehaviorTreeComponent&
 		}
 		return EBTNodeResult::Succeeded;
 	case EGuardianStat::AttackStorm:
-		TargetResourceAmount = Commander->GetResource(EResourceType::StoneStorm) / 2.0f;
+		//TargetResourceAmount = Commander->GetResource(EResourceType::StoneStorm) / 2.0f;
 		while (true)
 		{
 			if (!Guardian->UpgradeAttackWithStorm()) break;
@@ -44,7 +44,7 @@ EBTNodeResult::Type UBTTask_UpgradeGuardian::ExecuteTask(UBehaviorTreeComponent&
 		}
 		return EBTNodeResult::Succeeded;
 	case EGuardianStat::HPSun:
-		TargetResourceAmount = Commander->GetResource(EResourceType::StoneSun) / 2.0f;
+		//TargetResourceAmount = Commander->GetResource(EResourceType::StoneSun) / 2.0f;
 		while (true)
 		{
 			if (!Guardian->UpgradeHPWithSun()) break;
@@ -52,7 +52,7 @@ EBTNodeResult::Type UBTTask_UpgradeGuardian::ExecuteTask(UBehaviorTreeComponent&
 		}
 		return EBTNodeResult::Succeeded;
 	case EGuardianStat::AttackLightning:
-		TargetResourceAmount = Commander->GetResource(EResourceType::StoneLightning) / 2.0f;
+		//TargetResourceAmount = Commander->GetResource(EResourceType::StoneLightning) / 2.0f;
 		while (true)
 		{
 			if (!Guardian->UpgradeAttackWithLightning()) break;
@@ -60,7 +60,7 @@ EBTNodeResult::Type UBTTask_UpgradeGuardian::ExecuteTask(UBehaviorTreeComponent&
 		}
 		return EBTNodeResult::Succeeded;
 	case EGuardianStat::Score:
-		TargetResourceAmount = Commander->GetResource(EResourceType::StoneMeteor) / 2.0f;
+		//TargetResourceAmount = Commander->GetResource(EResourceType::StoneMeteor) / 2.0f;
 		while (true)
 		{
 			if (!Guardian->UpgradeScorePower()) break;

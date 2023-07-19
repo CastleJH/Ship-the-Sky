@@ -28,14 +28,18 @@ void UBTService_UnitCreationTarget::TickNode(UBehaviorTreeComponent& OwnerComp, 
 
 	ABarracks* TargetBarracks = nullptr;
 	int32 MinWaiting = 999;
+	bool bBarracksExist = false;
 	for (auto GuardianTile : Commander->OwningIslands)
 	{
+		bBarracksExist = false;
+		MinWaiting = 999;
 		TArray<AResourceTile*> ResourceTiles = GuardianTile->GetAdjResourceTiles();
 		int32 EmptyTiles[4] = { 0 };
 		for (auto Tile : ResourceTiles)
 		{
 			if (Tile->GetBuilding() && Tile->GetBuilding()->GetBuildingType() == EBuildingType::Barracks)
 			{
+				bBarracksExist = true;
 				ABarracks* Barracks = Cast<ABarracks>(Tile->GetBuilding());
 				for (auto Type : Barracks->WaitingUnitArray)
 				{
@@ -49,6 +53,7 @@ void UBTService_UnitCreationTarget::TickNode(UBehaviorTreeComponent& OwnerComp, 
 			}
 			EmptyTiles[(uint8)Tile->GetIslandType()]++;
 		}
+		if (!bBarracksExist) continue;
 		for (auto Unit : GuardianTile->UnitsOnThisIsland)
 		{
 			EmptyTiles[(uint8)Unit->GetUnitType()]--;
@@ -73,5 +78,5 @@ void UBTService_UnitCreationTarget::TickNode(UBehaviorTreeComponent& OwnerComp, 
 		}
 	}
 	OwnerComp.GetBlackboardComponent()->SetValueAsEnum(TEXT("UnitTypeToCreate"), (uint8)EUnitType::None);
-	OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("BarracksToCreateUnit"), TargetBarracks);
+	OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("BarracksToCreateUnit"), nullptr);
 }

@@ -9,6 +9,7 @@
 #include "MapManager.h"
 #include "STSGameState.h"
 #include "Ship.h"
+#include "Tile/GuardianTile.h"
 
 AIslandTile::AIslandTile()
 {
@@ -21,9 +22,25 @@ void AIslandTile::BeginPlay()
 	SetActorScale3D(FVector(1.0f, 1.0f, 1.0f));
 }
 
+void AIslandTile::SetIslandID(int32 NewIslandID)
+{
+	IslandID = NewIslandID;
+	GuardianTile = GetGameInstance()->GetSubsystem<UMapManager>()->GetGuardianTile(IslandID);
+}
+
 AGuardianTile* AIslandTile::GetGuardianTile() const
 {
-	return GetGameInstance()->GetSubsystem<UMapManager>()->GetGuardianTile(IslandID);
+	if (GuardianTile == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s"), *GetName());
+		return nullptr;
+	}
+	return GuardianTile;
+}
+
+void AIslandTile::SetGuardianTile(AIslandTile* Tile)
+{
+	GuardianTile = Cast<AGuardianTile>(Tile);
 }
 
 ACommander* AIslandTile::GetIslandOwner() const

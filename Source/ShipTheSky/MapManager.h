@@ -74,14 +74,23 @@ private:
 	void SelectAllIslandTiles();
 
 private:
+	UPROPERTY()
 	TSubclassOf<class AIslandTile> MineTileClass;
+	UPROPERTY()
 	TSubclassOf<class AIslandTile> ForestTileClass;
+	UPROPERTY()
 	TSubclassOf<class AIslandTile> FarmTileClass;
+	UPROPERTY()
 	TSubclassOf<class AIslandTile> GuardianTileClass;
+	UPROPERTY()
 	TSubclassOf<class ABaseTile> CloudTileClass;
+	UPROPERTY()
 	TSubclassOf<class ABaseTile> StormTileClass;
+	UPROPERTY()
 	TSubclassOf<class ABaseTile> SunTileClass;
+	UPROPERTY()
 	TSubclassOf<class ABaseTile> LightningTileClass;
+	UPROPERTY()
 	TSubclassOf<class ABaseTile> MeteorTileClass;
 
 	//모든 타일

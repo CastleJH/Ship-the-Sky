@@ -200,6 +200,8 @@ public:
 	bool UpgradeCapacity();
 	UFUNCTION(BlueprintPure)
 	int32 GetCapacityUpgradeCost() const;
+	TPair<enum EShipStat, int32> GetStatUpgradeRecommendation();
+
 
 	void RecoverDurability(float Amount);
 

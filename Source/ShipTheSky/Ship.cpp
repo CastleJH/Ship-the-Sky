@@ -11,6 +11,8 @@
 #include "STSGameState.h"
 #include "Tile/GuardianTile.h"
 #include "Unit/BaseUnit.h"
+#include "Building/BaseBuilding.h"
+#include "Tile/ResourceTile.h"
 #include "Battle/BattleComponent.h"
 
 // Sets default values
@@ -139,6 +141,7 @@ bool AShip::TryAddTileToPath(ABaseTile* Tile, bool bIsFirstPath)
 {
 	AIslandTile* IslandTile = Cast<AIslandTile>(Tile);
 	if (IslandTile && IslandTile->GetIslandOwner() != OwnerCommander) return false;
+	if (IslandTile && IslandTile->GetIslandType() == EIslandTileType::Guardian) return false;
 	if (bIsFirstPath) //첫 클릭일때
 	{
 		UE_LOG(LogTemp, Warning, TEXT("CheckFirst"));
@@ -347,6 +350,8 @@ float AShip::Attack()
  
  bool AShip::UpgradeResistance(enum ETileType Type)
 {
+	 AResourceTile* CurResourceTile = Cast<AResourceTile>(CurTile);
+	 if (!CurResourceTile || !CurResourceTile->GetBuilding() || CurResourceTile->GetBuilding()->GetBuildingType() != EBuildingType::Shipyard) return false;
 	 switch (Type)
 	 {
 	 case ETileType::Cloud:
@@ -408,6 +413,8 @@ int32 AShip::GetResistanceUpgradeCost(enum ETileType Type) const
 
 bool AShip::UpgradeFlightPowerWithCloud()
 {
+	AResourceTile* CurResourceTile = Cast<AResourceTile>(CurTile);
+	if (!CurResourceTile || !CurResourceTile->GetBuilding() || CurResourceTile->GetBuilding()->GetBuildingType() != EBuildingType::Shipyard) return false;
 	if (OwnerCommander->GetResource(EResourceType::WoodCloud) < GetFlightPowerUpgradeCostWithCloud()) return false;
 	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::WoodCloud) - GetFlightPowerUpgradeCostWithCloud(), EResourceType::WoodCloud);
 	FlightPowerCloudLevel++;
@@ -417,6 +424,8 @@ bool AShip::UpgradeFlightPowerWithCloud()
 
 bool AShip::UpgradeFlightPowerWithSun()
 {
+	AResourceTile* CurResourceTile = Cast<AResourceTile>(CurTile);
+	if (!CurResourceTile || !CurResourceTile->GetBuilding() || CurResourceTile->GetBuilding()->GetBuildingType() != EBuildingType::Shipyard) return false;
 	if (OwnerCommander->GetResource(EResourceType::WoodSun) < GetFlightPowerUpgradeCostWithSun()) return false;
 	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::WoodSun) - GetFlightPowerUpgradeCostWithSun(), EResourceType::WoodSun);
 	FlightPowerSunLevel++;
@@ -426,6 +435,8 @@ bool AShip::UpgradeFlightPowerWithSun()
 
 bool AShip::UpgradeDurabilityWithStorm()
 {
+	AResourceTile* CurResourceTile = Cast<AResourceTile>(CurTile);
+	if (!CurResourceTile || !CurResourceTile->GetBuilding() || CurResourceTile->GetBuilding()->GetBuildingType() != EBuildingType::Shipyard) return false;
 	if (OwnerCommander->GetResource(EResourceType::WoodStorm) < GetDurabilityUpgradeCostWithStorm()) return false;
 	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::WoodStorm) - GetDurabilityUpgradeCostWithStorm(), EResourceType::WoodStorm);
 	DurabilityStormLevel++;
@@ -435,6 +446,8 @@ bool AShip::UpgradeDurabilityWithStorm()
 
 bool AShip::UpgradeDurabilityWithLightning()
 {
+	AResourceTile* CurResourceTile = Cast<AResourceTile>(CurTile);
+	if (!CurResourceTile || !CurResourceTile->GetBuilding() || CurResourceTile->GetBuilding()->GetBuildingType() != EBuildingType::Shipyard) return false;
 	if (OwnerCommander->GetResource(EResourceType::WoodLightning) < GetDurabilityUpgradeCostWithLightning()) return false;
 	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::WoodLightning) - GetDurabilityUpgradeCostWithLightning(), EResourceType::WoodLightning);
 	DurabilityLightningLevel++;
@@ -444,6 +457,8 @@ bool AShip::UpgradeDurabilityWithLightning()
 
 bool AShip::UpgradeCapacity()
 {
+	AResourceTile* CurResourceTile = Cast<AResourceTile>(CurTile);
+	if (!CurResourceTile || !CurResourceTile->GetBuilding() || CurResourceTile->GetBuilding()->GetBuildingType() != EBuildingType::Shipyard) return false;
 	if (UnitCapacity == 6) return false;
 	if (OwnerCommander->GetResource(EResourceType::WoodMeteor) < GetDurabilityUpgradeCostWithLightning()) return false;
 	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::WoodMeteor) - GetDurabilityUpgradeCostWithLightning(), EResourceType::WoodMeteor);
@@ -460,4 +475,57 @@ int32 AShip::GetCapacityUpgradeCost() const
 {
 	if (UnitCapacity == 6) return 0;
 	return (UnitCapacity - 3) * 100;
+}
+
+TPair<EShipStat, int32> AShip::GetStatUpgradeRecommendation()
+{
+	EResourceType Wood = EResourceType::None;
+	int32 MaxResource = -1;
+
+	for (EResourceType Type = EResourceType::WoodCloud; Type != EResourceType::Food;)
+	{
+		if (OwnerCommander->GetResource(Type) > MaxResource)
+		{
+			Wood = Type;
+			MaxResource = OwnerCommander->GetResource(Type);
+		}
+		Type = StaticCast<EResourceType>((uint8)Type + 1);
+	}
+
+	TPair<EShipStat, int32> Recommendation = TPair<EShipStat, int32>(EShipStat::None, 1987654321);
+	int32 ResourceAmount = 0;
+
+	switch (Wood)
+	{
+	case EResourceType::WoodCloud:
+		ResourceAmount = GetFlightPowerUpgradeCostWithCloud();
+		if (OwnerCommander->GetResource(Wood) > ResourceAmount) Recommendation =  TPair<EShipStat, int32>(EShipStat::FlightPowerCloud, ResourceAmount);
+		break;
+	case EResourceType::WoodStorm:
+		ResourceAmount = GetDurabilityUpgradeCostWithStorm();
+		if (OwnerCommander->GetResource(Wood) > ResourceAmount) Recommendation = TPair<EShipStat, int32>(EShipStat::DurabilityStorm, ResourceAmount);
+		break;
+	case EResourceType::WoodSun:
+		ResourceAmount = GetFlightPowerUpgradeCostWithSun();
+		if (OwnerCommander->GetResource(Wood) > ResourceAmount) Recommendation = TPair<EShipStat, int32>(EShipStat::FlightPowerSun, ResourceAmount);
+		break;
+	case EResourceType::WoodLightning:
+		ResourceAmount = GetDurabilityUpgradeCostWithLightning();
+		if (OwnerCommander->GetResource(Wood) > ResourceAmount) Recommendation = TPair<EShipStat, int32>(EShipStat::DurabilityLightning, ResourceAmount);
+		break;
+	case EResourceType::WoodMeteor:
+		ResourceAmount = GetCapacityUpgradeCost();
+		if (UnitCapacity != 6 && OwnerCommander->GetResource(Wood) > ResourceAmount) Recommendation = TPair<EShipStat, int32>(EShipStat::Capacity, ResourceAmount);
+		break;
+	default: Recommendation = TPair<EShipStat, int32>(EShipStat::None, 1987654321);
+	}
+
+	ResourceAmount = GetResistanceUpgradeCost(StaticCast<ETileType>((uint8)Wood - 4));
+	if (OwnerCommander->GetResource(Wood) > ResourceAmount && ResourceAmount < Recommendation.Value)
+		Recommendation = TPair<EShipStat, int32>(StaticCast<EShipStat>((uint8)Wood - 5), GetResistanceUpgradeCost(StaticCast<ETileType>((uint8)Wood - 4)));
+
+	if (Recommendation.Key == EShipStat::None) Recommendation = TPair<EShipStat, int32>(EShipStat::None, 0);
+
+	UE_LOG(LogTemp, Warning, TEXT("%d"), Recommendation.Value);
+	return Recommendation;
 }

@@ -13,9 +13,11 @@ UCLASS()
 class SHIPTHESKY_API UBTService_ShipUpgradeTarget : public UBTService
 {
 	GENERATED_BODY()
-	
-	/*
-	ShipToUpgrade (AShip)
-	ShipStatToUpgrade (EShipStat)
-	*/
+
+public:
+	UBTService_ShipUpgradeTarget();
+
+protected:
+	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+
 };

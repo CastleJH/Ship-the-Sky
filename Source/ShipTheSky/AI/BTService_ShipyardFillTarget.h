@@ -14,8 +14,9 @@ class SHIPTHESKY_API UBTService_ShipyardFillTarget : public UBTService
 {
 	GENERATED_BODY()
 	
-	/*
-	ShipyardToFill (AShipyard)
-	ShipToMoveForUpgrade (AShip)
-	*/
+public:
+	UBTService_ShipyardFillTarget();
+
+protected:
+	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 };

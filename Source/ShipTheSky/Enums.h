@@ -102,7 +102,7 @@ UENUM(BlueprintType)
 enum class EShipStatus : uint8
 {
 	MoveForDurability = 0,
-	MoveForUpgrade = 0,
+	MoveForUpgrade,
 	MoveForEmbarkUnit,
 	MoveForBattle,
 	InBattle = 0,
@@ -122,5 +122,6 @@ enum class EShipStat : uint8
 	DurabilityStorm,
 	FlightPowerSun,
 	DurabilityLightning,
-	Capacity
+	Capacity,
+	None
 };

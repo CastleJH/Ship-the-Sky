@@ -16,5 +16,6 @@ class SHIPTHESKY_API UBTTask_MoveShipForUpgrade : public UBTTaskNode
 	
 public:
 	UBTTask_MoveShipForUpgrade();
-	
+
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 };

@@ -62,7 +62,7 @@ public:
 	bool MakePathToTile(class AShip* Ship, class ABaseTile* EndTile, bool bIsForBattle);
 
 	//거리 계산
-	int32 GetDistanceOfTwoTile(class ABaseTile* Tile1, class ABaseTile* Tile2);
+	static int32 GetDistanceOfTwoTile(class ABaseTile* Tile1, class ABaseTile* Tile2);
 
 	//배가 없으면서, 적 섬타일이 아니면서, 적대적인 수호자의 인접타일이 아닌지 반환
 	bool GetIsTileAccessible(class ACommander* Commander, class ABaseTile* Tile);

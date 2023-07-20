@@ -23,7 +23,6 @@ EBTNodeResult::Type UBTTask_LocateUnitOnTile::ExecuteTask(UBehaviorTreeComponent
 	AIslandTile* Tile = Cast<AIslandTile>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(TEXT("IslandTileToLocateUnit")));
 	ABaseUnit* Unit = Cast<ABaseUnit>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(TEXT("UnitToLocate")));
 
-	if (Unit) OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("OriginalIslandTileOfUnit"), Unit->GetCurIslandTile());
 	Commander->TryRelocateUnitOnTile(Unit, Tile);
 
 	return EBTNodeResult::Type();

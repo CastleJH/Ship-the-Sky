@@ -17,6 +17,9 @@
 AGuardianTile::AGuardianTile()
 {
 	IslandType = EIslandTileType::Guardian;
+	bIsAttackedRecently = false;
+	RecoveryCount = 0;
+	RepeatRecover = 0;
 }
 
 void AGuardianTile::AddUnitOnThisIsland(ABaseUnit* Unit)
@@ -41,6 +44,7 @@ void AGuardianTile::RemoveUnitFromThisIsland(ABaseUnit* Unit)
 	if (UnitsOnThisIsland.Contains(Unit))
 	{
 		UnitsOnThisIsland.Remove(Unit);
+		if (Unit->GetCurIslandTile() && Unit->GetCurIslandTile()->GetIslandType() != EIslandTileType::Guardian) Cast<AResourceTile>(Unit->GetCurIslandTile())->SetUnit(nullptr);
 		Unit->SetCurIslandTile(nullptr);
 	}
 }
@@ -52,12 +56,19 @@ void AGuardianTile::TimePass(int32 GameDate)
 	if (CheckEnemyShipAdjacent())
 	{
 		RecoveryCount = 0;
+		RepeatRecover = 0;
 		AttackShips();
 		GetAttackedByShips();
+		bIsAttackedRecently = true;
 	}
 	else
 	{
-		if (RecoveryCount == 30) RecoverFriendly();
+		if (RecoveryCount == 30)
+		{
+			RecoverFriendly();
+			if (RepeatRecover < 10) RepeatRecover++;
+			else bIsAttackedRecently = false;
+		}
 		else RecoveryCount++;
 	}
 
@@ -139,7 +150,6 @@ void AGuardianTile::GetAttackedByShips()
 			if (!Target->BattleComponent->IsAlive())
 			{
 				GetIslandOwner()->DestroyUnitFromGame(Target);
-				TryFillIsland();
 			}
 		}
 		else break;
@@ -152,9 +162,9 @@ void AGuardianTile::GetAttackedByShips()
 		for (int32 Idx = AdjResourceTiles.Num() - 1; Idx >= 0; Idx--)
 		{
 			ABaseUnit* Unit = AdjResourceTiles[Idx]->GetUnit();
-			if (Unit && Target->BattleComponent->GetCurHP() < Unit->BattleComponent->GetCurHP())
+			if (Unit)
 			{
-				Target = Unit;
+				if (!Target || Target->BattleComponent->GetCurHP() < Unit->BattleComponent->GetCurHP()) Target = Unit;
 			}
 		}
 		if (Target)
@@ -163,12 +173,11 @@ void AGuardianTile::GetAttackedByShips()
 			if (!Target->BattleComponent->IsAlive())
 			{
 				GetIslandOwner()->DestroyUnitFromGame(Target);
-				TryFillIsland();
 			}
 		}
 		else break;
 	}
-
+	
 	Damage -= Guardian->BattleComponent->TakeDamage(Damage);
 	if (Damage != 0)
 	{
@@ -230,11 +239,6 @@ void AGuardianTile::RecoverFriendly()
 	Guardian->BattleComponent->RecoverHP(Guardian->BattleComponent->GetMaxHP() * 0.05f);
 }
 
-bool AGuardianTile::TryFillIsland()
-{
-	return false;
-}
-
 void AGuardianTile::SetAdjTiles(TArray<class ABaseTile*>& InTile)
 {
 	AdjTiles.Empty();
@@ -245,6 +249,9 @@ void AGuardianTile::SetAdjResourceTiles(TArray<class AResourceTile*>& InTile)
 {
 	AdjResourceTiles.Empty();
 	for (auto Elem : InTile) AdjResourceTiles.Add(Elem);
+	AdjResourceTiles.Sort([](const AResourceTile& A, const AResourceTile& B) {
+		return A.TotalResourcesNum > B.TotalResourcesNum;
+		});
 }
 
 bool AGuardianTile::IsBuildingTypeBuilt(EBuildingType Type)

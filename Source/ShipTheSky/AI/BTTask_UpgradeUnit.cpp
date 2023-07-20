@@ -7,6 +7,8 @@
 #include "Pawn/Commander.h"
 #include "Enums.h"
 #include "Unit/BaseUnit.h"
+#include "Tile/IslandTile.h"
+#include "Tile/GuardianTile.h"
 
 UBTTask_UpgradeUnit::UBTTask_UpgradeUnit()
 {
@@ -23,10 +25,11 @@ EBTNodeResult::Type UBTTask_UpgradeUnit::ExecuteTask(UBehaviorTreeComponent& Own
 	ABaseUnit* Unit = Cast<ABaseUnit>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(TEXT("UnitToUpgrade")));
 	OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("UnitToUpgrade"), nullptr);
 	if (!Unit) return EBTNodeResult::Failed;
-	OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("IslandTileToLocateUnit"), OwnerComp.GetBlackboardComponent()->GetValueAsObject(TEXT("OriginalIslandTileOfUnit")));
+
+	OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("GuardianTileToOptimizePlacement"), Unit->GetCurIslandTile()->GetGuardianTile());
 
 	EUnitStat StatToUpgrade = StaticCast<EUnitStat>(OwnerComp.GetBlackboardComponent()->GetValueAsEnum(TEXT("UnitStatToUpgrade")));
-	
+
 	float TargetResourceAmount = 200.0f;
 	switch (StatToUpgrade)
 	{

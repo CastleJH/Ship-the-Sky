@@ -42,5 +42,5 @@ public:
 	float TakeDamage(float Amount);
 	void RecoverHP(float Amount);
 
-	bool IsAlive() { return CurrentHP != 0; }
+	bool IsAlive() { return CurrentHP > KINDA_SMALL_NUMBER; }
 };

@@ -28,6 +28,7 @@ private:
 	UPROPERTY()
 	TArray<class AShip*> EnemyShips;
 	int32 RecoveryCount;
+	int32 RepeatRecover;
 	UPROPERTY()
 	TArray<class ABaseTile*> AdjTiles;
 	UPROPERTY()
@@ -49,7 +50,7 @@ public:
 	UFUNCTION()
 	class ACommander* GetNewOwner();
 	void RecoverFriendly();
-	bool TryFillIsland();
+	bool bIsAttackedRecently;
 
 	//인접 타일 정보
 	void SetAdjTiles(TArray<class ABaseTile*>& InTile);

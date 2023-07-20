@@ -24,6 +24,11 @@ AResourceTile::AResourceTile()
 void AResourceTile::SetResources(TMap<uint8, float> NewResources)
 {
 	Resources = NewResources;
+	TotalResourcesNum = 0.0f;
+	for (auto Elem : Resources)
+	{
+		TotalResourcesNum += Elem.Value;
+	}
 	UpdateTileResourcesUI();
 }
 

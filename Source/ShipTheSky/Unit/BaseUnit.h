@@ -75,9 +75,9 @@ public:
 
 	//½ºÅÈ °ü·Ã
 	UFUNCTION(BlueprintPure)
-	float GetFoodConsume() { return FoodConsume; }
+	float GetFoodConsume() const { return FoodConsume; }
 	UFUNCTION(BlueprintPure)
-	float GetEfficiency() { return Efficiency; }
+	float GetEfficiency() const { return Efficiency; }
 	UFUNCTION(BlueprintCallable)
 	bool UpgradeHP();
 	UFUNCTION(BlueprintPure)

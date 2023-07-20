@@ -6,6 +6,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Pawn/Commander.h"
 #include "Building/Shipyard.h"
+#include "Tile/ResourceTile.h"
 
 UBTTask_CreateShip::UBTTask_CreateShip()
 {
@@ -19,6 +20,9 @@ EBTNodeResult::Type UBTTask_CreateShip::ExecuteTask(UBehaviorTreeComponent& Owne
 	if (!Commander) return EBTNodeResult::Failed;
 
 	AShipyard* Shipyard = Cast<AShipyard>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(TEXT("ShipyardToCreateShip")));
+	OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("ShipyardToCreateShip"), nullptr);
+	if (!Shipyard) return EBTNodeResult::Failed;
+	if (Shipyard->GetOwnerCommander() != Shipyard->GetCurTile()->GetIslandOwner()) return EBTNodeResult::Failed;
 
 	if (Commander->TryCreateShip(Shipyard))
 	{

@@ -42,6 +42,10 @@ public:
 
 	virtual void TimePass(int32 GameDate) override;
 
+	//유저 편의
+	UFUNCTION(BlueprintCallable)
+	void OptimizeUnitPlacement();
+
 	//수호자 & 전투 관련
 	void SpawnGuardian(int32 Index);
 	bool CheckEnemyShipAdjacent();

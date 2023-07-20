@@ -13,6 +13,7 @@
 #include "STSGameState.h"
 #include "Building/BaseBuilding.h"
 #include "Enums.h"
+#include "STSGameState.h"
 
 AGuardianTile::AGuardianTile()
 {
@@ -75,6 +76,120 @@ void AGuardianTile::TimePass(int32 GameDate)
 	ASTSGameState* GameState = GetWorld()->GetGameState<ASTSGameState>();
 	ACommander* IslandOwner = GameState->GetIslandOwner(IslandID);
 	if (IslandOwner) GameState->CommanderScores[IslandOwner->CommanderID] += Guardian->GetScorePower();
+}
+
+void AGuardianTile::OptimizeUnitPlacement()
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *GetName());
+	ACommander* Commander = GetWorld()->GetGameState<ASTSGameState>()->GetIslandOwner(IslandID);
+	if (!Commander)
+	{
+		UE_LOG(LogTemp, Error, TEXT("????????????????"));
+		return;
+	}
+	if (bIsAttackedRecently)
+	{
+		TArray<ABaseUnit*> Warriors;
+		TArray<ABaseUnit*> NotWarriors;
+		for (auto Unit : UnitsOnThisIsland)
+		{
+			if (Unit->GetUnitType() == EUnitType::Warrior) Warriors.Add(Unit);
+			else NotWarriors.Add(Unit);
+			Warriors.Sort([](const ABaseUnit& A, const ABaseUnit& B) {
+				return A.BattleComponent->GetCurHP() < B.BattleComponent->GetCurHP();
+				});
+			NotWarriors.Sort([](const ABaseUnit& A, const ABaseUnit& B) {
+				return A.BattleComponent->GetCurHP() < B.BattleComponent->GetCurHP();
+				});
+		}
+		for (auto Tile : GetAdjResourceTiles())
+		{
+			if (!Warriors.IsEmpty())
+			{
+				Commander->TryRelocateUnitOnTile(Warriors.Last(), Tile);
+				Warriors.Pop();
+			}
+			else if (!NotWarriors.IsEmpty())
+			{
+				Commander->TryRelocateUnitOnTile(NotWarriors.Last(), Tile);
+				NotWarriors.Pop();
+			}
+			else break;
+		}
+	}
+	else
+	{
+		TArray<AResourceTile*> TilesToMatch;
+		TArray<ABaseUnit*> Miners;
+		TArray<ABaseUnit*> Woodcutters;
+		TArray<ABaseUnit*> Farmers;
+		for (auto Unit : UnitsOnThisIsland)
+		{
+			switch (Unit->GetUnitType())
+			{
+			case EUnitType::Miner:
+				Miners.Add(Unit);
+				break;
+			case EUnitType::Woodcutter:
+				Woodcutters.Add(Unit);
+				break;
+			case EUnitType::Farmer:
+				Farmers.Add(Unit);
+				break;
+			default:
+				break;
+			}
+		}
+		Miners.Sort([](const ABaseUnit& A, const ABaseUnit& B) {
+			return A.GetEfficiency() < B.GetEfficiency();
+			});
+		Woodcutters.Sort([](const ABaseUnit& A, const ABaseUnit& B) {
+			return A.GetEfficiency() < B.GetEfficiency();
+			});
+		Farmers.Sort([](const ABaseUnit& A, const ABaseUnit& B) {
+			return A.GetEfficiency() < B.GetEfficiency();
+			});
+		for (auto Tile : GetAdjResourceTiles())
+		{
+			switch (Tile->GetIslandType())
+			{
+			case EIslandTileType::Mine:
+				if (!Miners.IsEmpty())
+				{
+					Commander->TryRelocateUnitOnTile(Miners.Last(), Tile);
+					Miners.Pop();
+				}
+				break;
+			case EIslandTileType::Forest:
+				if (!Woodcutters.IsEmpty())
+				{
+					Commander->TryRelocateUnitOnTile(Woodcutters.Last(), Tile);
+					Woodcutters.Pop();
+				}
+				break;
+			case EIslandTileType::Farm:
+				if (!Farmers.IsEmpty())
+				{
+					Commander->TryRelocateUnitOnTile(Farmers.Last(), Tile);
+					Farmers.Pop();
+				}
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	/******************Áö¿ö!!******************/
+	int32 tmpcnt = 0;
+	for (auto Tile : AdjResourceTiles)
+	{
+		if (Tile->GetUnit())
+		{
+			tmpcnt++;
+		}
+	}
+	if (tmpcnt < UnitsOnThisIsland.Num()) UE_LOG(LogTemp, Error, TEXT("%s"), *GetName());
 }
 
 void AGuardianTile::SpawnGuardian(int32 Index)
@@ -181,15 +296,16 @@ void AGuardianTile::GetAttackedByShips()
 	Damage -= Guardian->BattleComponent->TakeDamage(Damage);
 	if (Damage != 0)
 	{
-		GetWorld()->GetGameState<ASTSGameState>()->SetIslandOwner(GetIslandID(), GetNewOwner());
 		for (auto Tile : AdjResourceTiles)
 		{
 			if (Tile->GetShip()) Tile->GetShip()->GetAttacked(9999999.0f);
+			if (Tile->GetBuilding()) GetIslandOwner()->DestroyBuildingFromGame(Tile->GetBuilding());
 		}
 		for (auto Unit : UnitsOnThisIsland)
 		{
 			Unit->GetOwnerCommander()->DestroyUnitFromGame(Unit);
 		}
+		GetWorld()->GetGameState<ASTSGameState>()->SetIslandOwner(GetIslandID(), GetNewOwner());
 		Guardian->ResetLevelAndPower();
 		SetOutline();
 		for (auto Tile : AdjResourceTiles) Tile->SetOutline();

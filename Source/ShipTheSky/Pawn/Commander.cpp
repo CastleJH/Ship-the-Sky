@@ -178,8 +178,8 @@ void ACommander::TryRelocateUnitOnTile(ABaseUnit* Unit, AIslandTile* Tile)
 	AResourceTile* OtherUnitTile = Cast<AResourceTile>(Tile);
 	if (OtherUnitTile) OtherUnit = OtherUnitTile->GetUnit();
 
+	if (OtherUnit != nullptr) OtherUnit->LocateOnIslandTile(Tile->GetGuardianTile(), false);
 	if (Unit != nullptr) Unit->LocateOnIslandTile(Tile, false);
-	if (OtherUnit != nullptr) OtherUnit->LocateOnIslandTile(UnitTile, false);
 }
 
 
@@ -254,6 +254,7 @@ ABaseUnit* ACommander::SpawnUnitToGame(EUnitType Type)
 
 void ACommander::DestroyUnitFromGame(ABaseUnit* Unit)
 {
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *Unit->GetName());
 	if (Unit->GetCurShip()) Unit->GetCurShip()->RemoveUnit(Unit);
 	if (Unit->GetCurIslandTile())
 	{

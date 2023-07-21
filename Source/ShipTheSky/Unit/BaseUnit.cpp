@@ -85,7 +85,11 @@ void ABaseUnit::LocateOnIslandTile(AIslandTile* Tile, bool bIsImmediate)
 	}
 	AResourceTile* PrevResourceTile = Cast<AResourceTile>(PrevTile);
 	if (PrevResourceTile && PrevResourceTile->GetUnit() == this) PrevResourceTile->SetUnit(nullptr);
-	if (!bIsImmediate) MakePath(PrevTile, CurIslandTile);
+	if (!bIsImmediate)
+	{
+		MakePath(PrevTile, CurIslandTile);
+		SetActorTickEnabled(true);
+	}
 }
 
 bool ABaseUnit::Embark(AShip* Ship)
@@ -241,7 +245,12 @@ void ABaseUnit::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (Path.IsEmpty()) return;
+	if (Path.IsEmpty())
+	{
+		SetActorTickEnabled(false);
+		UE_LOG(LogTemp, Warning, TEXT("Tick off"));
+		return;
+	}
 	if (FVector::Distance(Path[0]->GetActorLocation(), GetActorLocation()) > KINDA_SMALL_NUMBER)
 	{
 		FRotator Direction = (Path[0]->GetActorLocation() - GetActorLocation()).Rotation();
@@ -310,4 +319,5 @@ void ABaseUnit::BeginPlay()
 	Super::BeginPlay();
 
 	AnimInstance = Cast<UUnitAnimInstance>(SkeletalMeshComponent->GetAnimInstance());
+	SetActorTickEnabled(false);
 }

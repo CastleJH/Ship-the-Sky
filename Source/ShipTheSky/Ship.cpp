@@ -526,6 +526,5 @@ TPair<EShipStat, int32> AShip::GetStatUpgradeRecommendation()
 
 	if (Recommendation.Key == EShipStat::None) Recommendation = TPair<EShipStat, int32>(EShipStat::None, 0);
 
-	UE_LOG(LogTemp, Warning, TEXT("%d"), Recommendation.Value);
 	return Recommendation;
 }

@@ -27,7 +27,7 @@ public:
 
 public:
 	//섬 소유권 초기화
-	void ResetIslandOwner(int32 NewIslandNum, int32 PlayerOwnAmount);
+	void ResetIslandOwner(int32 NewIslandNum, int32 PlayerOwnAmount, bool bPlayerToo);
 
 	//섬 소유자 반환
 	UFUNCTION(BlueprintPure)

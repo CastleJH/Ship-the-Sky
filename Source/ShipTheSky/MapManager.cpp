@@ -28,7 +28,7 @@ UMapManager::UMapManager()
 
 void UMapManager::GenerateMap(int32 NumCol)
 {
-	int32 NumRow = (int32)((float)NumCol * 0.75f);
+	int32 NumRow = FMath::RoundToInt((float)NumCol * 0.75f);
 	int32 CurR, CurC, NewR, NewC, MaxPoss;
 	int32 NewIslandID = 0;
 	int32 Iter = 8;
@@ -126,7 +126,7 @@ void UMapManager::GenerateMap(int32 NumCol)
 	//¼¶ »ý¼º
 	for (int32 Col = 0; Col < NumCol; Col++)
 	{
-		int32 IterIsland = 2;
+		/*int32 IterIsland = (Col & 1 ? 1 : 2);
 		while (IterIsland--)
 		{
 			int32 RandRow;
@@ -161,6 +161,78 @@ void UMapManager::GenerateMap(int32 NumCol)
 			if (maxIter == 0) {
 				UE_LOG(LogTemp, Error, TEXT("Wrong Map Generation"));
 				return;
+			}
+
+			ETileType& CurTile = MapData[RandRow][Col];
+			CurTile = ETileType::Island;
+			IslandID[RandRow][Col] = NewIslandID + 10000;
+			int32 IslandTileNum = 0;
+			for (int32 i = 0; i < 6; i++)
+			{
+				NewR = RandRow + RowOffset[i];
+				NewC = Col + ColOffset[RandRow % 2][i];
+
+				if (!MapData.IsValidIndex(NewR) || !MapData[NewR].IsValidIndex(NewC)) continue;
+				if (FMath::FRandRange(0.f, 1.f) < 0.6f)
+				{
+					IslandID[NewR][NewC] = NewIslandID;
+					MapData[NewR][NewC] = ETileType::Island;
+					IslandTileNum++;
+				}
+				if (IslandTileNum == 5) break;
+			}
+			while (IslandTileNum == 0)
+			{
+				int32 RandLoc = FMath::RandRange(0, 5);
+				NewR = RandRow + RowOffset[RandLoc];
+				NewC = Col + ColOffset[RandRow % 2][RandLoc];
+
+				if (!MapData.IsValidIndex(NewR) || !MapData[NewR].IsValidIndex(NewC)) continue;
+				IslandID[NewR][NewC] = NewIslandID;
+				MapData[NewR][NewC] = ETileType::Island;
+				IslandTileNum++;
+			}
+
+			NewIslandID++;
+			TArray<AIslandTile*> SameIslands;
+			IslandTiles.Add(SameIslands);
+		}*/
+		int32 IterIsland = (Col & 1 ? 1 : 2);
+		while (IterIsland--)
+		{
+			int32 RandRow;
+			bool NearCheck;
+			int32 maxIter = 100;
+
+			do {
+				RandRow = FMath::RandRange(0, NumRow - 1);
+				NearCheck = false;
+				if (!MapData.IsValidIndex(RandRow) || !MapData[RandRow].IsValidIndex(Col))
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Wrong Index"));
+					return;
+				}
+
+				ETileType& CurTile = MapData[RandRow][Col];
+
+				for (int32 i = 0; i < 18; i++)
+				{
+					NewR = RandRow + RowOffset[i];
+					NewC = Col + ColOffset[RandRow % 2][i];
+
+					if (!MapData.IsValidIndex(NewR) || !MapData[NewR].IsValidIndex(NewC)) continue;
+					if (MapData[NewR][NewC] == ETileType::Island)
+					{
+						NearCheck = true;
+						break;
+					}
+				}
+			} while (NearCheck && maxIter--);
+
+			if (maxIter == 0) {
+				//UE_LOG(LogTemp, Error, TEXT("Wrong Map Generation"));
+				//return;
+				continue;
 			}
 
 			ETileType& CurTile = MapData[RandRow][Col];
@@ -416,7 +488,7 @@ void UMapManager::GenerateMap(int32 NumCol)
 		}
 		PlayerIslandCount++;
 	}
-	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, 24);
+	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, 20, false);
 
 	SetTilePowers();
 	SetIslandResources();
@@ -555,8 +627,6 @@ bool UMapManager::MakePathToTile(AShip* Ship, ABaseTile* EndTile, bool bIsForBat
 					Ng = Cells[CurRow][CurCol].g + 1;
 					Nh = GetDistanceOfTwoTile(Map[NewRow][NewCol], EndTile);
 					Nf = Ng + Nh;
-
-					UE_LOG(LogTemp, Warning, TEXT("%d"), Nf);
 
 					if (Cells[NewRow][NewCol].f > Nf)
 					{

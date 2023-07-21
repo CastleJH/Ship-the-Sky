@@ -29,6 +29,7 @@ void UBTService_UnitCreationTarget::TickNode(UBehaviorTreeComponent& OwnerComp, 
 	ABarracks* TargetBarracks = nullptr;
 	int32 MinWaiting = 999;
 	bool bBarracksExist = false;
+
 	for (auto GuardianTile : Commander->OwningIslands)
 	{
 		bBarracksExist = false;

@@ -5,19 +5,33 @@
 #include "MapManager.h"
 #include "Pawn/Commander.h"
 
-void ASTSGameState::ResetIslandOwner(int32 NewIslandNum, int32 PlayerOwnAmount)
+void ASTSGameState::ResetIslandOwner(int32 NewIslandNum, int32 PlayerOwnAmount, bool bPlayerToo)
 {
 	IslandOwner.Init(nullptr, NewIslandNum);
 	int32 Idx = Commanders.Num();
-	for (auto Commander : Commanders)
+	if (bPlayerToo)
 	{
-		for (int32 Cnt = 0; Cnt < PlayerOwnAmount; Cnt++)
+		for (auto Commander : Commanders)
 		{
-			SetIslandOwner(Idx, Commander);
-			Idx++;
+			for (int32 Cnt = 0; Cnt < PlayerOwnAmount; Cnt++)
+			{
+				SetIslandOwner(Idx, Commander);
+				Idx++;
+			}
 		}
 	}
-
+	else
+	{
+		for (auto Commander : Commanders)
+		{
+			if (Commander->CommanderID == 0) continue;
+			for (int32 Cnt = 0; Cnt < PlayerOwnAmount; Cnt++)
+			{
+				SetIslandOwner(Idx, Commander);
+				Idx++;
+			}
+		}
+	}
 }
 
 ACommander* ASTSGameState::GetIslandOwner(int32 IslandID) const

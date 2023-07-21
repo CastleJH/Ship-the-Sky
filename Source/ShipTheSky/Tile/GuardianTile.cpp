@@ -80,11 +80,9 @@ void AGuardianTile::TimePass(int32 GameDate)
 
 void AGuardianTile::OptimizeUnitPlacement()
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *GetName());
 	ACommander* Commander = GetWorld()->GetGameState<ASTSGameState>()->GetIslandOwner(IslandID);
 	if (!Commander)
 	{
-		UE_LOG(LogTemp, Error, TEXT("????????????????"));
 		return;
 	}
 	if (bIsAttackedRecently)
@@ -120,24 +118,29 @@ void AGuardianTile::OptimizeUnitPlacement()
 	else
 	{
 		TArray<AResourceTile*> TilesToMatch;
+		TArray<ABaseUnit*> Hurts;
 		TArray<ABaseUnit*> Miners;
 		TArray<ABaseUnit*> Woodcutters;
 		TArray<ABaseUnit*> Farmers;
 		for (auto Unit : UnitsOnThisIsland)
 		{
-			switch (Unit->GetUnitType())
+			if (Unit->BattleComponent->GetCurHP() != Unit->BattleComponent->GetMaxHP()) Hurts.Add(Unit);
+			else
 			{
-			case EUnitType::Miner:
-				Miners.Add(Unit);
-				break;
-			case EUnitType::Woodcutter:
-				Woodcutters.Add(Unit);
-				break;
-			case EUnitType::Farmer:
-				Farmers.Add(Unit);
-				break;
-			default:
-				break;
+				switch (Unit->GetUnitType())
+				{
+				case EUnitType::Miner:
+					Miners.Add(Unit);
+					break;
+				case EUnitType::Woodcutter:
+					Woodcutters.Add(Unit);
+					break;
+				case EUnitType::Farmer:
+					Farmers.Add(Unit);
+					break;
+				default:
+					break;
+				}
 			}
 		}
 		Miners.Sort([](const ABaseUnit& A, const ABaseUnit& B) {
@@ -151,31 +154,39 @@ void AGuardianTile::OptimizeUnitPlacement()
 			});
 		for (auto Tile : GetAdjResourceTiles())
 		{
-			switch (Tile->GetIslandType())
+			if (!Hurts.IsEmpty())
 			{
-			case EIslandTileType::Mine:
-				if (!Miners.IsEmpty())
+				Commander->TryRelocateUnitOnTile(Hurts.Last(), Tile);
+				Hurts.Pop();
+			}
+			else
+			{
+				switch (Tile->GetIslandType())
 				{
-					Commander->TryRelocateUnitOnTile(Miners.Last(), Tile);
-					Miners.Pop();
+				case EIslandTileType::Mine:
+					if (!Miners.IsEmpty())
+					{
+						Commander->TryRelocateUnitOnTile(Miners.Last(), Tile);
+						Miners.Pop();
+					}
+					break;
+				case EIslandTileType::Forest:
+					if (!Woodcutters.IsEmpty())
+					{
+						Commander->TryRelocateUnitOnTile(Woodcutters.Last(), Tile);
+						Woodcutters.Pop();
+					}
+					break;
+				case EIslandTileType::Farm:
+					if (!Farmers.IsEmpty())
+					{
+						Commander->TryRelocateUnitOnTile(Farmers.Last(), Tile);
+						Farmers.Pop();
+					}
+					break;
+				default:
+					break;
 				}
-				break;
-			case EIslandTileType::Forest:
-				if (!Woodcutters.IsEmpty())
-				{
-					Commander->TryRelocateUnitOnTile(Woodcutters.Last(), Tile);
-					Woodcutters.Pop();
-				}
-				break;
-			case EIslandTileType::Farm:
-				if (!Farmers.IsEmpty())
-				{
-					Commander->TryRelocateUnitOnTile(Farmers.Last(), Tile);
-					Farmers.Pop();
-				}
-				break;
-			default:
-				break;
 			}
 		}
 	}

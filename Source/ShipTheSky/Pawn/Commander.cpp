@@ -185,9 +185,17 @@ void ACommander::TryRelocateUnitOnTile(ABaseUnit* Unit, AIslandTile* Tile)
 
 void ACommander::FillIslandWithUnit(int32 IslandID, ABaseUnit* Unit)
 {
+	if (!Unit) return;
 	AResourceTile* EmptyIslandTile = nullptr;
 	TArray<AIslandTile*> IslandTiles;
 	GetGameInstance()->GetSubsystem<UMapManager>()->GetSameIslandTiles(IslandID, IslandTiles);
+
+	if (Unit->GetUnitType() == EUnitType::Warrior)
+	{
+		Unit->LocateOnIslandTile(IslandTiles[0], true);
+		return;
+	}
+
 	for (auto Tile : IslandTiles)
 	{
 		if (Tile->GetIslandType() != EIslandTileType::Guardian)

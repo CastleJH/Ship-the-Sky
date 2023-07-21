@@ -36,6 +36,13 @@ void UBTService_UnitCreationTarget::TickNode(UBehaviorTreeComponent& OwnerComp, 
 		MinWaiting = 999;
 		TArray<AResourceTile*> ResourceTiles = GuardianTile->GetAdjResourceTiles();
 		int32 EmptyTiles[4] = { 0 };
+		EmptyTiles[(uint8)EUnitType::Warrior] = ResourceTiles.Num();
+
+		for (auto Unit : GuardianTile->UnitsOnThisIsland)
+		{
+			EmptyTiles[(uint8)Unit->GetUnitType()]--;
+		}
+
 		for (auto Tile : ResourceTiles)
 		{
 			if (Tile->GetBuilding() && Tile->GetBuilding()->GetBuildingType() == EBuildingType::Barracks)
@@ -74,6 +81,12 @@ void UBTService_UnitCreationTarget::TickNode(UBehaviorTreeComponent& OwnerComp, 
 		else if (EmptyTiles[(uint8)EUnitType::Woodcutter] > 0)
 		{
 			OwnerComp.GetBlackboardComponent()->SetValueAsEnum(TEXT("UnitTypeToCreate"), (uint8)EUnitType::Woodcutter);
+			OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("BarracksToCreateUnit"), TargetBarracks);
+			return;
+		}
+		else if (EmptyTiles[(uint8)EUnitType::Warrior] > 0)
+		{
+			OwnerComp.GetBlackboardComponent()->SetValueAsEnum(TEXT("UnitTypeToCreate"), (uint8)EUnitType::Warrior);
 			OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("BarracksToCreateUnit"), TargetBarracks);
 			return;
 		}

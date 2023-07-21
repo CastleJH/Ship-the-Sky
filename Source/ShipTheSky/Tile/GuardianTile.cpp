@@ -73,9 +73,12 @@ void AGuardianTile::TimePass(int32 GameDate)
 		else RecoveryCount++;
 	}
 
-	ASTSGameState* GameState = GetWorld()->GetGameState<ASTSGameState>();
-	ACommander* IslandOwner = GameState->GetIslandOwner(IslandID);
-	if (IslandOwner) GameState->CommanderScores[IslandOwner->CommanderID] += Guardian->GetScorePower();
+	if (GameDate % 30 == 1)
+	{
+		ASTSGameState* GameState = GetWorld()->GetGameState<ASTSGameState>();
+		ACommander* IslandOwner = GameState->GetIslandOwner(IslandID);
+		if (IslandOwner) GameState->CommanderScores[IslandOwner->CommanderID] += Guardian->GetScorePower();
+	}
 }
 
 void AGuardianTile::OptimizeUnitPlacement()

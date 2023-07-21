@@ -71,6 +71,10 @@ void UBTService_ConstructionTarget::TickNode(UBehaviorTreeComponent& OwnerComp, 
 				MaxTileEmpty = CurTileEmpty;
 				TargetTile = CurTargetTile;
 			}
+			else if (CurTileTypeCnt == MaxTileTypeCnt && MaxTileEmpty == CurTileEmpty)
+			{
+				if (TargetTile && TargetTile->GetIslandID() > CurTargetTile->GetIslandID()) TargetTile = CurTargetTile;
+			}
 		}
 	}
 

@@ -139,6 +139,7 @@ bool ABaseUnit::UpgradeHP()
 	OwnerCommander->SetResource(OwnerCommander->GetResource(EResourceType::StoneCloud) - GetHPUpgradeCost(), EResourceType::StoneCloud);
 	HPLevel++;
 	BattleComponent->SetMaxHP(BattleComponent->GetMaxHP() + 10, false);
+	BattleComponent->RecoverHP(10);
 	return true;
 }
 
@@ -188,6 +189,7 @@ bool ABaseUnit::UpgradeAll()
 	AllUpLevel++;
 	BattleComponent->SetDamage(BattleComponent->GetDamage() + 0.5f);
 	BattleComponent->SetMaxHP(BattleComponent->GetMaxHP() + 5, false);
+	BattleComponent->RecoverHP(5);
 	Efficiency += 0.5f;
 	FoodConsume *= 0.975f;
 	return true;

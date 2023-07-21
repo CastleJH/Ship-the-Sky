@@ -27,8 +27,6 @@ public:
 private:
 	UPROPERTY()
 	TArray<class AShip*> EnemyShips;
-	int32 RecoveryCount;
-	int32 RepeatRecover;
 	UPROPERTY()
 	TArray<class ABaseTile*> AdjTiles;
 	UPROPERTY()
@@ -44,7 +42,12 @@ public:
 
 	//유저 편의
 	UFUNCTION(BlueprintCallable)
-	void OptimizeUnitPlacement();
+	void OptimizeUnitPlacementForResource();
+	UFUNCTION(BlueprintCallable)
+	void OptimizeUnitPlacementForDefense();
+	UFUNCTION(BlueprintCallable)
+	void OptimizeUnitPlacementForRecovery();
+	void OptimizeUnitPlacementForBest();
 
 	//수호자 & 전투 관련
 	void SpawnGuardian(int32 Index);
@@ -55,6 +58,8 @@ public:
 	class ACommander* GetNewOwner();
 	void RecoverFriendly();
 	bool bIsAttackedRecently;
+	int32 RecoveryCount;
+	int32 RepeatRecover;
 
 	//인접 타일 정보
 	void SetAdjTiles(TArray<class ABaseTile*>& InTile);

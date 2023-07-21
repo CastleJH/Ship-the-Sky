@@ -19,10 +19,14 @@ EBTNodeResult::Type UBTTask_OptimizeUnitPlacement::ExecuteTask(UBehaviorTreeComp
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	UE_LOG(LogTemp, Warning, TEXT("try.."));
 	ACommander* Commander = Cast<ACommander>(OwnerComp.GetAIOwner()->GetPawn());
 	if (!Commander) return EBTNodeResult::Failed;
 
+	for (auto GuardianTile : Commander->OwningIslands)
+	{
+		GuardianTile->OptimizeUnitPlacementForBest();
+	}
+	/*
 	AGuardianTile* GuardianTileToOptimizePlacement = Cast<AGuardianTile>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(TEXT("GuardianTileToOptimizePlacement")));
 	if (!GuardianTileToOptimizePlacement)
 	{
@@ -31,7 +35,8 @@ EBTNodeResult::Type UBTTask_OptimizeUnitPlacement::ExecuteTask(UBehaviorTreeComp
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("passed.."));
-	GuardianTileToOptimizePlacement->OptimizeUnitPlacement();
-
+	if (GuardianTileToOptimizePlacement->bIsAttackedRecently) GuardianTileToOptimizePlacement->OptimizeUnitPlacementForDefense();
+	else GuardianTileToOptimizePlacement->OptimizeUnitPlacementForRecovery();
+	*/
 	return EBTNodeResult::Succeeded;
 }

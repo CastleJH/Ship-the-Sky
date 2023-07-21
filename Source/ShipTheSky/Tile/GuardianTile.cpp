@@ -81,46 +81,146 @@ void AGuardianTile::TimePass(int32 GameDate)
 	}
 }
 
-void AGuardianTile::OptimizeUnitPlacement()
+void AGuardianTile::OptimizeUnitPlacementForResource()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Resource"));
+	ACommander* Commander = GetWorld()->GetGameState<ASTSGameState>()->GetIslandOwner(IslandID);
+	if (!Commander)
+	{
+		return;
+	}
+	TArray<ABaseUnit*> Miners;
+	TArray<ABaseUnit*> Woodcutters;
+	TArray<ABaseUnit*> Farmers;
+	for (auto Unit : UnitsOnThisIsland)
+	{
+		switch (Unit->GetUnitType())
+		{
+		case EUnitType::Miner:
+			Miners.Add(Unit);
+			break;
+		case EUnitType::Woodcutter:
+			Woodcutters.Add(Unit);
+			break;
+		case EUnitType::Farmer:
+			Farmers.Add(Unit);
+			break;
+		default:
+			break;
+		}
+	}
+	Miners.Sort([](const ABaseUnit& A, const ABaseUnit& B) {
+		return A.GetEfficiency() < B.GetEfficiency();
+		});
+	Woodcutters.Sort([](const ABaseUnit& A, const ABaseUnit& B) {
+		return A.GetEfficiency() < B.GetEfficiency();
+		});
+	Farmers.Sort([](const ABaseUnit& A, const ABaseUnit& B) {
+		return A.GetEfficiency() < B.GetEfficiency();
+		});
+	for (auto Tile : GetAdjResourceTiles())
+	{
+		switch (Tile->GetIslandType())
+		{
+		case EIslandTileType::Mine:
+			if (!Miners.IsEmpty())
+			{
+				Commander->TryRelocateUnitOnTile(Miners.Last(), Tile);
+				Miners.Pop();
+			}
+			break;
+		case EIslandTileType::Forest:
+			if (!Woodcutters.IsEmpty())
+			{
+				Commander->TryRelocateUnitOnTile(Woodcutters.Last(), Tile);
+				Woodcutters.Pop();
+			}
+			break;
+		case EIslandTileType::Farm:
+			if (!Farmers.IsEmpty())
+			{
+				Commander->TryRelocateUnitOnTile(Farmers.Last(), Tile);
+				Farmers.Pop();
+			}
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+void AGuardianTile::OptimizeUnitPlacementForDefense()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Defense"));
+	ACommander* Commander = GetWorld()->GetGameState<ASTSGameState>()->GetIslandOwner(IslandID);
+	if (!Commander)
+	{
+		return;
+	}
+	TArray<ABaseUnit*> Warriors;
+	TArray<ABaseUnit*> NotWarriors;
+	for (auto Unit : UnitsOnThisIsland)
+	{
+		if (Unit->GetUnitType() == EUnitType::Warrior) Warriors.Add(Unit);
+		else NotWarriors.Add(Unit);
+		Warriors.Sort([](const ABaseUnit& A, const ABaseUnit& B) {
+			return A.BattleComponent->GetCurHP() < B.BattleComponent->GetCurHP();
+			});
+		NotWarriors.Sort([](const ABaseUnit& A, const ABaseUnit& B) {
+			return A.BattleComponent->GetCurHP() < B.BattleComponent->GetCurHP();
+			});
+	}
+	for (auto Tile : GetAdjResourceTiles())
+	{
+		if (!Warriors.IsEmpty())
+		{
+			Commander->TryRelocateUnitOnTile(Warriors.Last(), Tile);
+			Warriors.Pop();
+		}
+		else if (!NotWarriors.IsEmpty())
+		{
+			Commander->TryRelocateUnitOnTile(NotWarriors.Last(), Tile);
+			NotWarriors.Pop();
+		}
+		else break;
+	}
+}
+
+void AGuardianTile::OptimizeUnitPlacementForRecovery()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Recovery"));
+	ACommander* Commander = GetWorld()->GetGameState<ASTSGameState>()->GetIslandOwner(IslandID);
+	if (!Commander)
+	{
+		return;
+	}
+	
+	TArray<ABaseUnit*> Hurts;
+	for (auto Unit : UnitsOnThisIsland)
+	{
+		if (Unit->BattleComponent->GetCurHP() != Unit->BattleComponent->GetMaxHP()) Hurts.Add(Unit);
+	}
+	for (auto Tile : GetAdjResourceTiles())
+	{
+		if (!Hurts.IsEmpty())
+		{
+			Commander->TryRelocateUnitOnTile(Hurts.Last(), Tile);
+			Hurts.Pop();
+		}
+	}
+}
+
+void AGuardianTile::OptimizeUnitPlacementForBest()
 {
 	ACommander* Commander = GetWorld()->GetGameState<ASTSGameState>()->GetIslandOwner(IslandID);
 	if (!Commander)
 	{
 		return;
 	}
-	if (bIsAttackedRecently)
-	{
-		TArray<ABaseUnit*> Warriors;
-		TArray<ABaseUnit*> NotWarriors;
-		for (auto Unit : UnitsOnThisIsland)
-		{
-			if (Unit->GetUnitType() == EUnitType::Warrior) Warriors.Add(Unit);
-			else NotWarriors.Add(Unit);
-			Warriors.Sort([](const ABaseUnit& A, const ABaseUnit& B) {
-				return A.BattleComponent->GetCurHP() < B.BattleComponent->GetCurHP();
-				});
-			NotWarriors.Sort([](const ABaseUnit& A, const ABaseUnit& B) {
-				return A.BattleComponent->GetCurHP() < B.BattleComponent->GetCurHP();
-				});
-		}
-		for (auto Tile : GetAdjResourceTiles())
-		{
-			if (!Warriors.IsEmpty())
-			{
-				Commander->TryRelocateUnitOnTile(Warriors.Last(), Tile);
-				Warriors.Pop();
-			}
-			else if (!NotWarriors.IsEmpty())
-			{
-				Commander->TryRelocateUnitOnTile(NotWarriors.Last(), Tile);
-				NotWarriors.Pop();
-			}
-			else break;
-		}
-	}
+	if (bIsAttackedRecently) OptimizeUnitPlacementForDefense();
 	else
 	{
-		TArray<AResourceTile*> TilesToMatch;
+
 		TArray<ABaseUnit*> Hurts;
 		TArray<ABaseUnit*> Miners;
 		TArray<ABaseUnit*> Woodcutters;
@@ -146,6 +246,7 @@ void AGuardianTile::OptimizeUnitPlacement()
 				}
 			}
 		}
+
 		Miners.Sort([](const ABaseUnit& A, const ABaseUnit& B) {
 			return A.GetEfficiency() < B.GetEfficiency();
 			});
@@ -193,17 +294,6 @@ void AGuardianTile::OptimizeUnitPlacement()
 			}
 		}
 	}
-
-	/******************Áö¿ö!!******************/
-	int32 tmpcnt = 0;
-	for (auto Tile : AdjResourceTiles)
-	{
-		if (Tile->GetUnit())
-		{
-			tmpcnt++;
-		}
-	}
-	if (tmpcnt < UnitsOnThisIsland.Num()) UE_LOG(LogTemp, Error, TEXT("%s"), *GetName());
 }
 
 void AGuardianTile::SpawnGuardian(int32 Index)

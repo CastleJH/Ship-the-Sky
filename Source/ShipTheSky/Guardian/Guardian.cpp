@@ -53,6 +53,7 @@ bool AGuardian::UpgradeHPWithCloud()
 	Tile->GetIslandOwner()->SetResource(Tile->GetIslandOwner()->GetResource(EResourceType::StoneCloud) - GetHPUpgradeCostWithCloud(), EResourceType::StoneCloud);
 	HPCloudLevel++;
 	BattleComponent->SetMaxHP(BattleComponent->GetMaxHP() + HPUpgradeDelta, false);
+	BattleComponent->RecoverHP(HPUpgradeDelta);
 	return true;
 }
 
@@ -63,6 +64,7 @@ bool AGuardian::UpgradeHPWithSun()
 	Tile->GetIslandOwner()->SetResource(Tile->GetIslandOwner()->GetResource(EResourceType::StoneSun) - GetHPUpgradeCostWithSun(), EResourceType::StoneSun);
 	HPSunLevel++;
 	BattleComponent->SetMaxHP(BattleComponent->GetMaxHP() + HPUpgradeDelta, false);
+	BattleComponent->RecoverHP(HPUpgradeDelta);
 	return true;
 }
 

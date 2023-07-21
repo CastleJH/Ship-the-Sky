@@ -416,7 +416,7 @@ void UMapManager::GenerateMap(int32 NumCol)
 		}
 		PlayerIslandCount++;
 	}
-	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, 12);
+	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, 24);
 
 	SetTilePowers();
 	SetIslandResources();

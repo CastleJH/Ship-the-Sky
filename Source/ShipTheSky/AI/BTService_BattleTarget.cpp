@@ -74,7 +74,6 @@ void UBTService_BattleTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 						}
 					}
 				}
-				if (++Count == 10) break;
 			}
 		}
 		Ship->EmptyCandidateBattleUnit();

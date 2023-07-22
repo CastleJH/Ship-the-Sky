@@ -19,5 +19,24 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TArray<TSubclassOf<class ACommander>> EnemyPlayerClasses;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AIslandTile> MineTileClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AIslandTile> ForestTileClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AIslandTile> FarmTileClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AIslandTile> GuardianTileClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class ABaseTile> CloudTileClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class ABaseTile> StormTileClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class ABaseTile> SunTileClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class ABaseTile> LightningTileClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class ABaseTile> MeteorTileClass;
 	
 };

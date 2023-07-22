@@ -39,6 +39,16 @@ void ASTSGameMode::StartPlay()
 	}
 	STSGameState->CommanderScores.Init(0, STSGameState->Commanders.Num());
 
+	GetGameInstance()->GetSubsystem<UMapManager>()->MineTileClass = MineTileClass;
+	GetGameInstance()->GetSubsystem<UMapManager>()->ForestTileClass = ForestTileClass;
+	GetGameInstance()->GetSubsystem<UMapManager>()->FarmTileClass = FarmTileClass;
+	GetGameInstance()->GetSubsystem<UMapManager>()->GuardianTileClass = GuardianTileClass;
+	GetGameInstance()->GetSubsystem<UMapManager>()->CloudTileClass = CloudTileClass;
+	GetGameInstance()->GetSubsystem<UMapManager>()->StormTileClass = StormTileClass;
+	GetGameInstance()->GetSubsystem<UMapManager>()->SunTileClass = SunTileClass;
+	GetGameInstance()->GetSubsystem<UMapManager>()->LightningTileClass = LightningTileClass;
+	GetGameInstance()->GetSubsystem<UMapManager>()->MeteorTileClass = MeteorTileClass;
+	
 	GetGameInstance()->GetSubsystem<UMapManager>()->GenerateMap(60);
 
 	if (GameState == nullptr)

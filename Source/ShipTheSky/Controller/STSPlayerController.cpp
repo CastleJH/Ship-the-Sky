@@ -276,7 +276,7 @@ void ASTSPlayerController::MouseReleasedForPortal(const FInputActionValue& Value
 	if (Tile && Commander->GetTargetResoureTile() && Commander->GetTargetResoureTile()->GetBuilding() && Commander->GetTargetResoureTile()->GetBuilding()->GetBuildingType() == EBuildingType::Portal)
 	{
 		AResourceTile* ResourceTile = Cast<AResourceTile>(Tile);
-		if (ResourceTile->GetBuilding() && ResourceTile->GetBuilding()->GetBuildingType() == EBuildingType::Portal)
+		if (ResourceTile && ResourceTile->GetBuilding() && ResourceTile->GetBuilding()->GetBuildingType() == EBuildingType::Portal)
 		{
 			if (Cast<APortal>(Commander->GetTargetResoureTile()->GetBuilding())->SendShipToTile(Tile))
 			{

@@ -77,6 +77,22 @@ private:
 	void SelectAllIslandTiles();
 
 private:
+
+	//모든 타일
+	TArray<TArray<class ABaseTile*>> Map;
+	//섬 타일
+	TArray<TArray<class AIslandTile*>> IslandTiles;
+
+	int32 RowOffset[18] = { -1, -1, 0, 0, 1, 1, -2, -2, -2, -1, -1, 0, 0, 1, 1, 2, 2, 2 };
+	int32 ColOffset[2][18] = { {0, 1, -1, 1, 0, 1, -1, 0, 1, -1, 2, -2, 2, -1, 2, -1, 0, 1},
+					{-1, 0, -1, 1, -1, 0, -1, 0, 1, -2, 1, -2, 2, -2, 1, -1, 0, 1} };
+
+public:
+	//거리순 정렬
+	TArray<TArray<TPair<int32, class AGuardianTile*>>> NearestIslands;
+	UPROPERTY()
+	TArray<class UWidgetComponent*> ResourceWidgetComps;
+
 	UPROPERTY()
 	TSubclassOf<class AIslandTile> MineTileClass;
 	UPROPERTY()
@@ -95,20 +111,4 @@ private:
 	TSubclassOf<class ABaseTile> LightningTileClass;
 	UPROPERTY()
 	TSubclassOf<class ABaseTile> MeteorTileClass;
-
-	//모든 타일
-	TArray<TArray<class ABaseTile*>> Map;
-	//섬 타일
-	TArray<TArray<class AIslandTile*>> IslandTiles;
-
-	int32 RowOffset[18] = { -1, -1, 0, 0, 1, 1, -2, -2, -2, -1, -1, 0, 0, 1, 1, 2, 2, 2 };
-	int32 ColOffset[2][18] = { {0, 1, -1, 1, 0, 1, -1, 0, 1, -1, 2, -2, 2, -1, 2, -1, 0, 1},
-					{-1, 0, -1, 1, -1, 0, -1, 0, 1, -2, 1, -2, 2, -2, 1, -1, 0, 1} };
-
-
-public:
-	//거리순 정렬
-	TArray<TArray<TPair<int32, class AGuardianTile*>>> NearestIslands;
-	UPROPERTY()
-	TArray<class UWidgetComponent*> ResourceWidgetComps;
 };

@@ -16,15 +16,6 @@
 
 UMapManager::UMapManager()
 {
-	MineTileClass = LoadClass<AIslandTile>(nullptr, TEXT("/Game/Tile/Island/BP_MineTile.BP_MineTile_C"));
-	ForestTileClass = LoadClass<AIslandTile>(nullptr, TEXT("/Game/Tile/Island/BP_ForestTile.BP_ForestTile_C"));
-	FarmTileClass = LoadClass<AIslandTile>(nullptr, TEXT("/Game/Tile/Island/BP_FarmTile.BP_FarmTile_C"));
-	GuardianTileClass = LoadClass<AIslandTile>(nullptr, TEXT("/Game/Tile/Island/BP_GuardianTile.BP_GuardianTile_C"));
-	CloudTileClass = LoadClass<ABaseTile>(nullptr, TEXT("/Game/Tile/Sky/BP_CloudTile.BP_CloudTile_C"));
-	StormTileClass = LoadClass<ABaseTile>(nullptr, TEXT("/Game/Tile/Sky/BP_StormTile.BP_StormTile_C"));
-	SunTileClass = LoadClass<ABaseTile>(nullptr, TEXT("/Game/Tile/Sky/BP_SunTile.BP_SunTile_C"));
-	LightningTileClass = LoadClass<ABaseTile>(nullptr, TEXT("/Game/Tile/Sky/BP_LightningTile.BP_LightningTile_C"));
-	MeteorTileClass = LoadClass<ABaseTile>(nullptr, TEXT("/Game/Tile/Sky/BP_MeteorTile.BP_MeteorTile_C"));
 }
 
 void UMapManager::GenerateMap(int32 NumCol)

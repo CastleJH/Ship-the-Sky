@@ -297,11 +297,11 @@ void AGuardianTile::OptimizeUnitPlacementForBest()
 			}
 		}
 
-		for (auto Unit : Hurts) Commander->TryRelocateUnitOnTile(Unit, this);
+		/*for (auto Unit : Hurts) Commander->TryRelocateUnitOnTile(Unit, this);
 		for (auto Unit : Miners) Commander->TryRelocateUnitOnTile(Unit, this);
 		for (auto Unit : Woodcutters) Commander->TryRelocateUnitOnTile(Unit, this);
 		for (auto Unit : Farmers) Commander->TryRelocateUnitOnTile(Unit, this);
-		for (auto Unit : Warriors) Commander->TryRelocateUnitOnTile(Unit, this);
+		for (auto Unit : Warriors) Commander->TryRelocateUnitOnTile(Unit, this);*/
 	}
 }
 

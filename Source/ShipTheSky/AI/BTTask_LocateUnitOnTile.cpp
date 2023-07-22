@@ -8,6 +8,8 @@
 #include "Enums.h"
 #include "Tile/IslandTile.h"
 #include "Unit/BaseUnit.h"
+#include "Tile/ResourceTile.h"
+#include "Ship.h"
 
 UBTTask_LocateUnitOnTile::UBTTask_LocateUnitOnTile()
 {
@@ -23,7 +25,35 @@ EBTNodeResult::Type UBTTask_LocateUnitOnTile::ExecuteTask(UBehaviorTreeComponent
 	AIslandTile* Tile = Cast<AIslandTile>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(TEXT("IslandTileToLocateUnit")));
 	ABaseUnit* Unit = Cast<ABaseUnit>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(TEXT("UnitToLocate")));
 
-	Commander->TryRelocateUnitOnTile(Unit, Tile);
+	if (!Tile || !Unit)
+	{
+		return EBTNodeResult::Failed;
+	}
+
+	OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("IslandTileToLocateUnit"), nullptr);
+	OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("UnitToLocate"), nullptr);
+
+	if (Unit->GetCurIslandTile() && !Unit->GetCurShip())
+	{
+		Commander->TryRelocateUnitOnTile(Unit, Tile);
+		return EBTNodeResult::Succeeded;
+	}
+	else
+	{
+		if (Unit->GetCurIslandTile() && Unit->GetCurShip())
+		{
+			UE_LOG(LogTemp, Error, TEXT("Both on Island and Ship. %s"), *Unit->GetName());
+		}
+		else if (!Unit->GetCurIslandTile() && Unit->GetCurShip())
+		{
+			UE_LOG(LogTemp, Error, TEXT("Just on Ship. It's acceptable. %s"), *Unit->GetName());
+		}
+		else if (!Unit->GetCurIslandTile() && !Unit->GetCurShip())
+		{
+			UE_LOG(LogTemp, Error, TEXT("There must be no this case. %s"), *Unit->GetName());
+		}
+		return EBTNodeResult::Failed;
+	}
 
 	return EBTNodeResult::Type();
 }

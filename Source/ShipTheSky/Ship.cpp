@@ -68,7 +68,7 @@ void AShip::Tick(float DeltaSeconds)
 	if (bIsAttackedRecently)
 	{
 		LastAttackedSecond += DeltaSeconds;
-		if (LastAttackedSecond >= 5.0f)
+		if (LastAttackedSecond >= 6.0f)
 		{
 			bIsAttackedRecently = false;
 			ShipStatus = EShipStatus::None;

@@ -58,11 +58,14 @@ void AGuardianTile::TimePass(int32 GameDate)
 
 	if (CheckEnemyShipAdjacent())
 	{
-		RecoveryCount = 0;
-		RepeatRecover = 0;
-		AttackShips();
-		GetAttackedByShips();
-		bIsAttackedRecently = true;
+		if (GameDate % 3 == 0)
+		{
+			RecoveryCount = 0;
+			RepeatRecover = 0;
+			AttackShips();
+			GetAttackedByShips();
+			bIsAttackedRecently = true;
+		}
 	}
 	else
 	{

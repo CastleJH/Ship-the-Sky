@@ -151,6 +151,22 @@ void ASTSPlayerController::OnButtonRemoveUnit()
 	}
 }
 
+void ASTSPlayerController::OnButtonLookIslandUnderAttack(int32 Index)
+{
+	if (IslandsUnderAttack.IsValidIndex(Index))
+	{
+		PlayerCommander->MoveCommanderToTile(IslandsUnderAttack[Index], false);
+	}
+}
+
+void ASTSPlayerController::OnButtonLookShipUnderAttacking(int32 Index)
+{
+	if (ShipsAttacking.IsValidIndex(Index) && ShipsAttacking[Index]->GetCurTile())
+	{
+		PlayerCommander->MoveCommanderToTile(ShipsAttacking[Index]->GetCurTile(), false);
+	}
+}
+
 void ASTSPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -328,5 +344,22 @@ void ASTSPlayerController::Tick(float DeltaSeconds)
 	if (Commander->GetTargetShip())
 	{
 		Commander->GetTargetShip()->UpdatePathUI();
+	}
+
+	IslandsUnderAttack.Empty();
+	for (int32 Index = Commander->OwningIslands.Num() - 1; Index >= 0; Index--)
+	{
+		if (!Commander->OwningIslands.IsValidIndex(Index)) continue;
+		AGuardianTile* GuardianTile = Commander->OwningIslands[Index];
+		if (!GuardianTile) continue;
+		if (GuardianTile->bIsAttackedRecently) IslandsUnderAttack.Add(GuardianTile);
+	}
+	ShipsAttacking.Empty();
+	for (int32 Index = Commander->Ships.Num() - 1; Index >= 0; Index--)
+	{
+		if (!Commander->Ships.IsValidIndex(Index)) continue;
+		AShip* Ship = Commander->Ships[Index];
+		if (!Ship) continue;
+		if (Ship->bIsAttackedRecently) ShipsAttacking.Add(Ship);
 	}
 }

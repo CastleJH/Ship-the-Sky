@@ -80,6 +80,11 @@ public:
 	//인풋 모드 확인
 	EUserInputMode GetUserInputMode() const { return UserInputMode; }
 
+	UPROPERTY(BlueprintReadOnly);
+	TArray<class AGuardianTile*> IslandsUnderAttack;
+	UPROPERTY(BlueprintReadOnly);
+	TArray<class AShip*> ShipsAttacking;
+
 	//UI 버튼 눌릴 때
 	UFUNCTION(BlueprintCallable)
 	bool OnButtonCreateUnitPressed(enum EUnitType Type);
@@ -109,6 +114,10 @@ public:
 	void OnButtonRemoveShip();
 	UFUNCTION(BlueprintCallable)
 	void OnButtonRemoveUnit();
+	UFUNCTION(BlueprintCallable)
+	void OnButtonLookIslandUnderAttack(int32 Index);
+	UFUNCTION(BlueprintCallable)
+	void OnButtonLookShipUnderAttacking(int32 Index);
 
 private:
 	//유저 입력

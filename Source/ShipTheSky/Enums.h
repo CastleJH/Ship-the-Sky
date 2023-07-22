@@ -103,10 +103,9 @@ enum class EShipStatus : uint8
 {
 	MoveForDurability = 0,
 	MoveForUpgrade,
-	MoveForEmbarkUnit,
 	MoveForBattle,
-	InBattle = 0,
-	Stuck = 0,
+	InBattle,
+	Stuck,
 	None
 };
 

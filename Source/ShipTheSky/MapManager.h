@@ -67,6 +67,9 @@ public:
 	//배가 없으면서, 적 섬타일이 아니면서, 적대적인 수호자의 인접타일이 아닌지 반환
 	bool GetIsTileAccessible(class ACommander* Commander, class ABaseTile* Tile);
 
+	//맵에서 자원 UI 끄고 키기
+	bool SetResoureUIVisibility(bool bIsVisible);
+
 private:
 	void SetTilePowers();
 	void SetIslandResources();
@@ -101,4 +104,11 @@ private:
 	int32 RowOffset[18] = { -1, -1, 0, 0, 1, 1, -2, -2, -2, -1, -1, 0, 0, 1, 1, 2, 2, 2 };
 	int32 ColOffset[2][18] = { {0, 1, -1, 1, 0, 1, -1, 0, 1, -1, 2, -2, 2, -1, 2, -1, 0, 1},
 					{-1, 0, -1, 1, -1, 0, -1, 0, 1, -2, 1, -2, 2, -2, 1, -1, 0, 1} };
+
+	UPROPERTY()
+	TArray<class UWidgetComponent*> ResourceWidgetComps;
+
+public:
+	//거리순 정렬
+	TArray<TArray<TPair<int32, class AGuardianTile*>>> NearestIslands;
 };

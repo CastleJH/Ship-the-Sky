@@ -32,6 +32,7 @@ ASTSPlayerController::ASTSPlayerController()
 	bIsUnitRelocationMode = false;
 
 	RemovingShipTarget = nullptr;
+	PrevArmLength = 60.0f;
 }
 
 bool ASTSPlayerController::OnButtonCreateUnitPressed(EUnitType Type)
@@ -186,6 +187,17 @@ void ASTSPlayerController::ZoomCamera(const FInputActionValue& Value)
 {
 	float Zoom = Value.Get<float>();
 	PlayerCommander->SpringArmComp->TargetArmLength += CameraZoomSpeed * Zoom;
+
+
+	if (PlayerCommander->SpringArmComp->TargetArmLength > 10000 && PrevArmLength <= 10000)
+	{
+		GetGameInstance()->GetSubsystem<UMapManager>()->SetResoureUIVisibility(false);
+	}
+	else if (PlayerCommander->SpringArmComp->TargetArmLength <= 10000 && PrevArmLength > 10000)
+	{
+		GetGameInstance()->GetSubsystem<UMapManager>()->SetResoureUIVisibility(true);
+	}
+	PrevArmLength = PlayerCommander->SpringArmComp->TargetArmLength;
 }
 
 void ASTSPlayerController::MousePressedForReloc(const FInputActionValue& Value)

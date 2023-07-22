@@ -60,10 +60,12 @@ public:
 	bool bIsAttackedRecently;
 	int32 RecoveryCount;
 	int32 RepeatRecover;
+	int32 GetBattlePower() const;
 
 	//인접 타일 정보
 	void SetAdjTiles(TArray<class ABaseTile*>& InTile);
 	void SetAdjResourceTiles(TArray<class AResourceTile*>& InTile);
+	TArray<class ABaseTile*>& GetAdjTiles() { return AdjTiles; }
 	TArray<class AResourceTile*>& GetAdjResourceTiles() { return AdjResourceTiles; }
 	UFUNCTION(BlueprintPure)
 	bool IsBuildingTypeBuilt(enum EBuildingType Type);

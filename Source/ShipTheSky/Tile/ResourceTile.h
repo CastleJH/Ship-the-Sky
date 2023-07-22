@@ -51,6 +51,8 @@ public:
 	void UpdateTileResourcesUI();
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnUpdateTileResourcesUI();
+	class UWidgetComponent* GetWidgetComponent() const { return ResourcesWidgetComp; }
+
 
 protected:
 	virtual void BeginPlay() override;

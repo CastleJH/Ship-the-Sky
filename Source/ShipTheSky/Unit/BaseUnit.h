@@ -102,6 +102,7 @@ public:
 	
 	//전투 관련
 	float GetAttacked(float Damage);
+	int32 GetBattlePower() const;
 
 	//소유자
 	UFUNCTION()

@@ -28,7 +28,7 @@ EBTNodeResult::Type UBTTask_MoveShipForUpgrade::ExecuteTask(UBehaviorTreeCompone
 	AShipyard* ShipyardToFill = Cast<AShipyard>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(TEXT("ShipyardToFill")));
 	OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("ShipyardToFill"), nullptr);
 
-	if (!ShipToMoveForUpgrade || !ShipyardToFill) return EBTNodeResult::Failed;
+	if (!ShipToMoveForUpgrade || !ShipyardToFill || ShipToMoveForUpgrade->GetShipStatus() != EShipStatus::None) return EBTNodeResult::Failed;
 
 	ShipToMoveForUpgrade->SetShipStatus(EShipStatus::MoveForUpgrade);
 

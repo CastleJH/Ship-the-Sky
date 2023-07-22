@@ -68,14 +68,13 @@ void AShip::Tick(float DeltaSeconds)
 	if (bIsAttackedRecently)
 	{
 		LastAttackedSecond += DeltaSeconds;
-		if (LastAttackedSecond >= 3.0f)
+		if (LastAttackedSecond >= 5.0f)
 		{
 			bIsAttackedRecently = false;
 			ShipStatus = EShipStatus::None;
 		}
 	}
 	else LastAttackedSecond = 0.0f;
-
 }
 
 bool AShip::TryLocateOnTile(ABaseTile* Tile, bool RightAfter)
@@ -213,7 +212,38 @@ void AShip::FollowPath()
 		}
 		else
 		{
-			ShipStatus = EShipStatus::None;
+			TArray<ABaseTile*> CheckBattleArr;
+			AGuardianTile* CheckBattleGuardian;
+			UMapManager* Manager = GetGameInstance()->GetSubsystem<UMapManager>();
+			switch (ShipStatus)
+			{
+			case EShipStatus::MoveForDurability:
+				DisembarkAllUnits();
+				ShipStatus = EShipStatus::None;
+				break;
+			case EShipStatus::MoveForBattle:
+				if (CurTile)
+				{
+					Manager->GetAdjacentTiles(CurTile, CheckBattleArr);
+					for (auto adj : CheckBattleArr)
+					{
+						if (adj->GetTileType() == ETileType::Island)
+						{
+							CheckBattleGuardian = Cast<AGuardianTile>(adj);
+							if (CheckBattleGuardian && CheckBattleGuardian->GetIslandOwner() != OwnerCommander)
+							{
+								ShipStatus = EShipStatus::InBattle;
+								break;
+							}
+						}
+					}
+				}
+				if (ShipStatus != EShipStatus::InBattle) ShipStatus = EShipStatus::None;
+				break;
+			default:
+				ShipStatus = EShipStatus::None;
+				break;
+			}
 		}
 	}
 }
@@ -337,6 +367,7 @@ void AShip::GetAttacked(float Damage)
 			}
 		}
 		bIsAttackedRecently = true;
+		LastAttackedSecond = 0.0f;
 		ShipStatus = EShipStatus::InBattle;
 	}
 }
@@ -527,4 +558,60 @@ TPair<EShipStat, int32> AShip::GetStatUpgradeRecommendation()
 	if (Recommendation.Key == EShipStat::None) Recommendation = TPair<EShipStat, int32>(EShipStat::None, 0);
 
 	return Recommendation;
+}
+
+bool AShip::AddCandidateBattleUnit(ABaseUnit* Unit)
+{
+	if (CandidateBattleUnits.Num() < UnitCapacity)
+	{
+		CandidateBattleUnits.Add(Unit);
+		return true;
+	}
+	return false;
+}
+
+void AShip::EmptyCandidateBattleUnit()
+{
+	CandidateBattleUnits.Empty();
+}
+
+bool AShip::CheckAlreadyCandidateBattleUnit(ABaseUnit* Unit)
+{
+	return CandidateBattleUnits.Contains(Unit);
+}
+
+bool AShip::EmbarkCandiateBattleUnits()
+{
+	if (CandidateBattleUnits.Num() == 0) return false;
+
+	DisembarkAllUnits();
+
+	for (int32 Idx = CandidateBattleUnits.Num() - 1; Idx >= 0; Idx--)
+	{
+		if (!CandidateBattleUnits.IsValidIndex(Idx) || !CandidateBattleUnits[Idx])
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Invalid Candidate Unit"));
+			return false;
+		}
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *CandidateBattleUnits[Idx]->GetName());
+		if (CandidateBattleUnits.IsValidIndex(Idx) && CandidateBattleUnits[Idx])
+		{
+			if (!CandidateBattleUnits[Idx]->Embark(this))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Embark Failed!!!!"));
+				return false;
+			}
+		}
+		else return false;
+	}
+	EmptyCandidateBattleUnit();
+	return true;
+}
+
+void AShip::DisembarkAllUnits()
+{
+	for (int32 Idx = Units.Num() - 1; Idx >= 0; Idx--)
+	{
+		if (Units.IsValidIndex(Idx) && Units[Idx]) Units[Idx]->Disembark();
+	}
 }

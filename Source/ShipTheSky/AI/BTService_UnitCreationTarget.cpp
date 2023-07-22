@@ -62,10 +62,7 @@ void UBTService_UnitCreationTarget::TickNode(UBehaviorTreeComponent& OwnerComp, 
 			EmptyTiles[(uint8)Tile->GetIslandType()]++;
 		}
 		if (!bBarracksExist) continue;
-		for (auto Unit : GuardianTile->UnitsOnThisIsland)
-		{
-			EmptyTiles[(uint8)Unit->GetUnitType()]--;
-		}
+		
 		if (EmptyTiles[(uint8)EUnitType::Farmer] > 0)
 		{
 			OwnerComp.GetBlackboardComponent()->SetValueAsEnum(TEXT("UnitTypeToCreate"), (uint8)EUnitType::Farmer);

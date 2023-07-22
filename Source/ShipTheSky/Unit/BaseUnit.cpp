@@ -47,6 +47,12 @@ void ABaseUnit::LocateOnIslandTile(AIslandTile* Tile, bool bIsImmediate)
 		return;
 	}
 
+	if (!CurIslandTile)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Wrong CurIslandTile: %s"), *GetName());
+		return;
+	}
+
 	if (Tile->GetIslandID() != CurIslandTile->GetIslandID())
 	{
 		UE_LOG(LogTemp, Error, TEXT("Different Island"));
@@ -94,7 +100,7 @@ void ABaseUnit::LocateOnIslandTile(AIslandTile* Tile, bool bIsImmediate)
 
 bool ABaseUnit::Embark(AShip* Ship)
 {
-	if (Ship != nullptr && CurIslandTile != nullptr && Ship->AddUnit(this))
+	if (!CurShip && Ship && CurIslandTile && Ship->AddUnit(this))
 	{
 		SetActorHiddenInGame(true);
 
@@ -109,9 +115,8 @@ bool ABaseUnit::Embark(AShip* Ship)
 		CurShip = Ship;
 		return true;
 	}
-	if (Ship == nullptr) UE_LOG(LogTemp, Warning, TEXT("Ship nullptr fail"));
-	if (CurIslandTile == nullptr) UE_LOG(LogTemp, Warning, TEXT("CurTile nullptr fail"));
-	if (!Ship->AddUnit(this)) UE_LOG(LogTemp, Warning, TEXT("Add Unit fail"));
+	if (CurShip) UE_LOG(LogTemp, Warning, TEXT("Already embarked"));
+	if (!Ship) UE_LOG(LogTemp, Warning, TEXT("nullptr ship"));
 	return false;
 }
 
@@ -241,6 +246,12 @@ float ABaseUnit::GetAttacked(float Damage)
 	return BattleComponent->TakeDamage(Damage);
 }
 
+int32 ABaseUnit::GetBattlePower() const
+{
+	if (UnitType == EUnitType::Warrior) return (BattleComponent->GetDamage() / 5 + BattleComponent->GetCurHP() / 10 + Efficiency / 5);
+	else return (BattleComponent->GetDamage() / 5 + BattleComponent->GetCurHP() / 10);
+}
+
 void ABaseUnit::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
@@ -248,7 +259,6 @@ void ABaseUnit::Tick(float DeltaSeconds)
 	if (Path.IsEmpty())
 	{
 		SetActorTickEnabled(false);
-		UE_LOG(LogTemp, Warning, TEXT("Tick off"));
 		return;
 	}
 	if (FVector::Distance(Path[0]->GetActorLocation(), GetActorLocation()) > KINDA_SMALL_NUMBER)

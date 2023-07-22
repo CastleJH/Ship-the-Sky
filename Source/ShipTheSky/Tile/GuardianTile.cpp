@@ -443,6 +443,18 @@ ACommander* AGuardianTile::GetNewOwner()
 	else return ReturnCommander[FMath::RandRange(0, ReturnCommander.Num() - 1)];
 }
 
+int32 AGuardianTile::GetBattlePower() const
+{
+	if (!Guardian) return -1;
+	int32 TotalPower = 0;
+	for (auto Unit : UnitsOnThisIsland)
+	{
+		TotalPower += Unit->GetBattlePower();
+	}
+	TotalPower += Guardian->GetBattlePower();
+	return TotalPower;
+}
+
 void AGuardianTile::RecoverFriendly()
 {
 	for (auto Tile : AdjResourceTiles)

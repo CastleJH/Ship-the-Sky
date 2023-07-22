@@ -12,6 +12,7 @@
 #include "Ship.h"
 #include "Tile/BaseTile.h"
 #include "Util/IndexPriorityQueue.h"
+#include "Components/WidgetComponent.h"
 
 UMapManager::UMapManager()
 {
@@ -366,6 +367,7 @@ void UMapManager::GenerateMap(int32 NumCol)
 							}
 							IslandTile->SetIslandID(GuardianTileID);
 							Cast<AResourceTile>(IslandTile)->SetResources(StartResources);
+							ResourceWidgetComps.Add(Cast<AResourceTile>(IslandTile)->GetWidgetComponent());
 							Map[NewR][NewC] = IslandTile;
 							IslandTile->SetRow(NewR);
 							IslandTile->SetCol(NewC);
@@ -488,7 +490,8 @@ void UMapManager::GenerateMap(int32 NumCol)
 		}
 		PlayerIslandCount++;
 	}
-	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, 20, false);
+	//20
+	GetWorld()->GetGameState<ASTSGameState>()->ResetIslandOwner(NewIslandID, 0, false);
 
 	SetTilePowers();
 	SetIslandResources();
@@ -500,6 +503,19 @@ void UMapManager::GenerateMap(int32 NumCol)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("%s"), *(Tile->GetName()));
 		}
+	}
+
+	
+	for (int32 i = 0; i < IslandTiles.Num(); i++)
+	{
+		TArray<TPair<int32, AGuardianTile*>> Row;
+		for (int32 j = 0; j < IslandTiles.Num(); j++)
+		{
+			if (i == j) continue;
+			Row.Add({ GetDistanceOfTwoTile(IslandTiles[i][0], IslandTiles[j][0]), Cast<AGuardianTile>(IslandTiles[j][0]) });
+		}
+		Row.Sort([](const TPair<int32, AGuardianTile*>& A, const TPair<int32, AGuardianTile*>& B){ return A.Key < B.Key; });
+		NearestIslands.Add(Row);
 	}
 }
 
@@ -574,6 +590,41 @@ bool UMapManager::MakePathToTile(AShip* Ship, ABaseTile* EndTile, bool bIsForBat
 
 	bool FoundPath = false;
 
+	if (bIsForBattle)
+	{
+		int32 MinDist = 1987654321;
+		int32 TmpDist = 0;
+		AGuardianTile* g = Cast<AGuardianTile>(EndTile);
+		if (!g) 
+		{
+			UE_LOG(LogTemp, Error, TEXT("Wrong endtile for battle"));
+			return false;
+		}
+		EndTile = nullptr;
+		for (auto Tile : g->GetAdjTiles())
+		{
+			if (Tile->GetTileType() != ETileType::Island && !Tile->GetShip())
+			{
+				if (!EndTile)
+				{
+					EndTile = Tile;
+					MinDist = GetDistanceOfTwoTile(Ship->GetCurTile(), Tile);
+				}
+				else 
+				{
+					TmpDist = GetDistanceOfTwoTile(Ship->GetCurTile(), Tile);
+					if (TmpDist < MinDist)
+					{
+						MinDist = TmpDist;
+						EndTile = Tile;
+					}
+				}
+			}
+		}
+	}
+
+	if (!EndTile) return false;
+
 	//ÃÊ±âÈ­
 	for (int32 i = 0; i < Map.Num(); i++)
 	{
@@ -601,6 +652,7 @@ bool UMapManager::MakePathToTile(AShip* Ship, ABaseTile* EndTile, bool bIsForBat
 	Cells[Ship->GetCurTile()->GetRow()][Ship->GetCurTile()->GetCol()].Parent = Ship->GetCurTile();
 	Opened.Add(PQElem{ 0, Ship->GetCurTile() });
 
+	UE_LOG(LogTemp, Warning, TEXT(".."));
 	while (!Opened.IsEmpty())
 	{
 		PQElem Elem;
@@ -699,6 +751,17 @@ bool UMapManager::GetIsTileAccessible(ACommander* Commander, ABaseTile* Tile)
 		}
 		return true;
 	}
+}
+
+bool UMapManager::SetResoureUIVisibility(bool bIsVisible)
+{
+	ESlateVisibility Vis = bIsVisible ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed;
+	for (auto WidgetComp : ResourceWidgetComps)
+	{
+		WidgetComp->GetWidget()->SetVisibility(Vis);
+	}
+
+	return false;
 }
 
 void UMapManager::SetTilePowers()
@@ -870,6 +933,7 @@ void UMapManager::SetIslandResources()
 			if (Row[Idx]->GetIslandType() != EIslandTileType::Guardian)
 			{
 				Cast<AResourceTile>(Row[Idx])->SetResources(Resources);
+				ResourceWidgetComps.Add(Cast<AResourceTile>(Row[Idx])->GetWidgetComponent());
 			}
 		}
 	}

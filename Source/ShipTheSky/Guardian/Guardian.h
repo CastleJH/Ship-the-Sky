@@ -79,4 +79,7 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool IsReinforcementPanelVisible() const;
 	TPair<enum EGuardianStat, int32> GetStatUpgradeRecommendation();
+
+	//전투 관련
+	int32 GetBattlePower() const;
 };

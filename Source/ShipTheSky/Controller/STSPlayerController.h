@@ -63,6 +63,7 @@ private:
 	class AShip* RemovingShipTarget;
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	class ABaseUnit* RemovingUnitTarget;
+	float PrevArmLength;
 
 public:
 	UFUNCTION(BlueprintPure)

@@ -28,6 +28,8 @@ private:
 	//Å¾½Â À¯´Ö
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TArray<class ABaseUnit*> Units;
+	UPROPERTY(VisibleAnywhere)
+	TArray<class ABaseUnit*> CandidateBattleUnits;
 	
 	//ÇöÀç À§Ä¡
 	UPROPERTY(VisibleAnywhere, Category = "Unit")
@@ -78,6 +80,7 @@ private:
 	class ACommander* OwnerCommander;
 
 	//Àû AI¸¸ ´Ù·ë
+	UPROPERTY(VisibleAnywhere)
 	EShipStatus ShipStatus;
 	int32 StuckCount;
 
@@ -208,4 +211,9 @@ public:
 	//Àû AI¸¸
 	EShipStatus GetShipStatus() const { return ShipStatus; }
 	void SetShipStatus(EShipStatus NewStatus) { ShipStatus = NewStatus; }
+	bool AddCandidateBattleUnit(class ABaseUnit* Unit);
+	void EmptyCandidateBattleUnit();
+	bool CheckAlreadyCandidateBattleUnit(class ABaseUnit* Unit);
+	bool EmbarkCandiateBattleUnits();
+	void DisembarkAllUnits();
 };

@@ -152,3 +152,8 @@ TPair<enum EGuardianStat, int32> AGuardian::GetStatUpgradeRecommendation()
 	default: return TPair<enum EGuardianStat, int32>(EGuardianStat::None, 0);
 	}
 }
+
+int32 AGuardian::GetBattlePower() const
+{
+	return (BattleComponent->GetDamage() / 2 + BattleComponent->GetCurHP() / 10);
+}

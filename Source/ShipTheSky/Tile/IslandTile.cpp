@@ -32,7 +32,7 @@ AGuardianTile* AIslandTile::GetGuardianTile() const
 {
 	if (GuardianTile == nullptr)
 	{
-		UE_LOG(LogTemp, Error, TEXT("%s"), *GetName());
+		UE_LOG(LogTemp, Error, TEXT("Wrong Guardian Tile:.. %s"), *GetName());
 		return nullptr;
 	}
 	return GuardianTile;

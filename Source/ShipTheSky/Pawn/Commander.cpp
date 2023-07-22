@@ -173,7 +173,11 @@ void ACommander::TryRelocateUnitOnTile(ABaseUnit* Unit, AIslandTile* Tile)
 	if (!Unit) return;
 	AIslandTile* UnitTile = Unit->GetCurIslandTile();
 	if (UnitTile == Tile) return;
-
+	if (!Tile)
+	{
+		UE_LOG(LogTemp, Error, TEXT("null tile to relocate... %s"), *Unit->GetName());
+		return;
+	}
 	ABaseUnit* OtherUnit = nullptr;
 	AResourceTile* OtherUnitTile = Cast<AResourceTile>(Tile);
 	if (OtherUnitTile) OtherUnit = OtherUnitTile->GetUnit();

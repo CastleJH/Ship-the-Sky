@@ -715,7 +715,7 @@ bool UMapManager::MakePathToTile(AShip* Ship, ABaseTile* EndTile, bool bIsForBat
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("No Path"));
+		UE_LOG(LogTemp, Error, TEXT("No Path: %s"), *Ship->GetName());
 		return false;
 	}
 

@@ -69,7 +69,7 @@ public:
 	EUnitType GetUnitType() const { return UnitType; }
 	UFUNCTION(BlueprintPure)
 	class AIslandTile* GetCurIslandTile() const { return CurIslandTile; }
-	void SetCurIslandTile(class AIslandTile* NewTile) { CurIslandTile = NewTile; }
+	void SetCurIslandTile(class AIslandTile* NewTile);
 	UFUNCTION(BlueprintPure)
 	class AShip* GetCurShip() const { return CurShip; }
 

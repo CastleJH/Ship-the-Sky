@@ -69,7 +69,7 @@ void ABaseUnit::LocateOnIslandTile(AIslandTile* Tile, bool bIsImmediate)
 	ABaseTile* PrevTile = CurIslandTile;
 	if (Cast<AGuardianTile>(Tile) == MainTile)
 	{
-		CurIslandTile = Tile;
+		SetCurIslandTile(Tile);
 		if (bIsImmediate)
 		{
 			SetActorLocation(Tile->GetActorLocation());
@@ -79,7 +79,7 @@ void ABaseUnit::LocateOnIslandTile(AIslandTile* Tile, bool bIsImmediate)
 	else
 	{
 		Cast<AResourceTile>(Tile)->SetUnit(this);
-		CurIslandTile = Tile;
+		SetCurIslandTile(Tile);
 		if (bIsImmediate)
 		{
 			FVector Direction = MainTile->GetActorLocation() - Tile->GetActorLocation();
@@ -125,7 +125,11 @@ bool ABaseUnit::Disembark()
 	if (CurShip != nullptr && CurShip->RemoveUnit(this))
 	{
 		AIslandTile* IslandTile = Cast<AIslandTile>(CurShip->GetCurTile());
-		if (IslandTile == nullptr) return false;
+		if (IslandTile == nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Disembark Failed: %s"), *GetName());
+			return false;
+		}
 		int32 IslandID = IslandTile->GetIslandID();
 		AGuardianTile* GuardianTile = GetGameInstance()->GetSubsystem<UMapManager>()->GetGuardianTile(IslandID);
 		if (GuardianTile != nullptr)
@@ -137,6 +141,11 @@ bool ABaseUnit::Disembark()
 		}
 	}
 	return false;
+}
+
+void ABaseUnit::SetCurIslandTile(AIslandTile* NewTile)
+{
+	CurIslandTile = NewTile;
 }
 
 bool ABaseUnit::UpgradeHP()

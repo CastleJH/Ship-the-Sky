@@ -9,6 +9,7 @@
 #include "Unit/BaseUnit.h"
 #include "Tile/IslandTile.h"
 #include "Tile/GuardianTile.h"
+#include "Ship.h"
 
 UBTTask_UpgradeUnit::UBTTask_UpgradeUnit()
 {
@@ -26,8 +27,19 @@ EBTNodeResult::Type UBTTask_UpgradeUnit::ExecuteTask(UBehaviorTreeComponent& Own
 	OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("UnitToUpgrade"), nullptr);
 	if (!Unit) return EBTNodeResult::Failed;
 
-	OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("GuardianTileToOptimizePlacement"), Unit->GetCurIslandTile()->GetGuardianTile());
-
+	if (!Unit->GetCurIslandTile())
+	{
+		if (!Unit->GetCurShip())
+		{
+			UE_LOG(LogTemp, Error, TEXT("No CurIslandTile And No CurShip..., %s"), *Unit->GetName());
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No CurIslandTile But CurShip... Maybe in Ship %s Now. : %s"), *(Unit->GetCurShip()->GetName()), *Unit->GetName());
+		}
+		return  EBTNodeResult::Failed;
+	}
+	
 	EUnitStat StatToUpgrade = StaticCast<EUnitStat>(OwnerComp.GetBlackboardComponent()->GetValueAsEnum(TEXT("UnitStatToUpgrade")));
 
 	float TargetResourceAmount = 200.0f;

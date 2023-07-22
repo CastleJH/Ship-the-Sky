@@ -225,6 +225,7 @@ void AGuardianTile::OptimizeUnitPlacementForBest()
 		TArray<ABaseUnit*> Miners;
 		TArray<ABaseUnit*> Woodcutters;
 		TArray<ABaseUnit*> Farmers;
+		TArray<ABaseUnit*> Warriors;
 		for (auto Unit : UnitsOnThisIsland)
 		{
 			if (Unit->BattleComponent->GetCurHP() != Unit->BattleComponent->GetMaxHP()) Hurts.Add(Unit);
@@ -241,6 +242,8 @@ void AGuardianTile::OptimizeUnitPlacementForBest()
 				case EUnitType::Farmer:
 					Farmers.Add(Unit);
 					break;
+				case EUnitType::Warrior:
+					Warriors.Add(Unit);
 				default:
 					break;
 				}
@@ -293,6 +296,12 @@ void AGuardianTile::OptimizeUnitPlacementForBest()
 				}
 			}
 		}
+
+		for (auto Unit : Hurts) Commander->TryRelocateUnitOnTile(Unit, this);
+		for (auto Unit : Miners) Commander->TryRelocateUnitOnTile(Unit, this);
+		for (auto Unit : Woodcutters) Commander->TryRelocateUnitOnTile(Unit, this);
+		for (auto Unit : Farmers) Commander->TryRelocateUnitOnTile(Unit, this);
+		for (auto Unit : Warriors) Commander->TryRelocateUnitOnTile(Unit, this);
 	}
 }
 
@@ -405,9 +414,13 @@ void AGuardianTile::GetAttackedByShips()
 			if (Tile->GetShip()) Tile->GetShip()->GetAttacked(9999999.0f);
 			if (Tile->GetBuilding()) GetIslandOwner()->DestroyBuildingFromGame(Tile->GetBuilding());
 		}
-		for (auto Unit : UnitsOnThisIsland)
+		for (int32 Idx = UnitsOnThisIsland.Num() - 1; Idx >= 0; Idx--)
 		{
-			Unit->GetOwnerCommander()->DestroyUnitFromGame(Unit);
+			if (!UnitsOnThisIsland.IsValidIndex(Idx) || !UnitsOnThisIsland[Idx])
+			{
+				UE_LOG(LogTemp, Error, TEXT("Destroying Unit Failed... %s"), *GetName());
+			}
+			else UnitsOnThisIsland[Idx]->GetOwnerCommander()->DestroyUnitFromGame(UnitsOnThisIsland[Idx]);
 		}
 		GetWorld()->GetGameState<ASTSGameState>()->SetIslandOwner(GetIslandID(), GetNewOwner());
 		Guardian->ResetLevelAndPower();

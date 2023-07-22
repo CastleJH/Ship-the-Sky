@@ -62,9 +62,9 @@ void UBTService_BattleTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 					return;
 				}
 				UE_LOG(LogTemp, Warning, TEXT("OtherGuardianTile.Value->GetBattlePower(): %d"), OtherGuardianTile.Value->GetBattlePower());
-				if (OtherGuardianTile.Value->GetIslandOwner() != Commander && OtherGuardianTile.Value->GetBattlePower() < TotalBattlePower && GuardianTile->GetAdjResourceTiles().Num() != GuardianTile->GetAdjTiles().Num())
+				if (OtherGuardianTile.Value->GetIslandOwner() != Commander && OtherGuardianTile.Value->GetBattlePower() < TotalBattlePower && OtherGuardianTile.Value->GetAdjResourceTiles().Num() != OtherGuardianTile.Value->GetAdjTiles().Num())
 				{
-					for (auto adjs : GuardianTile->GetAdjTiles())
+					for (auto adjs : OtherGuardianTile.Value->GetAdjTiles())
 					{
 						if (adjs->GetTileType() != ETileType::Island && !adjs->GetShip())
 						{

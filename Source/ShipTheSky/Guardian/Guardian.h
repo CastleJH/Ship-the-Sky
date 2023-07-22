@@ -82,4 +82,7 @@ public:
 
 	//전투 관련
 	int32 GetBattlePower() const;
+
+	//UI 관련
+	class UWidgetComponent* GetWidgetComponent() const { return WidgetComp; }
 };

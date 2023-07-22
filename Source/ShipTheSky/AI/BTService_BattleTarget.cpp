@@ -68,6 +68,8 @@ void UBTService_BattleTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 					{
 						if (adjs->GetTileType() != ETileType::Island && !adjs->GetShip())
 						{
+							Ship->SetBattlePower(TotalBattlePower);
+							Ship->SetAttackTargetGuardianTile(OtherGuardianTile.Value);
 							OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("ShipToGoBattle"), Ship);
 							OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("GuardianTileToAttack"), OtherGuardianTile.Value);
 							return;

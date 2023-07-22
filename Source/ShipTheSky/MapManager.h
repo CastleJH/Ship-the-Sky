@@ -105,10 +105,10 @@ private:
 	int32 ColOffset[2][18] = { {0, 1, -1, 1, 0, 1, -1, 0, 1, -1, 2, -2, 2, -1, 2, -1, 0, 1},
 					{-1, 0, -1, 1, -1, 0, -1, 0, 1, -2, 1, -2, 2, -2, 1, -1, 0, 1} };
 
-	UPROPERTY()
-	TArray<class UWidgetComponent*> ResourceWidgetComps;
 
 public:
 	//거리순 정렬
 	TArray<TArray<TPair<int32, class AGuardianTile*>>> NearestIslands;
+	UPROPERTY()
+	TArray<class UWidgetComponent*> ResourceWidgetComps;
 };

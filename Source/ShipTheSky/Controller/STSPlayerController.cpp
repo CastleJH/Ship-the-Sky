@@ -180,13 +180,17 @@ void ASTSPlayerController::SetupInputComponent()
 void ASTSPlayerController::MoveCamera(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
-	Commander->AddActorWorldOffset(FVector(MovementVector.X, MovementVector.Y, 0.0f) * CameraMovementSpeed);
+	//Commander->AddActorWorldOffset(FVector(MovementVector.X, MovementVector.Y, 0.0f) * CameraMovementSpeed);
+	FVector NewLocation = Commander->GetActorLocation() + FVector(MovementVector.X, MovementVector.Y, 0.0f) * CameraMovementSpeed;
+	NewLocation.X = FMath::Clamp(NewLocation.X, 475, 17475);
+	NewLocation.Y = FMath::Clamp(NewLocation.Y, 1125, 28125);
+	Commander->SetActorLocation(NewLocation);
 }
 
 void ASTSPlayerController::ZoomCamera(const FInputActionValue& Value)
 {
 	float Zoom = Value.Get<float>();
-	PlayerCommander->SpringArmComp->TargetArmLength += CameraZoomSpeed * Zoom;
+	PlayerCommander->SpringArmComp->TargetArmLength = FMath::Clamp(PlayerCommander->SpringArmComp->TargetArmLength + CameraZoomSpeed * Zoom, 2000, 20000);
 
 
 	if (PlayerCommander->SpringArmComp->TargetArmLength > 10000 && PrevArmLength <= 10000)

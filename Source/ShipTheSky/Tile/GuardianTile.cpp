@@ -14,6 +14,8 @@
 #include "Building/BaseBuilding.h"
 #include "Enums.h"
 #include "STSGameState.h"
+#include "MapManager.h"
+#include "Components/WidgetComponent.h"
 
 AGuardianTile::AGuardianTile()
 {
@@ -313,6 +315,7 @@ void AGuardianTile::SpawnGuardian(int32 Index)
 	Guardian->SetActorRotation(FRotator(0.0f, 180.0f, 0.0f));
 	Guardian->Tile = this;
 	Guardian->FinishSpawning(Loc);
+	GetGameInstance()->GetSubsystem<UMapManager>()->ResourceWidgetComps.Add(Guardian->GetWidgetComponent());
 }
 
 bool AGuardianTile::CheckEnemyShipAdjacent()

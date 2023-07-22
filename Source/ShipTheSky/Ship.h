@@ -83,6 +83,8 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	EShipStatus ShipStatus;
 	int32 StuckCount;
+	int32 BattlePower;
+	class AGuardianTile* AttackTargetGuardianTile;
 
 public:
 
@@ -216,4 +218,7 @@ public:
 	bool CheckAlreadyCandidateBattleUnit(class ABaseUnit* Unit);
 	bool EmbarkCandiateBattleUnits();
 	void DisembarkAllUnits();
+	void SetBattlePower(int32 NewBattlePower) { BattlePower = NewBattlePower; }
+	void SetAttackTargetGuardianTile(class AGuardianTile* NewTile) { AttackTargetGuardianTile = NewTile; }
+
 };

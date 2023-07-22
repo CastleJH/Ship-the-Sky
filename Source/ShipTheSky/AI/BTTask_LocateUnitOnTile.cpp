@@ -44,10 +44,6 @@ EBTNodeResult::Type UBTTask_LocateUnitOnTile::ExecuteTask(UBehaviorTreeComponent
 		{
 			UE_LOG(LogTemp, Error, TEXT("Both on Island and Ship. %s"), *Unit->GetName());
 		}
-		else if (!Unit->GetCurIslandTile() && Unit->GetCurShip())
-		{
-			UE_LOG(LogTemp, Error, TEXT("Just on Ship. It's acceptable. %s"), *Unit->GetName());
-		}
 		else if (!Unit->GetCurIslandTile() && !Unit->GetCurShip())
 		{
 			UE_LOG(LogTemp, Error, TEXT("There must be no this case. %s"), *Unit->GetName());

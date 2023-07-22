@@ -72,6 +72,8 @@ void AShip::Tick(float DeltaSeconds)
 		{
 			bIsAttackedRecently = false;
 			ShipStatus = EShipStatus::None;
+			BattlePower = 0;
+			AttackTargetGuardianTile = nullptr;
 		}
 	}
 	else LastAttackedSecond = 0.0f;
@@ -83,12 +85,23 @@ bool AShip::TryLocateOnTile(ABaseTile* Tile, bool RightAfter)
 	if (IslandTile && IslandTile->GetIslandOwner() != OwnerCommander) return false;
 
 	if (Tile == nullptr) return false;
-	if (Tile->GetShip() != nullptr) return false;
+	if (Tile->GetShip() != nullptr)
+	{
+		return false;
+	}
 
-	if (CurTile != nullptr) CurTile->SetShip(nullptr);
+	if (CurTile != nullptr)
+	{
+		FVector Direction = Tile->GetActorLocation() - CurTile->GetActorLocation();
+		SetActorRotation(Direction.Rotation());
+		CurTile->SetShip(nullptr);
+	}
+
+
 
 	if (RightAfter) SetActorLocation(Tile->GetActorLocation() + FVector(0.0f, 0.0f, 250.0f));
 	else SetCurDurability(CurDurability - 1);
+
 	CurTile = Tile;
 	Tile->SetShip(this);
 	SetActorHiddenInGame(false);
@@ -201,14 +214,26 @@ void AShip::FollowPath()
 		}
 		else
 		{
-			if (StuckCount > 10) ShipStatus = EShipStatus::Stuck;
-			else StuckCount++;
+			StuckCount++;
+			if (ShipStatus != EShipStatus::None && StuckCount == 10)
+			{
+				EmptyPath();
+				SetShipStatus(EShipStatus::None);
+			}
 		}
 
 		if (!Path.IsEmpty())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Next"));
 			GetWorld()->GetTimerManager().SetTimer(MoveTimer, this, &AShip::FollowPath, ModifiedFlightPower, false, ModifiedFlightPower);
+
+			if (ShipStatus == EShipStatus::MoveForBattle)
+			{
+				if (AttackTargetGuardianTile && BattlePower < AttackTargetGuardianTile->GetBattlePower())
+				{
+					EmptyPath();
+					SetShipStatus(EShipStatus::None);
+				}
+			}
 		}
 		else
 		{

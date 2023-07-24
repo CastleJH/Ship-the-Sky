@@ -301,8 +301,28 @@ FString AShip::GetStatusString()
 {
 	if (bIsAttackedRecently) return FString(TEXT("전투 중!"));
 	if (Path.Num() != 0) return FString(TEXT("이동 중..."));
-	if (CurTile->GetTileType() != ETileType::Island) return FString(TEXT("하늘 타일에 정지함"));
-	return FString(TEXT("섬에 정박함"));
+	if (!CurTile)
+	{
+		UE_LOG(LogTemp, Error, TEXT("CurTile must not be nullptr"));
+		return FString();
+	}
+	switch (CurTile->GetTileType())
+	{
+	case ETileType::Island:
+		return FString(TEXT("섬에 정박함"));
+	case ETileType::Cloud:
+		return FString(TEXT("먹구름 지역에 정지함"));
+	case ETileType::Storm:
+		return FString(TEXT("폭풍우 지역에 정지함"));
+	case ETileType::Sun:
+		return FString(TEXT("작열 지역에 정지함"));
+	case ETileType::Lightning:
+		return FString(TEXT("뇌운 지역에 정지함"));
+	case ETileType::Meteor:
+		return FString(TEXT("운석 지역에 정지함"));
+	default:
+		return FString(TEXT("상태 메시지"));
+	}
 }
 
 void AShip::RemoveAllUnitsFromGame()

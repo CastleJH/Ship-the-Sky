@@ -55,10 +55,11 @@ public:
 	int32 EmptyStartIndex;
 
 	UPROPERTY(VisibleAnywhere)
-	TArray<class AGuardianTile*> OwningIslands;
-	
+	TArray<class AGuardianTile*> OwningIslands;	
 
 protected:
+	bool bIsPlayerCommander;
+
 	//지휘관이 작업 중인 타겟들
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Commander", meta = (AllowPrivateAccess = "true"))
 	class ABaseTile* TargetTile;

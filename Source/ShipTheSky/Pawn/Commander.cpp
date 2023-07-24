@@ -12,6 +12,7 @@
 #include "MapManager.h"
 #include "Building/BaseBuilding.h"
 #include "Enums.h"
+#include "Controller/STSPlayerController.h"
 
 // Sets default values
 ACommander::ACommander()
@@ -30,6 +31,7 @@ ACommander::ACommander()
 
 	UnitCreationCost = 50;
 	ShipCreationCost = 100;
+	bIsPlayerCommander = false;
 }
 
 bool ACommander::TryConstructBuilding(AResourceTile* Tile, EBuildingType Type)
@@ -326,6 +328,7 @@ AShip* ACommander::SpawnShipToGame()
 	AShip* Ship = GetWorld()->SpawnActor<AShip>(ShipClass);
 	Ship->SetOwnerCommander(this);
 	Ships.Add(Ship);
+	if (bIsPlayerCommander) Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController())->RenewOwningShipListUI();
 	return Ship;
 }
 
@@ -336,6 +339,7 @@ void ACommander::DestroyShipFromGame(AShip* Ship)
 	Ships.Remove(Ship);
 	DecreaseShipCreationCost();
 	Ship->Destroy();
+	if (bIsPlayerCommander) Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController())->RenewOwningShipListUI();
 }
 
 void ACommander::SetResource(float Amount, EResourceType Type)

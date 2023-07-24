@@ -30,6 +30,12 @@ void UMapManager::GenerateMap(int32 NumCol)
 	TArray<TArray<ETileType>> MapData;
 	TArray<TArray<int32>> IslandID;
 
+	if (NumRow < 20)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Too small map size."));
+		return;
+	}
+
 	//랜덤하게 타일들의 시작 속성 채우기
 	for (int32 Row = 0; Row < NumRow; Row++)
 	{
@@ -79,6 +85,28 @@ void UMapManager::GenerateMap(int32 NumCol)
 	NewIslandID = 0;
 
 	int32 CommanderCount = GetWorld()->GetGameState<ASTSGameState>()->Commanders.Num();
+
+	//시작 위치들 조정
+	if (CommanderCount != 5) {
+		UE_LOG(LogTemp, Error, TEXT("Number of Commanders is not 5."));
+		return;
+	}
+
+	GetWorld()->GetGameState<ASTSGameState>()->Commanders[0]->StartRow = NumRow / 2;
+	GetWorld()->GetGameState<ASTSGameState>()->Commanders[0]->StartCol = NumCol / 2;
+
+	GetWorld()->GetGameState<ASTSGameState>()->Commanders[1]->StartRow = NumRow - 5;
+	GetWorld()->GetGameState<ASTSGameState>()->Commanders[1]->StartCol = 5;
+
+	GetWorld()->GetGameState<ASTSGameState>()->Commanders[2]->StartRow = 5;
+	GetWorld()->GetGameState<ASTSGameState>()->Commanders[2]->StartCol = 5;
+
+	GetWorld()->GetGameState<ASTSGameState>()->Commanders[3]->StartRow = 5;
+	GetWorld()->GetGameState<ASTSGameState>()->Commanders[3]->StartCol = NumCol - 5;
+
+	GetWorld()->GetGameState<ASTSGameState>()->Commanders[4]->StartRow = NumRow - 5;
+	GetWorld()->GetGameState<ASTSGameState>()->Commanders[4]->StartCol = NumCol - 5;
+
 	for (auto Commander : GetWorld()->GetGameState<ASTSGameState>()->Commanders)
 	{
 		if (!MapData.IsValidIndex(Commander->StartRow) || !MapData[Commander->StartRow].IsValidIndex(Commander->StartCol))
@@ -114,11 +142,10 @@ void UMapManager::GenerateMap(int32 NumCol)
 		}
 	}
 
-
 	//섬 생성
 	for (int32 Col = 0; Col < NumCol; Col++)
 	{
-		/*int32 IterIsland = (Col & 1 ? 1 : 2);
+		int32 IterIsland = NumCol > 70 ? 3 : 2;
 		while (IterIsland--)
 		{
 			int32 RandRow;
@@ -148,80 +175,10 @@ void UMapManager::GenerateMap(int32 NumCol)
 						break;
 					}
 				}
-			} while (NearCheck && maxIter--);
+				maxIter--;
+			} while (NearCheck && maxIter);
 
-			if (maxIter == 0) {
-				UE_LOG(LogTemp, Error, TEXT("Wrong Map Generation"));
-				return;
-			}
-
-			ETileType& CurTile = MapData[RandRow][Col];
-			CurTile = ETileType::Island;
-			IslandID[RandRow][Col] = NewIslandID + 10000;
-			int32 IslandTileNum = 0;
-			for (int32 i = 0; i < 6; i++)
-			{
-				NewR = RandRow + RowOffset[i];
-				NewC = Col + ColOffset[RandRow % 2][i];
-
-				if (!MapData.IsValidIndex(NewR) || !MapData[NewR].IsValidIndex(NewC)) continue;
-				if (FMath::FRandRange(0.f, 1.f) < 0.6f)
-				{
-					IslandID[NewR][NewC] = NewIslandID;
-					MapData[NewR][NewC] = ETileType::Island;
-					IslandTileNum++;
-				}
-				if (IslandTileNum == 5) break;
-			}
-			while (IslandTileNum == 0)
-			{
-				int32 RandLoc = FMath::RandRange(0, 5);
-				NewR = RandRow + RowOffset[RandLoc];
-				NewC = Col + ColOffset[RandRow % 2][RandLoc];
-
-				if (!MapData.IsValidIndex(NewR) || !MapData[NewR].IsValidIndex(NewC)) continue;
-				IslandID[NewR][NewC] = NewIslandID;
-				MapData[NewR][NewC] = ETileType::Island;
-				IslandTileNum++;
-			}
-
-			NewIslandID++;
-			TArray<AIslandTile*> SameIslands;
-			IslandTiles.Add(SameIslands);
-		}*/
-		int32 IterIsland = (Col & 1 ? 1 : 2);
-		while (IterIsland--)
-		{
-			int32 RandRow;
-			bool NearCheck;
-			int32 maxIter = 100;
-
-			do {
-				RandRow = FMath::RandRange(0, NumRow - 1);
-				NearCheck = false;
-				if (!MapData.IsValidIndex(RandRow) || !MapData[RandRow].IsValidIndex(Col))
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Wrong Index"));
-					return;
-				}
-
-				ETileType& CurTile = MapData[RandRow][Col];
-
-				for (int32 i = 0; i < 18; i++)
-				{
-					NewR = RandRow + RowOffset[i];
-					NewC = Col + ColOffset[RandRow % 2][i];
-
-					if (!MapData.IsValidIndex(NewR) || !MapData[NewR].IsValidIndex(NewC)) continue;
-					if (MapData[NewR][NewC] == ETileType::Island)
-					{
-						NearCheck = true;
-						break;
-					}
-				}
-			} while (NearCheck && maxIter--);
-
-			if (maxIter == 0) {
+			if (NearCheck) {
 				//UE_LOG(LogTemp, Error, TEXT("Wrong Map Generation"));
 				//return;
 				continue;
@@ -456,7 +413,17 @@ void UMapManager::GenerateMap(int32 NumCol)
 	}
 	XCoord -= XDiff;
 	YCoord -= YDiff;
+
+	ASTSPlayerController* Controller = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (Controller->GuardianClass.Num() != 10)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Guardian must be 10 types."));
+		return;
+	}
 	int32 PlayerIslandCount = 0;
+	int32 GuardianCount[10] = { 0 };
+	int32 MaximumGuardianCount = NewIslandID / 10 + 1;
+	GuardianCount[9] = -4;
 	for (auto Row : IslandTiles)
 	{
 		if (Row.IsValidIndex(0))
@@ -464,9 +431,22 @@ void UMapManager::GenerateMap(int32 NumCol)
 			AGuardianTile* GuardianTile = Cast<AGuardianTile>(Row[0]);
 			if (GuardianTile)
 			{
-				ASTSPlayerController* Controller = Cast<ASTSPlayerController>(GetWorld()->GetFirstPlayerController());
-				if (PlayerIslandCount < GetWorld()->GetGameState<ASTSGameState>()->Commanders.Num()) GuardianTile->SpawnGuardian(Controller->GuardianClass.Num() - 1);
-				else GuardianTile->SpawnGuardian(FMath::RandRange(0, Controller->GuardianClass.Num() - 1));
+				if (PlayerIslandCount < GetWorld()->GetGameState<ASTSGameState>()->Commanders.Num())
+				{
+					GuardianTile->SpawnGuardian(Controller->GuardianClass.Num() - 1);
+					GuardianCount[9]++;
+				}
+				else
+				{
+					int32 RandGuardianType = -1;
+					do 
+					{ 
+						RandGuardianType = FMath::RandRange(0, Controller->GuardianClass.Num() - 1);
+					} 
+					while (GuardianCount[RandGuardianType] >= MaximumGuardianCount);
+					GuardianCount[RandGuardianType]++;
+					GuardianTile->SpawnGuardian(RandGuardianType);
+				}
 				TArray<ABaseTile*> InTile;
 				GetAdjacentTiles(GuardianTile, InTile);
 				GuardianTile->SetAdjTiles(InTile);

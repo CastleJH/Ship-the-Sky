@@ -155,7 +155,7 @@ void ASTSPlayerController::OnButtonLookIslandUnderAttack(int32 Index)
 {
 	if (IslandsUnderAttack.IsValidIndex(Index))
 	{
-		PlayerCommander->MoveCommanderToTile(IslandsUnderAttack[Index], false);
+		PlayerCommander->MoveCommanderToTile(IslandsUnderAttack[Index], true);
 	}
 }
 
@@ -163,8 +163,18 @@ void ASTSPlayerController::OnButtonLookShipUnderAttacking(int32 Index)
 {
 	if (ShipsAttacking.IsValidIndex(Index) && ShipsAttacking[Index]->GetCurTile())
 	{
-		PlayerCommander->MoveCommanderToTile(ShipsAttacking[Index]->GetCurTile(), false);
+		PlayerCommander->MoveCommanderToTile(ShipsAttacking[Index]->GetCurTile(), true);
 	}
+}
+
+void ASTSPlayerController::OnButtonLookOwningShip(AShip* Ship)
+{
+	if (!Ship)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("nullptr ship to look."));
+		return;
+	}
+	LockedShip = Ship;
 }
 
 void ASTSPlayerController::SetupInputComponent()
@@ -196,24 +206,23 @@ void ASTSPlayerController::SetupInputComponent()
 void ASTSPlayerController::MoveCamera(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
-	//Commander->AddActorWorldOffset(FVector(MovementVector.X, MovementVector.Y, 0.0f) * CameraMovementSpeed);
 	FVector NewLocation = Commander->GetActorLocation() + FVector(MovementVector.X, MovementVector.Y, 0.0f) * CameraMovementSpeed;
-	NewLocation.X = FMath::Clamp(NewLocation.X, 475, 17475);
-	NewLocation.Y = FMath::Clamp(NewLocation.Y, 1125, 28125);
+	NewLocation.X = FMath::Clamp(NewLocation.X, 475, 11350);
+	NewLocation.Y = FMath::Clamp(NewLocation.Y, 1125, 18375);
 	Commander->SetActorLocation(NewLocation);
 }
 
 void ASTSPlayerController::ZoomCamera(const FInputActionValue& Value)
 {
 	float Zoom = Value.Get<float>();
-	PlayerCommander->SpringArmComp->TargetArmLength = FMath::Clamp(PlayerCommander->SpringArmComp->TargetArmLength + CameraZoomSpeed * Zoom, 2000, 20000);
+	PlayerCommander->SpringArmComp->TargetArmLength = FMath::Clamp(PlayerCommander->SpringArmComp->TargetArmLength + CameraZoomSpeed * Zoom, 2000, 14000);
 
 
-	if (PlayerCommander->SpringArmComp->TargetArmLength > 10000 && PrevArmLength <= 10000)
+	if (PlayerCommander->SpringArmComp->TargetArmLength > 8000 && PrevArmLength <= 8000)
 	{
 		GetGameInstance()->GetSubsystem<UMapManager>()->SetResoureUIVisibility(false);
 	}
-	else if (PlayerCommander->SpringArmComp->TargetArmLength <= 10000 && PrevArmLength > 10000)
+	else if (PlayerCommander->SpringArmComp->TargetArmLength <= 8000 && PrevArmLength > 8000)
 	{
 		GetGameInstance()->GetSubsystem<UMapManager>()->SetResoureUIVisibility(true);
 	}

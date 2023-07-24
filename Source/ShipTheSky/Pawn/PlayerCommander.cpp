@@ -23,6 +23,8 @@ APlayerCommander::APlayerCommander()
 	CameraComp->SetupAttachment(SpringArmComp);
 
 	CommanderID = 0;
+
+	bIsPlayerCommander = true;
 }
 
 void APlayerCommander::MoveCommanderToTile(ABaseTile* Tile, bool bSelectTileToo)

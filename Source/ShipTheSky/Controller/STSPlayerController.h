@@ -118,6 +118,12 @@ public:
 	void OnButtonLookIslandUnderAttack(int32 Index);
 	UFUNCTION(BlueprintCallable)
 	void OnButtonLookShipUnderAttacking(int32 Index);
+	UFUNCTION(BlueprintCallable)
+	void OnButtonLookOwningShip(class AShip* Ship);
+
+	//UI 비행선 갱신하기
+	UFUNCTION (BlueprintImplementableEvent)
+	void RenewOwningShipListUI();
 
 private:
 	//유저 입력

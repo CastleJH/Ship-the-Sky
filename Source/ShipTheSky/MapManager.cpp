@@ -161,7 +161,10 @@ void UMapManager::GenerateMap()
 	//¼¶ »ý¼º
 	for (int32 Col = 0; Col < NumCol; Col++)
 	{
-		int32 IterIsland = NumCol > 70 ? 3 : 2;
+		int32 IterIsland = 0;
+		if (NumCol < 50) IterIsland = Col % 3 == 0 ? 2 : 1;
+		else if (NumCol < 70) IterIsland = 2;
+		else IterIsland = 3;
 		while (IterIsland--)
 		{
 			int32 RandRow;

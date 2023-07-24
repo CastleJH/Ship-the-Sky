@@ -14,6 +14,9 @@ class SHIPTHESKY_API ASTSGameState : public AGameStateBase
 {
 	GENERATED_BODY()
 
+public:
+	ASTSGameState();
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	TArray<class ACommander*> IslandOwner;
@@ -21,9 +24,15 @@ private:
 	FString GameDateString;
 
 public:
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<class ACommander*> Commanders;
 	TArray<int32> CommanderScores;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsGameOver;
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsPlayerTheWinner;
+	int32 EndYear;
 
 public:
 	//섬 소유권 초기화

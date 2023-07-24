@@ -9,6 +9,7 @@
 #include "Controller/STSPlayerController.h"
 #include "Components/WidgetComponent.h"
 #include "MapManager.h"
+#include "Pawn/PlayerCommander.h"
 
 AResourceTile::AResourceTile()
 {
@@ -19,6 +20,8 @@ AResourceTile::AResourceTile()
 	ResourcesWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
 	ResourcesWidgetComp->SetTickMode(ETickMode::Automatic);
 	ResourcesWidgetComp->SetWidgetClass(LoadClass<UUserWidget>(nullptr, TEXT("/Game/UI/TileUI/WBP_TileResourcesUI.WBP_TileResourcesUI_C")));
+
+	WorldEnemyWeight = -1.0f;
 }
 
 void AResourceTile::SetResources(TMap<uint8, float> NewResources)
@@ -62,13 +65,15 @@ void AResourceTile::GiveResourceToUnit()
 	{
 		if ((uint8)UnitOnThisTile->GetUnitType() != (uint8)GetIslandType()) return;
 		ACommander* OwnerCommander = Cast<ACommander>(UnitOnThisTile->GetOwnerCommander());
+		APlayerCommander* PlayerCommander = Cast<APlayerCommander>(UnitOnThisTile->GetOwnerCommander());
+		float EnemyWeight = PlayerCommander != nullptr ? 1.0f : WorldEnemyWeight;
 		if (OwnerCommander != nullptr)
 		{
 			for (auto Resource : Resources)
 			{
 				if (Resource.Key >= (uint8)EResourceType::None) continue;
 				OwnerCommander->SetResource(
-					OwnerCommander->GetResource(StaticCast<EResourceType>(Resource.Key)) + Resource.Value * (1.0f + UnitOnThisTile->GetEfficiency() * 0.01f),
+					OwnerCommander->GetResource(StaticCast<EResourceType>(Resource.Key)) + (Resource.Value * (1.0f + UnitOnThisTile->GetEfficiency() * 0.01f)) * EnemyWeight,
 					StaticCast<EResourceType>(Resource.Key));
 			}
 		}

@@ -4,6 +4,14 @@
 #include "STSGameState.h"
 #include "MapManager.h"
 #include "Pawn/Commander.h"
+#include "GameFramework/WorldSettings.h"
+
+ASTSGameState::ASTSGameState()
+{
+	bIsGameOver = false;
+	bIsPlayerTheWinner = false;
+	EndYear = 2250;
+}
 
 void ASTSGameState::ResetIslandOwner(int32 NewIslandNum, int32 PlayerOwnAmount, bool bPlayerToo)
 {
@@ -87,4 +95,30 @@ void ASTSGameState::IncreaseGameDate()
 	GameDateString = FString::Printf(TEXT("%d.%02d.%02d"), Year, Month, Day);
 
 	GetGameInstance()->GetSubsystem<UMapManager>()->TimePassesToAllTile(GameDateInt32);
+
+	UE_LOG(LogTemp, Warning, TEXT("New Day"));
+
+	if (GameDateInt32 >= (EndYear - 1) * 360)
+	{
+		if (CommanderScores.Num() != 5)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Score length not 5."));
+			return;
+		}
+		if (Commanders[0]->OwningIslands.Num() == 0)
+		{
+			bIsPlayerTheWinner = false;
+			bIsGameOver = true;
+		}
+
+		bIsPlayerTheWinner = true;
+		for (int32 Idx = 1; Idx < 5; Idx++)
+		{
+			if (CommanderScores[Idx] > CommanderScores[0])
+			{
+				bIsPlayerTheWinner = false;
+			}
+		}
+		bIsGameOver = true;
+	}
 }

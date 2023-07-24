@@ -122,8 +122,12 @@ public:
 	void OnButtonLookOwningShip(class AShip* Ship);
 
 	//UI 비행선 갱신하기
-	UFUNCTION (BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent)
 	void RenewOwningShipListUI();
+
+	//UI 게임 종료
+	UFUNCTION(BlueprintImplementableEvent)
+	void PopUpAskingQuitPanel();
 
 private:
 	//유저 입력
@@ -147,6 +151,8 @@ private:
 	TObjectPtr<class UInputAction> InputMouseDraggedForPath;
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class UInputAction> InputMouseReleasedForPortal;
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class UInputAction> InputQuit;
 
 	virtual void SetupInputComponent() override;
 
@@ -157,6 +163,7 @@ private:
 	void MousePressedForPath(const FInputActionValue& Value);
 	void MouseDraggedForPath(const FInputActionValue& Value);
 	void MouseReleasedForPortal(const FInputActionValue& Value);
+	void AskQuitGame(const FInputActionValue& Value);
 
 	virtual void OnPossess(APawn* InPawn) override;
 

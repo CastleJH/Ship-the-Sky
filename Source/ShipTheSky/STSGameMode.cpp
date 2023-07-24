@@ -49,7 +49,7 @@ void ASTSGameMode::StartPlay()
 	GetGameInstance()->GetSubsystem<UMapManager>()->LightningTileClass = LightningTileClass;
 	GetGameInstance()->GetSubsystem<UMapManager>()->MeteorTileClass = MeteorTileClass;
 	
-	GetGameInstance()->GetSubsystem<UMapManager>()->GenerateMap(40);
+	GetGameInstance()->GetSubsystem<UMapManager>()->GenerateMap();
 
 	if (GameState == nullptr)
 	{

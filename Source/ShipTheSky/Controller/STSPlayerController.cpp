@@ -194,6 +194,7 @@ void ASTSPlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(InputMousePressedForPath, ETriggerEvent::Triggered, this, &ASTSPlayerController::MousePressedForPath);
 	EnhancedInputComponent->BindAction(InputMouseDraggedForPath, ETriggerEvent::Triggered, this, &ASTSPlayerController::MouseDraggedForPath);
 	EnhancedInputComponent->BindAction(InputMouseReleasedForPortal, ETriggerEvent::Triggered, this, &ASTSPlayerController::MouseReleasedForPortal);
+	EnhancedInputComponent->BindAction(InputQuit, ETriggerEvent::Triggered, this, &ASTSPlayerController::AskQuitGame);
 
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
@@ -296,6 +297,11 @@ void ASTSPlayerController::MouseReleasedForPortal(const FInputActionValue& Value
 		}
 	}
 	else SetToViewMode();
+}
+
+void ASTSPlayerController::AskQuitGame(const FInputActionValue& Value)
+{
+	PopUpAskingQuitPanel();
 }
 
 void ASTSPlayerController::OnPossess(APawn* InPawn)

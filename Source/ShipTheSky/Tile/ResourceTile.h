@@ -34,6 +34,9 @@ public:
 	TMap<uint8, float> Resources;
 	float TotalResourcesNum;
 
+	//적 자원 가중치
+	float WorldEnemyWeight;
+
 public:
 	//타일 관련 변수 접근
 	void SetBuilding(class ABaseBuilding* NewBuilding) { BuildingOnThisTile = NewBuilding; }

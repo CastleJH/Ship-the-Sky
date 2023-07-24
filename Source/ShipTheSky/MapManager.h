@@ -39,8 +39,7 @@ public:
 	UMapManager();
 
 	//맵 생성
-	UFUNCTION(BlueprintCallable)
-	void GenerateMap(int32 NumCol);
+	void GenerateMap();
 
 	//모든 타일에 날짜 효과 적용
 	UFUNCTION()
@@ -80,7 +79,6 @@ private:
 	void SelectAllIslandTiles();
 
 private:
-
 	//모든 타일
 	TArray<TArray<class ABaseTile*>> Map;
 	//섬 타일
@@ -114,4 +112,11 @@ public:
 	TSubclassOf<class ABaseTile> LightningTileClass;
 	UPROPERTY()
 	TSubclassOf<class ABaseTile> MeteorTileClass;
+
+	UPROPERTY(BlueprintReadWrite)
+	int32 NumColOfTheMap;
+	UPROPERTY(BlueprintReadWrite)
+	float WorldEnemyWeight;
+	UPROPERTY(BlueprintReadWrite)
+	int32 EndYear;
 };

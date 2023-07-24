@@ -16,10 +16,26 @@
 
 UMapManager::UMapManager()
 {
+	NumColOfTheMap = 40;
+	WorldEnemyWeight = 1.0f;
+	EndYear = 2250;
 }
 
-void UMapManager::GenerateMap(int32 NumCol)
+void UMapManager::GenerateMap()
 {
+	if (!GetWorld()->GetGameState<ASTSGameState>())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Wrong stsgamestate."));
+		return;
+	}
+	GetWorld()->GetGameState<ASTSGameState>()->EndYear = EndYear;
+
+	Map.Empty();
+	IslandTiles.Empty();
+	NearestIslands.Empty();
+	ResourceWidgetComps.Empty();
+
+	int32 NumCol = NumColOfTheMap;
 	int32 NumRow = FMath::RoundToInt((float)NumCol * 0.75f);
 	int32 CurR, CurC, NewR, NewC, MaxPoss;
 	int32 NewIslandID = 0;
@@ -315,6 +331,7 @@ void UMapManager::GenerateMap(int32 NumCol)
 							}
 							IslandTile->SetIslandID(GuardianTileID);
 							Cast<AResourceTile>(IslandTile)->SetResources(StartResources);
+							Cast<AResourceTile>(IslandTile)->WorldEnemyWeight = WorldEnemyWeight;
 							ResourceWidgetComps.Add(Cast<AResourceTile>(IslandTile)->GetWidgetComponent());
 							Map[NewR][NewC] = IslandTile;
 							IslandTile->SetRow(NewR);
@@ -375,6 +392,7 @@ void UMapManager::GenerateMap(int32 NumCol)
 						else IslandTile = GetWorld()->SpawnActor<AIslandTile>(FarmTileClass, FVector(XCoord, YCoord, 60.0f), Rotator);
 						IslandTiles[IslandID[CurR][CurC]].Add(IslandTile);
 						IslandTile->SetIslandID(IslandID[CurR][CurC]);
+						Cast<AResourceTile>(IslandTile)->WorldEnemyWeight = WorldEnemyWeight;
 						Tile = IslandTile;
 					}
 					break;

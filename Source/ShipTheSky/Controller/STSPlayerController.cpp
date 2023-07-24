@@ -207,22 +207,24 @@ void ASTSPlayerController::MoveCamera(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
 	FVector NewLocation = Commander->GetActorLocation() + FVector(MovementVector.X, MovementVector.Y, 0.0f) * CameraMovementSpeed;
-	NewLocation.X = FMath::Clamp(NewLocation.X, 475, 11350);
-	NewLocation.Y = FMath::Clamp(NewLocation.Y, 1125, 18375);
+	FVector MaxLoc = GetGameInstance()->GetSubsystem<UMapManager>()->GetMaxCameraLocation();
+	NewLocation.X = FMath::Clamp(NewLocation.X, 475, MaxLoc.X - 475);
+	NewLocation.Y = FMath::Clamp(NewLocation.Y, 1125, MaxLoc.Y - 1125);
 	Commander->SetActorLocation(NewLocation);
 }
 
 void ASTSPlayerController::ZoomCamera(const FInputActionValue& Value)
 {
 	float Zoom = Value.Get<float>();
-	PlayerCommander->SpringArmComp->TargetArmLength = FMath::Clamp(PlayerCommander->SpringArmComp->TargetArmLength + CameraZoomSpeed * Zoom, 2000, 14000);
+	float MaxLen = GetGameInstance()->GetSubsystem<UMapManager>()->GetMaxCameraSpringArm();
+	PlayerCommander->SpringArmComp->TargetArmLength = FMath::Clamp(PlayerCommander->SpringArmComp->TargetArmLength + CameraZoomSpeed * Zoom, 2000, MaxLen);
 
 
-	if (PlayerCommander->SpringArmComp->TargetArmLength > 8000 && PrevArmLength <= 8000)
+	if (PlayerCommander->SpringArmComp->TargetArmLength > MaxLen / 1.75f && PrevArmLength <= MaxLen / 1.75f)
 	{
 		GetGameInstance()->GetSubsystem<UMapManager>()->SetResoureUIVisibility(false);
 	}
-	else if (PlayerCommander->SpringArmComp->TargetArmLength <= 8000 && PrevArmLength > 8000)
+	else if (PlayerCommander->SpringArmComp->TargetArmLength <= MaxLen / 1.75f && PrevArmLength > MaxLen / 1.75f)
 	{
 		GetGameInstance()->GetSubsystem<UMapManager>()->SetResoureUIVisibility(true);
 	}

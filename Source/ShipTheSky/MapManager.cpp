@@ -30,9 +30,9 @@ void UMapManager::GenerateMap(int32 NumCol)
 	TArray<TArray<ETileType>> MapData;
 	TArray<TArray<int32>> IslandID;
 
-	if (NumRow < 20)
+	if (NumRow < 25 || NumRow > 80)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Too small map size."));
+		UE_LOG(LogTemp, Error, TEXT("Too small/big map size."));
 		return;
 	}
 
@@ -733,6 +733,16 @@ bool UMapManager::SetResoureUIVisibility(bool bIsVisible)
 	}
 
 	return false;
+}
+
+FVector UMapManager::GetMaxCameraLocation() const
+{
+	return Map.Last().Last()->GetActorLocation();
+}
+
+float UMapManager::GetMaxCameraSpringArm() const
+{
+	return (float)Map[0].Num() * 340.0f;
 }
 
 void UMapManager::SetTilePowers()

@@ -70,6 +70,9 @@ public:
 	//¸Ê¿¡¼­ ÀÚ¿ø UI ²ô°í Å°±â
 	bool SetResoureUIVisibility(bool bIsVisible);
 
+	FVector GetMaxCameraLocation() const;
+	float GetMaxCameraSpringArm() const;
+
 private:
 	void SetTilePowers();
 	void SetIslandResources();

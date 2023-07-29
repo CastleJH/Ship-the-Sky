@@ -7,8 +7,8 @@
 #include "Tile/ResourceTile.h"
 #include "Tile/GuardianTile.h"
 #include "Pawn/Commander.h"
-#include "STSGameState.h"
-#include "MapManager.h"
+#include "Game/STSGameState.h"
+#include "Game/MapManager.h"
 
 ABarracks::ABarracks()
 {

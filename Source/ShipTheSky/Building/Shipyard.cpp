@@ -2,7 +2,7 @@
 
 
 #include "Building/Shipyard.h"
-#include "Ship.h"
+#include "Ship/Ship.h"
 #include "Tile/ResourceTile.h"
 #include "Pawn/Commander.h"
 

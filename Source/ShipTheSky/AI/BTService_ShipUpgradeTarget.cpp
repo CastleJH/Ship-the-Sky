@@ -6,7 +6,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Pawn/Commander.h"
 #include "Enums.h"
-#include "Ship.h"
+#include "Ship/Ship.h"
 #include "Building/BaseBuilding.h"
 #include "Building/Shipyard.h"
 #include "Tile/BaseTile.h"

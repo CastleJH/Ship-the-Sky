@@ -5,7 +5,7 @@
 #include "Tile/BaseTile.h"
 #include "Tile/ResourceTile.h"
 #include "Enums.h"
-#include "Ship.h"
+#include "Ship/Ship.h"
 #include "Controller/STSPlayerController.h"
 
 APortal::APortal()

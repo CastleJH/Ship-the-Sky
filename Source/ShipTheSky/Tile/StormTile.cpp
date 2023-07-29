@@ -2,7 +2,7 @@
 
 
 #include "Tile/StormTile.h"
-#include "Ship.h"
+#include "Ship/Ship.h"
 
 AStormTile::AStormTile()
 {

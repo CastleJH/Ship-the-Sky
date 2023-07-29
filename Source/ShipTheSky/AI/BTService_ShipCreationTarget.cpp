@@ -5,7 +5,7 @@
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Pawn/Commander.h"
-#include "Ship.h"
+#include "Ship/Ship.h"
 #include "Building/BaseBuilding.h"
 #include "Building/Shipyard.h"
 #include "Enums.h"

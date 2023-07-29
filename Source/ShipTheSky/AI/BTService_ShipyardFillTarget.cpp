@@ -10,8 +10,8 @@
 #include "Building/Shipyard.h"
 #include "Tile/BaseTile.h"
 #include "Tile/ResourceTile.h"
-#include "Ship.h"
-#include "MapManager.h"
+#include "Ship/Ship.h"
+#include "Game/MapManager.h"
 
 UBTService_ShipyardFillTarget::UBTService_ShipyardFillTarget()
 {

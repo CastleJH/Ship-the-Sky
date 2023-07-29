@@ -6,9 +6,9 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Pawn/Commander.h"
 #include "Enums.h"
-#include "Ship.h"
+#include "Ship/Ship.h"
 #include "Tile/BaseTile.h"
-#include "MapManager.h"
+#include "Game/MapManager.h"
 #include "Tile/GuardianTile.h"
 #include "Tile/ResourceTile.h"
 

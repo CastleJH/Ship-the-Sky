@@ -2,7 +2,7 @@
 
 
 #include "Tile/LightningTile.h"
-#include "Ship.h"
+#include "Ship/Ship.h"
 
 ALightningTile::ALightningTile()
 {

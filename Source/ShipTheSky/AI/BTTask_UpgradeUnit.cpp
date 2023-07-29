@@ -9,7 +9,7 @@
 #include "Unit/BaseUnit.h"
 #include "Tile/IslandTile.h"
 #include "Tile/GuardianTile.h"
-#include "Ship.h"
+#include "Ship/Ship.h"
 
 UBTTask_UpgradeUnit::UBTTask_UpgradeUnit()
 {

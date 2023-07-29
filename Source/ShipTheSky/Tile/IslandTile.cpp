@@ -6,9 +6,9 @@
 #include "Pawn/Commander.h"
 #include "Components/WidgetComponent.h"
 #include "Widget/IslandResourceUI.h"
-#include "MapManager.h"
-#include "STSGameState.h"
-#include "Ship.h"
+#include "Game/MapManager.h"
+#include "Game/STSGameState.h"
+#include "Ship/Ship.h"
 #include "Tile/GuardianTile.h"
 
 AIslandTile::AIslandTile()

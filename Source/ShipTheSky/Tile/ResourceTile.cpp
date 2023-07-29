@@ -8,7 +8,7 @@
 #include "Building/BaseBuilding.h"
 #include "Controller/STSPlayerController.h"
 #include "Components/WidgetComponent.h"
-#include "MapManager.h"
+#include "Game/MapManager.h"
 #include "Pawn/PlayerCommander.h"
 
 AResourceTile::AResourceTile()

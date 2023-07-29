@@ -2,7 +2,7 @@
 
 
 #include "Tile/SunTile.h"
-#include "Ship.h"
+#include "Ship/Ship.h"
 
 ASunTile::ASunTile()
 {

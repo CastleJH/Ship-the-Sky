@@ -6,12 +6,12 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Pawn/Commander.h"
 #include "Enums.h"
-#include "Ship.h"
+#include "Ship/Ship.h"
 #include "Tile/BaseTile.h"
 #include "Tile/GuardianTile.h"
 #include "Tile/IslandTile.h"
 #include "Unit/BaseUnit.h"
-#include "MapManager.h"
+#include "Game/MapManager.h"
 
 UBTService_BattleTarget::UBTService_BattleTarget()
 {

@@ -9,7 +9,7 @@
 #include "Tile/IslandTile.h"
 #include "Unit/BaseUnit.h"
 #include "Tile/ResourceTile.h"
-#include "Ship.h"
+#include "Ship/Ship.h"
 
 UBTTask_LocateUnitOnTile::UBTTask_LocateUnitOnTile()
 {

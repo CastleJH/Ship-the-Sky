@@ -4,11 +4,11 @@
 #include "Tile/BaseTile.h"
 #include "Controller/STSPlayerController.h"
 #include "Pawn/Commander.h"
-#include "Ship.h"
+#include "Ship/Ship.h"
 #include "Components/WidgetComponent.h"
 #include "BaseTile.h"
 #include "IslandTile.h"
-#include "STSGameState.h"
+#include "Game/STSGameState.h"
 
 // Sets default values
 ABaseTile::ABaseTile()

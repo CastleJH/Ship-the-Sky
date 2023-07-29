@@ -6,7 +6,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Pawn/Commander.h"
 #include "Enums.h"
-#include "Ship.h"
+#include "Ship/Ship.h"
 
 UBTTask_UpgradeShip::UBTTask_UpgradeShip()
 {

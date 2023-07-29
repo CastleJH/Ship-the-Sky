@@ -2,7 +2,7 @@
 
 
 #include "Tile/MeteorTile.h"
-#include "Ship.h"
+#include "Ship/Ship.h"
 
 AMeteorTile::AMeteorTile()
 {
